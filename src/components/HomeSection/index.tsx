@@ -9,9 +9,9 @@ interface LayoutProps {
 const index = (props: LayoutProps) => {
   const { title, subtitle, children, className } = props;
   return (
-    <div className="">
+    <div className="container mx-auto">
       <TextHeader title={title} subtitle={subtitle} />
-      <div className={className}>{children}</div>
+      {children}
     </div>
   );
 };

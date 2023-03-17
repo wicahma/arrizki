@@ -1,4 +1,5 @@
 import { Typography } from "@material-tailwind/react";
+import Link from "next/link";
 import React from "react";
 
 export const navList: React.ReactNode = (
@@ -9,9 +10,9 @@ export const navList: React.ReactNode = (
       color="blue-gray"
       className="p-1 font-normal"
     >
-      <a href="#" className="flex items-center">
+      <Link href="/" className="flex items-center">
         Home
-      </a>
+      </Link>
     </Typography>
     <Typography
       as="li"
@@ -19,9 +20,9 @@ export const navList: React.ReactNode = (
       color="blue-gray"
       className="p-1 font-normal"
     >
-      <a href="#" className="flex items-center">
+      <Link href="#" className="flex items-center">
         Paket Wisata
-      </a>
+      </Link>
     </Typography>
     <Typography
       as="li"
@@ -29,9 +30,9 @@ export const navList: React.ReactNode = (
       color="blue-gray"
       className="p-1 font-normal"
     >
-      <a href="#" className="flex items-center">
+      <Link href="#" className="flex items-center">
         Sewa Mobil
-      </a>
+      </Link>
     </Typography>
   </ul>
 );
