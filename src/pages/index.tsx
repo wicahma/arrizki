@@ -5,11 +5,28 @@ import MiniCard from "../components/HomeSection/MiniCard";
 import ReasonCards from "../components/HomeSection/ReasonCards";
 import { Button } from "@material-tailwind/react";
 import FAQ from "../components/FAQ";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <Layout className="pt-10" pageTitle="Home">
-      <div className="-z-10 h-screen w-full">
+      <div className="-z-10 h-[90vh] flex justify-center items-center w-full">
+        <div className="text-white text-center p-2">
+          <h1 className="text-5xl mb-2 font-semibold">
+            Temukan tempat tempat indah di Jogja bersama kami.
+          </h1>
+          <p className="text-xl font-light">
+            Layanan biro pariwisata yang akan mewujudkan perjalanan impian Anda.
+          </p>
+          <div className="flex gap-5 justify-center mt-10">
+            <Link href={""}>
+              <Button color="red">Tentang Kami</Button>
+            </Link>
+            <Link href={"/paket-wisata"}>
+              <Button color="red">Cari Wisata</Button>
+            </Link>
+          </div>
+        </div>
         <Image
           src="/assets/images/tugu-jogja.jpg"
           alt="tugu-jogja"
@@ -117,7 +134,10 @@ export default function Home() {
                     <li>BSI 301-1022-50</li>
                   </ul>
                 </li>
-                <li>Shopee Pay <span className="font-semibold">A.N Arrizki_tour09</span></li>
+                <li>
+                  Shopee Pay{" "}
+                  <span className="font-semibold">A.N Arrizki_tour09</span>
+                </li>
               </ol>
             </FAQ>
           </div>
@@ -129,12 +149,14 @@ export default function Home() {
             <h1 className="text-4xl font-semibold mb-3">
               Mulai perjalananmu bersama kami
             </h1>
-            <Button
-              color="red"
-              className="normal-case max-w-max font-normal text-sm py-2 text-white"
-            >
-              Cari wisata
-            </Button>
+            <Link href={"/paket-wisata"}>
+              <Button
+                color="red"
+                className="normal-case max-w-max font-normal text-sm py-2 text-white"
+              >
+                Cari wisata
+              </Button>
+            </Link>
           </div>
           <div className="md:col-span-4 col-span-6">
             <div className="flex flex-col h-full max-w-max ml-auto">
@@ -143,7 +165,7 @@ export default function Home() {
                   Jangan lewatkan momen momen indah bersama Arrizki Tour
                 </p>
               </div>
-              <div className="flex md:relative absolute bottom-0 opacity-25 right-1/2 translate-x-1/2 shrink gap-3 justify-center mx-auto">
+              <div className="flex md:relative absolute bottom-0 opacity-25 md:opacity-100 right-1/2 translate-x-1/2 shrink gap-3 justify-center mx-auto">
                 <Image
                   src={"/assets/images/ocean.png"}
                   alt="ocean"
