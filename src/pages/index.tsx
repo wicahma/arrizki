@@ -36,7 +36,7 @@ export default function Home() {
           className="w-full fixed -z-10 object-cover h-screen"
         />
       </div>
-      <div className="rounded-t-[60px] before:rounded-t-[60px] rounded-br-[200px] relative before:absolute before:inset-0 before:bg-gray-900 before:-z-10 bg-white p-10 space-y-10">
+      <div className="rounded-t-[60px] before:rounded-t-[60px] rounded-br-[12vw] relative before:absolute before:inset-0 before:bg-gray-900 before:-z-10 bg-white p-10 space-y-10">
         <div className="bg-red-500 rounded-full aspect-square h-16 top-0 right-1/2 -translate-y-1/2 translate-x-1/2 absolute">
           <Image
             src={"assets/icons/arrow-down.svg"}
