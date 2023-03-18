@@ -70,21 +70,61 @@ export default function Home() {
           subtitle="Pertanyaan pertanyaan yang sering ditanyakan oleh para pelanggan Arrizki Tour."
           className=""
         >
-          <div className="w-full overflow-visible flex justify-center">
+          <div className="w-full overflow-visible flex flex-col justify-center">
             <FAQ question={"Meeting pointnya dimana?"}>
-              <h3 className="font-semibold text-lg mb-3">Di Jogja, bisa antar jemput di:</h3>
-              <ol className="list-decimal">
-                <li>Hotel (untuk dihotel gunungkidul dan kulonprogo dikenakan charge)</li>
+              <h3 className="font-normal text-lg mb-3">
+                Di Jogja, bisa antar jemput di:
+              </h3>
+              <ol className="list-decimal ml-10">
+                <li>
+                  Hotel (untuk dihotel gunungkidul dan kulonprogo dikenakan
+                  charge)
+                </li>
                 <li>Stasiun Yogyakarta/Lempuyangan</li>
                 <li>Bandara Adi Sutjipto</li>
                 <li>Bandara YIA (dikenakan charger penjemputan/pengantaran)</li>
+              </ol>
+            </FAQ>
+            <FAQ question={"Paket tournya digabung sama penumpang lain tidak?"}>
+              <p className="font-normal text-lg mb-3">
+                Tidak. Paket Wisata yang kami tawarkan adalah bersifat private
+                tour.
+              </p>
+            </FAQ>
+            <FAQ question={"Bisa minta tolong driver untuk ngambilin foto?"}>
+              <p className="font-normal text-lg mb-3">
+                Bisa, nanti bisa minta tolong ke driver kita ya. Kalau mau make
+                jasa fotografer professional, kita juga ada.
+              </p>
+            </FAQ>
+            <FAQ question={"Trip start jam berapa?"}>
+              <p className="font-normal text-lg mb-3">
+                Menyesuaikan dengan intenary, biasanya start jam 07.30 atau jam
+                8 pagi dengan durasi 12 jam.
+              </p>
+            </FAQ>
+            <FAQ
+              question={"Bagaimana Cara Pembayaran Pemesanan di Arrizki Tour?"}
+            >
+              <p className="font-normal text-lg mb-3">
+                Arrizki Tour menyediakan berbagai macam cara pembayaran, yaitu:
+              </p>
+              <ol className="list-decimal ml-10">
+                <li>
+                  Internet Banking/Tranfer Bank A.N Wiga Nugraheni
+                  <ul className="list-disc ml-10">
+                    <li>BRI 0987-0102-2402-539</li>
+                    <li>BSI 301-1022-50</li>
+                  </ul>
+                </li>
+                <li>Shopee Pay <span className="font-semibold">A.N Arrizki_tour09</span></li>
               </ol>
             </FAQ>
           </div>
         </HomeSection>
       </div>
       <div className="bg-gray-900 overflow-hidden relative">
-        <div className="grid grid-cols-6 px-20 container md:h-[330px] h-max md:m-0 my-10 mx-auto text-white">
+        <div className="grid grid-cols-6 px-20 container md:h-[330px] h-max mx-auto md:my-0 my-10 text-white">
           <div className="md:col-span-2 col-span-6 z-10 flex flex-col justify-center">
             <h1 className="text-4xl font-semibold mb-3">
               Mulai perjalananmu bersama kami

@@ -14,7 +14,7 @@ const Index = (props: LayoutProps) => {
   return (
     <>
       <Head>
-        <title>Arrizki Tour | {`${pageTitle}`}</title>
+        <title>{`Arrizki Tour | ${pageTitle}`}</title>
         <meta
           name="description"
           content="Tempat pemesanan dan juga persewaan Mobil, lengkap dengan paket Wisata."

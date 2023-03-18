@@ -32,7 +32,6 @@ const index = (props: footerList) => {
         <AccordionBody>
           <ul className="text-lg font-normal text-black">
             {list.map((item, i) => {
-              console.log(item);
               return (
                 <li key={i}>
                   <Link

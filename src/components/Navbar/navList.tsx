@@ -20,7 +20,7 @@ export const navList: React.ReactNode = (
       color="blue-gray"
       className="p-1 font-normal"
     >
-      <Link href="#" className="flex items-center">
+      <Link href="/paket-wisata" className="flex items-center">
         Paket Wisata
       </Link>
     </Typography>
@@ -30,7 +30,7 @@ export const navList: React.ReactNode = (
       color="blue-gray"
       className="p-1 font-normal"
     >
-      <Link href="#" className="flex items-center">
+      <Link href="/sewa-mobil" className="flex items-center">
         Sewa Mobil
       </Link>
     </Typography>

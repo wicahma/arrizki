@@ -20,13 +20,13 @@ const index = (props: FAQ) => {
   return (
     <Accordion className="" open={open === 1}>
       <AccordionHeader
-        className="font-normal border-b-black text-black"
+        className="font-normal border-b-black text-left text-black"
         onClick={() => handleOpen(1)}
       >
         {question}
       </AccordionHeader>
       <AccordionBody>
-        <div className="px-8">{children}</div>
+        <div className="px-8 text-black/90">{children}</div>
       </AccordionBody>
     </Accordion>
   );
