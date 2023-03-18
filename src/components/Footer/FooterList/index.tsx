@@ -49,7 +49,6 @@ const index = (props: footerList) => {
       <h4 className="font-semibold mb-4 text-xl sm:block hidden">{title}</h4>
       <ul className="sm:block hidden">
         {list.map((item, i) => {
-          console.log(item);
           return (
             <li key={i}>
               <Link

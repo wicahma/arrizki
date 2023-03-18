@@ -6,8 +6,8 @@ import {
   Button,
   IconButton,
 } from "@material-tailwind/react";
-import { navList } from "./navList";
 import Image from "next/image";
+import NavList from "./navList";
 
 const Navbars = (props: any) => {
   const [openNav, setOpenNav] = useState(false);
@@ -38,7 +38,9 @@ const Navbars = (props: any) => {
               height={40}
             />
           </Typography>
-          <div className="hidden lg:block">{navList}</div>
+          <div className="hidden lg:block">
+            <NavList />
+          </div>
           <div className="w-[165px] h-[39px] relative">
             <Button
               color="green"
@@ -94,7 +96,7 @@ const Navbars = (props: any) => {
         </div>
         <MobileNav open={openNav}>
           <div className="container mx-auto">
-            {navList}
+            <NavList />
             <Button
               color="green"
               size="sm"
