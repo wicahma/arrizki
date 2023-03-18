@@ -9,16 +9,26 @@ import {
   TabsHeader,
 } from "@material-tailwind/react";
 import type { TabsProps } from "@material-tailwind/react";
+import Link from "next/link";
 
 const MobilCard = (props: MobilCardProps) => {
   const { title, image, price, facility, id } = props;
 
   return (
-    <div className="flex md:flex-row flex-col gap-5 p-3 transition-all group bg-white hover:text-white hover:shadow-xl hover:bg-red-600 rounded-2xl">
-      <div className="aspect-square h-full grow overflow-hidden bg-black/50 rounded-2xl">
-        <Image src={image} width={200} height={200} className="h-full w-full object-cover" alt={`mobil-${image}`} />
+    <Link
+      href={"/"}
+      className="flex relative md:flex-row flex-col gap-5 p-3 transition-all group bg-white hover:text-white hover:shadow-xl hover:bg-red-600 rounded-2xl"
+    >
+      <div className="aspect-square z-10 h-full grow overflow-hidden bg-black/50 rounded-2xl">
+        <Image
+          src={image}
+          width={200}
+          height={200}
+          className="h-full w-full object-cover"
+          alt={`mobil-${image}`}
+        />
       </div>
-      <div className="flex sm:flex-row flex-col">
+      <div className="flex sm:flex-row flex-col z-10">
         <div className="text-left sm:m-0 mb-4 basis-1/2 flex justify-center flex-col">
           <h3 className="text-2xl font-semibold">{title}</h3>
           <p>{price}</p>
@@ -26,8 +36,19 @@ const MobilCard = (props: MobilCardProps) => {
         <div className="grid grid-cols-1 basis-1/2 w-full md:w-[250px] mx-auto ">
           <Tabs value="Fasilitas">
             <TabsHeader className="w-full mb-1">
-              <Tab value={"Fasilitas"}>Fasilitas</Tab>
-              <Tab value={"Harga"}>Harga</Tab>
+              <Tab
+                onClick={(a) => {
+                  a.stopPropagation();
+                  a.preventDefault();
+                }}
+                value={"Fasilitas"}
+              >
+                Fasilitas
+              </Tab>
+              <Tab onClick={(a) => {
+                  a.stopPropagation();
+                  a.preventDefault();
+                }} value={"Harga"}>Harga</Tab>
             </TabsHeader>
             <TabsBody className="w-full bg-white rounded-xl">
               <TabPanel
@@ -50,7 +71,10 @@ const MobilCard = (props: MobilCardProps) => {
           </Tabs>
         </div>
       </div>
-    </div>
+      <div className="absolute -z-[10] group-hover:-bottom-6 px-5 bottom-0 transition-all text-white right-4 bg-red-600"> 
+        <p>Pesan mobil ini</p>
+      </div>
+    </Link>
   );
 };
 

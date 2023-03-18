@@ -13,7 +13,7 @@ const index = (props: any) => {
           title="Pilih Mobil untuk anda sewa."
           subtitle="Arrizki Tour menyediakan layanan sewa mobil untuk para wisatawan atau kalian yang sedang membuutuhkan mobil untuk akomodasi dll."
         />
-        <div className="flex flex-col md:w-[700px] w-full sm:mx-auto px-5">
+        <div className="flex flex-col md:w-[700px] mb-10 w-full sm:mx-auto px-5">
           <MobilCard
             facility={[
               "makan",
