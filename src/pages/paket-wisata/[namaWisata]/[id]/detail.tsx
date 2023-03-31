@@ -1,7 +1,12 @@
 import React, { MouseEvent, useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
-import { Checkbox, Tooltip, Typography } from "@material-tailwind/react";
+import {
+  Checkbox,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@material-tailwind/react";
 import WisataForm from "@/components/micros/forms/WisataForm";
 import MiniCard from "@/components/HomeSection/MiniCard";
 import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
@@ -12,6 +17,9 @@ const DetailWisata = (props: any) => {
   console.log(query);
 
   useEffect(() => {
+    window.addEventListener("resize", () => {
+      window.innerWidth > 960 && setForm(true);
+    });
     console.log(formOpener);
   }, [formOpener]);
 
@@ -37,22 +45,22 @@ const DetailWisata = (props: any) => {
         </div>
 
         <div
-          className={`fixed overflow-y-auto sm:px-5 shadow-2xl sm:rounded-none sm:shadow-none sm:col-span-2 z-50 w-[100vw] right-0 duration-500 transition-all sm:w-full sm:max-h-max sm:sticky sm:top-20 ${
+          className={`fixed right-0 overflow-y-auto lg:px-5 shadow-2xl lg:rounded-none lg:shadow-none lg:col-span-2 z-50 duration-500 transition-all lg:w-full lg:max-h-max lg:sticky lg:top-20 ${
             formOpener
-              ? "rounded-tl-xl h-[88vh] rounded-tr-xl bottom-0 bg-white"
-              : "h-11 -bottom-full bg-red-500 "
+              ? "rounded-tl-xl w-[100vw] h-[88vh] rounded-tr-xl bottom-0 bg-white"
+              : "h-11 -bottom-full w-[10px] bg-red-500"
           }`}
         >
-          <div className={`p-5 sm:p-0 pb-16`}>
+          <div className={`p-5 lg:p-0 pb-16`}>
             <h3 className="text-2xl mb-3 font-medium">Pesan Sekarang</h3>
             <WisataForm />
           </div>
           <div
-            className={`items-center transition-all duration-500 flex w-full fixed shadow-2xl ${
+            className={`items-center px-4 py-2 flex justify-end transition-all right-5 duration-500 fixed shadow-2xl ${
               !formOpener
-                ? "bg-red-500 rounded-tl-2xl rounded-tr-2xl"
-                : "bg-white"
-            } bottom-0 z-[110] sm:hidden`}
+                ? "bg-red-500 rounded-tl-2xl rounded-tr-2xl w-[215px]"
+                : "bg-white w-full"
+            } bottom-0 z-[110] lg:hidden`}
           >
             <Tooltip
               className="absolute bg-white text-black shadow-md"
@@ -62,7 +70,7 @@ const DetailWisata = (props: any) => {
               }}
               content={`${!formOpener ? "Buka Form" : "Tutup Form"}`}
             >
-              <Checkbox
+              <Switch
                 labelProps={{
                   className: `${!formOpener ? "text-white" : "text-black"}`,
                 }}
@@ -73,26 +81,6 @@ const DetailWisata = (props: any) => {
                 onClick={(e: any) => setForm(e.target.checked)}
               />
             </Tooltip>
-            <div
-              className={`grow relative before:absolute before:w-[80%] before:top-1/2 before:-translate-y-1/2 before:h-[2px] bg-red-100 before:rounded-full ${
-                !formOpener ? "text-white before:bg-white" : "text-black before:bg-black"
-              }`}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 bg-red-500 aspect-square"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-            </div>
           </div>
         </div>
       </div>
