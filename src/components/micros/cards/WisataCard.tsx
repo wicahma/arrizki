@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 interface WisataCardProps {
+  id: string;
   title: string;
   price: number;
   rupiah: Intl.NumberFormat;
@@ -12,11 +13,11 @@ interface WisataCardProps {
 }
 
 const WisataCard = (props: WisataCardProps) => {
-  const { title, price, image, className, listWisata, rupiah } = props;
+  const { id, title, price, image, className, listWisata, rupiah } = props;
 
   return (
     <Link
-      href={""}
+      href={`/paket-wisata/${title}/${id}/detail`}
       className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
     >
       <div className="bg-black flex flex-col text-left z-10 group-hover:bottom-10 bottom-0 transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const Index = (props: any) => {
   return (
-    <div className="bg-white pt-10">
+    <div className="bg-white pt-10 z-0">
       <div className="flex flex-col mx-auto container gap-10 divide-y-4 divide-red-400">
         <div className="grid grid-cols-5 gap-4 px-10">
           <div className="md:col-span-2 col-span-5 flex flex-col justify-center">

@@ -19,41 +19,7 @@ const index = (props: any) => {
             title="Paket Jogja 1D1N"
             listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
             rupiah={rupiah}
-          />
-          <WisataCard
-            image="/assets/images/development/OBELIX HILLS 2.png"
-            price={20000}
-            title="Paket Jogja 1D1N"
-            listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
-            rupiah={rupiah}
-          />
-          <WisataCard
-            image="/assets/images/development/OBELIX HILLS 2.png"
-            price={20000}
-            title="Paket Jogja 1D1N"
-            listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
-            rupiah={rupiah}
-          />
-          <WisataCard
-            image="/assets/images/development/OBELIX HILLS 2.png"
-            price={20000}
-            title="Paket Jogja 1D1N"
-            listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
-            rupiah={rupiah}
-          />
-          <WisataCard
-            image="/assets/images/development/OBELIX HILLS 2.png"
-            price={20000}
-            title="Paket Jogja 1D1N"
-            listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
-            rupiah={rupiah}
-          />
-          <WisataCard
-            image="/assets/images/development/OBELIX HILLS 2.png"
-            price={20000}
-            title="Paket Jogja 1D1N"
-            listWisata={["Ndepok", "Sleman City hall", "Bantul", "Gumuk Pasir"]}
-            rupiah={rupiah}
+            id="asjdajslkdjlas"
           />
         </div>
       </div>

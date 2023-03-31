@@ -8,6 +8,17 @@ import FAQ from "../components/FAQ";
 import Link from "next/link";
 
 export default function Home() {
+  const penawaran: string[] = [
+    "Reservasi dan penjualan tiketing",
+    "Reservasi dan penjualan voucher Hotel",
+    "Penyewaan / Reservasi Kendaraan",
+    "Paket tour domestik",
+    "Paket MICE (Meeting, Incentive, Convention, Exhibition)",
+    "Paket Outbond",
+    "Paket Wisata Edukasi (Study Tour)",
+    "Paket Family Gathering",
+  ];
+
   return (
     <Layout className="pt-10" pageTitle="Home">
       <div className="-z-10 h-[90vh] flex justify-center items-center w-full">
@@ -59,14 +70,9 @@ export default function Home() {
           className=""
         >
           <div className="flex flex-row flex-wrap gap-3 columns-4 justify-center">
-            <MiniCard teks="Reservasi dan penjualan tiketing" />
-            <MiniCard teks="Reservasi dan penjualan voucher Hotel" />
-            <MiniCard teks="Penyewaan / Reservasi Kendaraan" />
-            <MiniCard teks="Paket tour domestik" />
-            <MiniCard teks="Paket MICE (Meeting, Incentive, Convention, Exhibition)" />
-            <MiniCard teks="Paket Outbond" />
-            <MiniCard teks="Paket Wisata Edukasi (Study Tour)" />
-            <MiniCard teks="Paket Family Gathering" />
+            {penawaran.map((item, i) => {
+              return <MiniCard teks={item} className="py-2" key={i} />;
+            })}
           </div>
         </HomeSection>
         <HomeSection
