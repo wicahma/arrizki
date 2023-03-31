@@ -16,9 +16,7 @@ const MobilCard = (props: MobilCardProps) => {
   const { title, image, price, facility, id } = props;
 
   return (
-    <div
-      className="flex cursor-pointer normal-case relative justify-between md:flex-row flex-col gap-5 p-3 transition-all group bg-white hover:text-white text-black/80 hover:shadow-xl shadow-none hover:bg-red-600 rounded-2xl"
-    >
+    <div className="flex cursor-pointer normal-case relative justify-between md:flex-row flex-col gap-5 p-3 transition-all group bg-white hover:text-white text-black/80 hover:shadow-xl shadow-none hover:bg-red-600 rounded-2xl col-span-1 md:col-span-2">
       <div className="aspect-square z-10 w-full md:w-10 grow overflow-hidden bg-black/50 rounded-2xl">
         <Image
           src={image}
@@ -28,15 +26,16 @@ const MobilCard = (props: MobilCardProps) => {
           alt={`mobil-${image}`}
         />
       </div>
-      <div className="flex grow sm:flex-row flex-col z-10">
+      <div className="flex grow md:flex-row flex-col z-10">
         <div className="text-left sm:m-0 mb-4 basis-1/2 flex justify-center flex-col">
-          <h3 className="text-2xl font-semibold">{title}</h3>
+          <h3 className="md:text-2xl text-xl font-semibold">{title}</h3>
           <p>{price}</p>
         </div>
         <div className="grid grid-cols-1 w-full basis-1/2 md:w-[250px] mx-auto">
           <Tabs value="Fasilitas">
-            <TabsHeader className="w-full mb-1" >
+            <TabsHeader className="w-full mb-1">
               <Tab
+                className="md:text-lg text-sm"
                 onClick={(a) => {
                   a.stopPropagation();
                   a.preventDefault();
@@ -45,14 +44,20 @@ const MobilCard = (props: MobilCardProps) => {
               >
                 Fasilitas
               </Tab>
-              <Tab onClick={(a) => {
+              <Tab
+                className="md:text-lg text-sm"
+                onClick={(a) => {
                   a.stopPropagation();
                   a.preventDefault();
-                }} value={"Harga"}>Harga</Tab>
+                }}
+                value={"Harga"}
+              >
+                Harga
+              </Tab>
             </TabsHeader>
             <TabsBody className="w-full bg-white rounded-xl">
               <TabPanel
-                className="w-full px-3 py-2 h-[130px] overflow-y-auto cards"
+                className="w-full text-sm md:text-base px-3 py-2 h-[130px] overflow-y-auto cards"
                 value={"Fasilitas"}
               >
                 <ul className="list-disc">
@@ -62,7 +67,7 @@ const MobilCard = (props: MobilCardProps) => {
                 </ul>
               </TabPanel>
               <TabPanel
-                className="w-full px-3 py-2 h-[130px] overflow-y-auto"
+                className="w-full text-sm md:text-base px-3 py-2 h-[130px] overflow-y-auto"
                 value={"Harga"}
               >
                 <p>asdasdsdf{price}</p>

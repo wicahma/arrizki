@@ -15,6 +15,7 @@ const index = (props: any) => {
     });
     console.log(formOpener);
   }, [formOpener]);
+
   return (
     <Layout pageTitle="Sewa Mobil">
       <div className="pt-14 container mx-auto">
@@ -24,20 +25,24 @@ const index = (props: any) => {
           subtitle="Arrizki Tour menyediakan layanan sewa mobil untuk para wisatawan atau kalian yang sedang membuutuhkan mobil untuk akomodasi dll."
         />
         <div className="divide-x divide-gray-400 gap-3 grid grid-cols-6 mx-auto">
-          <div className="flex col-span-4 flex-col full mb-10 w-full sm:mx-auto px-5">
-            <MobilCard
-              facility={[
-                "makan",
-                "Minum",
-                "Sholat",
-                "Puasa",
-                "Sedekah jariah dunia akhirat",
-              ]}
-              id="123j12h3jk1h"
-              image=""
-              price={20000}
-              title="Toyota Avanza"
-            />
+          <div className="lg:col-span-4 col-span-6 grid grid-cols-2 mb-10 w-full sm:mx-auto px-5">
+            {[1, 1, 1, 1, 1].map((item, i) => {
+              return (
+                <MobilCard
+                  facility={[
+                    "makan",
+                    "Minum",
+                    "Sholat",
+                    "Puasa",
+                    "Sedekah jariah dunia akhirat",
+                  ]}
+                  id="123j12h3jk1h"
+                  image=""
+                  price={20000}
+                  title="Toyota Avanza"
+                />
+              );
+            })}
           </div>
 
           <div
