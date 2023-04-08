@@ -13,7 +13,7 @@ import type { TabsProps } from "@material-tailwind/react";
 import Link from "next/link";
 
 const MobilCard = (props: MobilCardProps) => {
-  const { title, image, price, facility, id } = props;
+  const { title, image, price, id, facility } = props;
 
   return (
     <div className="flex cursor-pointer normal-case relative justify-between md:flex-row flex-col gap-5 p-3 transition-all group bg-white hover:text-white text-black/80 hover:shadow-xl shadow-none hover:bg-red-600 rounded-2xl col-span-1 md:col-span-2">

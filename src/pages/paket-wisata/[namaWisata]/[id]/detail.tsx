@@ -14,6 +14,9 @@ import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
 const DetailWisata = (props: any) => {
   const { query } = useRouter();
   const [formOpener, setForm] = useState<Boolean>(true);
+  const [onTop, setOnTop] = useState<Boolean>(false);
+  const headerRef = React.useRef<HTMLDivElement>(null);
+
   console.log(query);
 
   useEffect(() => {
@@ -23,9 +26,23 @@ const DetailWisata = (props: any) => {
     console.log(formOpener);
   }, [formOpener]);
 
+  useEffect(() => {
+    const onScroll = () => {
+      if (headerRef.current) {
+        const headerRect = headerRef.current.getBoundingClientRect();
+        headerRect.top < -400 ? setOnTop(true) : setOnTop(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [headerRef]);
+
   return (
     <Layout>
-      <div className="pt-16 container mx-auto text-center">
+      <div
+        ref={headerRef}
+        className="pt-16 container bottom-0 mx-auto text-center bg-white"
+      >
         <Typography variant="h4" className="text-4xl mt-8">
           Judul wisata
         </Typography>
@@ -37,8 +54,22 @@ const DetailWisata = (props: any) => {
           />
         </div>
       </div>
-      <div className=" divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
-        <div className="sm:col-span-4 col-span-6 px-2 sm:px-0 space-y-14">
+
+      <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
+        <div className="sm:col-span-4 relative col-span-6 px-2 sm:px-0 space-y-14">
+          <div
+            className={`sticky border-b py-4 border-gray-300 duration-300 transition-all w-full text-center z-50 bg-white ${
+              onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
+            }`}
+          >
+            <div className="flex flex-row flex-wrap gap-3 columns-4 justify-center">
+              <MiniCard
+                onClick={(e) => console.log(e)}
+                className="py-1"
+                teks="Wisata 1"
+              />
+            </div>
+          </div>
           {[1, 1, 1, 1, 1, 1].map((item, i) => {
             return <PaketWisataCard />;
           })}
