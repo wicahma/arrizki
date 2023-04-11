@@ -1,0 +1,98 @@
+import React, { useEffect } from "react";
+import navbar from "@/styles/AdminNavbar.module.css";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { Button } from "@material-tailwind/react";
+
+const AdminHeader = (props: any) => {
+  const { pathname } = useRouter();
+  const activeStyle: string = "!bg-red-500 text-white";
+  const [openNavbar, setOpenNavbar] = React.useState(true);
+
+  useEffect(() => {
+    if (window) {
+      window.addEventListener("resize", () => {
+        console.log(window.innerWidth);
+        window.innerWidth > 720 && setOpenNavbar(true);
+      });
+    }
+  }, []);
+
+  return (
+    <nav
+      className="md:p-3 md:w-[400px] w-screen bg-white shadow-lg md:shadow-none md:space-y-3 md:sticky md:self-start md:h-full md:top-0 fixed"
+      id="navbar"
+    >
+      <div className="self-center bg-white md:shadow-lg rounded-xl w-screen md:w-full flex justify-between md:justify-center items-center md:py-5 md:px-0 px-3 py-2">
+        <Image
+          src={"/assets/images/arrizki-tour-text.png"}
+          alt="logo-arrizki"
+          height={130}
+          width={230}
+          className="h-10 object-cover"
+        />
+        <Button
+          onClick={() => setOpenNavbar(!openNavbar)}
+          color="red"
+          className="!p-2 md:hidden"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="w-6 h-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5M12 17.25h8.25"
+            />
+          </svg>
+        </Button>
+      </div>
+      <ul
+        className={`space-y-2 md:border-t md:border-b md:py-2 px-3 md:px-0 w-full left-0 top-0 overflow-hidden ${
+          openNavbar ? "my-2 h-full" : "my-0 h-0"
+        }`}
+      >
+        <Link
+          href={"/admin/dashboard"}
+          className={`${navbar.navlist} ${
+            pathname.includes("/admin/dashboard") && activeStyle
+          }`}
+        >
+          Dashboard
+        </Link>
+        <Link
+          href={"/admin/produk"}
+          className={`${navbar.navlist} ${
+            pathname.includes("/admin/produk") && activeStyle
+          }`}
+        >
+          Produk
+        </Link>
+        <Link
+          href={"/admin/pesanan"}
+          className={`${navbar.navlist} ${
+            pathname.includes("/admin/pesanan") && activeStyle
+          }`}
+        >
+          Pesanan
+        </Link>
+        <Link
+          href={"/admin/transaksi"}
+          className={`${navbar.navlist} ${
+            pathname.includes("/admin/transaksi") && activeStyle
+          }`}
+        >
+          Transaksi
+        </Link>
+      </ul>
+    </nav>
+  );
+};
+
+export default AdminHeader;

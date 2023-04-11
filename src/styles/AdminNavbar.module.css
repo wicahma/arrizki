@@ -1,0 +1,11 @@
+.navlist {
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  transition-duration: 300ms;
+  display: block;
+}
+
+.navlist:hover {
+  background-color: #fc746b;
+  color: #fff;
+}

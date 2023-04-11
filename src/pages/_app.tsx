@@ -1,11 +1,19 @@
+import { wrapper } from "@/store/store";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@material-tailwind/react";
 import type { AppProps } from "next/app";
+import { Provider } from "react-redux";
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, ...rest }: AppProps) {
+  const { store, props } = wrapper.useWrappedStore(rest);
+  const { pageProps } = props;
   return (
-    <ThemeProvider>
-      <Component {...pageProps} />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </Provider>
   );
 }
+
+export default App;

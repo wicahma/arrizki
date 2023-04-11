@@ -17,6 +17,7 @@ const WisataCard = (props: WisataCardProps) => {
 
   return (
     <Link
+      key={id}
       href={`/paket-wisata/${title}/${id}/detail`}
       className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
     >
