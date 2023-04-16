@@ -22,12 +22,13 @@ import {
   MobilFormProps,
   carValidation,
 } from "@/components/micros/forms/carProps";
+import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
-      if (getState().produk.tableWisata.length === 0) {
+      if (getState().produk.tableMobil.length === 0) {
         await axios
           .get(`${process.env.API_URL}/api/v1/car`)
           .then((datas) => {
@@ -46,6 +47,11 @@ const index = (props: any) => {
   const mobil = useSelector((state: any) => state.produk.tableMobil);
   const selectedCar = useSelector((state: any) => state.produk.selectedCar);
   const [mobilFormData, setMobilFormData] = useState<MobilFormProps>();
+  const [alert, setAlert] = useState<AlertProps>({
+    type: "success",
+    message: "Berhasil membuat reservasi!",
+    show: false,
+  });
   const [formOpener, setForm] = useState<Boolean>(true);
   const [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false);
   const rupiah = new Intl.NumberFormat("id-ID", {
@@ -71,8 +77,23 @@ const index = (props: any) => {
     console.log(formOpener);
   }, [formOpener]);
 
+  useEffect(() => {
+    console.log("autoClose");
+    if (alert.show === true) {
+      setTimeout(() => {
+        setAlert({ ...alert, show: false });
+      }, 3000);
+    }
+  }, [alert.show]);
+
+  const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
+    setHandleOpenDialog(!handleOpenDialog);
+    return setAlert({ ...alert, show: true });
+  };
+
   return (
     <Layout pageTitle="Sewa Mobil">
+      <Alert show={alert.show} message={alert.message} type={alert.type} />
       <div className="pt-14 container mx-auto">
         <TextHeader
           className="mt-10"
@@ -175,7 +196,7 @@ const index = (props: any) => {
                             )
                           )}
                       </li>
-                      <li>
+                      <li className="mt-5">
                         <span className="font-semibold">Nama</span> :{" "}
                         {mobilFormData.nama}
                       </li>
@@ -217,14 +238,14 @@ const index = (props: any) => {
                     onClick={() => setHandleOpenDialog(!handleOpenDialog)}
                     className="mr-1"
                   >
-                    <span>Cancel</span>
+                    <span>Batal</span>
                   </Button>
                   <Button
                     variant="gradient"
                     color="green"
-                    onClick={() => setHandleOpenDialog(!handleOpenDialog)}
+                    onClick={() => handleCreateReservasi(mobilFormData)}
                   >
-                    <span>Confirm</span>
+                    <span>Selesaikan Pesanan</span>
                   </Button>
                 </DialogFooter>
               </Dialog>

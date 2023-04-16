@@ -9,6 +9,7 @@ const initialState: Produk = {
   tableWisata: [],
   tableMobil: [],
   selectedCar: "",
+  paketWisata: [],
 };
 
 export const produkSlice = createSlice({
@@ -26,9 +27,20 @@ export const produkSlice = createSlice({
     setSelectedCar(state, action) {
       state.selectedCar = action.payload;
     },
+
+    setPaketWisata(state, action) {
+      console.group("SET PAKET WISATA");
+      console.log({ action });
+      console.log({ state });
+      console.groupEnd();
+      state.paketWisata = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
+      console.group("HYDRATE");
+      console.log({ action, state });
+      console.groupEnd();
       return {
         ...state,
         ...action.payload.produk,

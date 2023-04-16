@@ -21,7 +21,7 @@ const AdminHeader = (props: any) => {
 
   return (
     <nav
-      className="md:p-3 md:w-[400px] w-screen bg-white shadow-lg md:shadow-none md:space-y-3 md:sticky md:self-start md:h-full md:top-0 fixed"
+      className="md:p-3 md:w-[400px] min-w-[400px] w-screen bg-white shadow-lg md:shadow-none md:space-y-3 md:sticky md:self-start md:h-full md:top-0 fixed z-[1000]"
       id="navbar"
     >
       <div className="self-center bg-white md:shadow-lg rounded-xl w-screen md:w-full flex justify-between md:justify-center items-center md:py-5 md:px-0 px-3 py-2">

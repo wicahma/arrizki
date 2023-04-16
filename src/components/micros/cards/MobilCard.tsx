@@ -33,9 +33,6 @@ const MobilCard = (props: MobilCardProps) => {
           <p>{rupiah.format(price)}/Hari</p>
         </div>
       </div>
-      {/* <div className="absolute -z-[10] group-hover:-bottom-6 px-5 bottom-0 transition-all text-white right-4 bg-red-600"> 
-        <p>Pesan mobil ini</p>
-      </div> */}
     </div>
   );
 };

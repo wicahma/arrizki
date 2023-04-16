@@ -10,6 +10,30 @@ import {
 import WisataForm from "@/components/micros/forms/WisataForm";
 import MiniCard from "@/components/HomeSection/MiniCard";
 import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
+import { wrapper } from "@/store/store";
+import axios from "axios";
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req, res, ...etc }) => {
+      const { dispatch, getState } = store;
+      const { params } = etc;
+      const id = params?.id;
+      console.log(id);
+      if (getState().produk.tableMobil.length === 0) {
+        await axios
+          .get(`${process.env.API_URL}/api/v1/wisata/${id}`)
+          .then((datas) => {
+            const { data } = datas.data;
+            dispatch({ type: "produk/setPaketWisata", payload: data });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      return { props: {} };
+    }
+);
 
 const DetailWisata = (props: any) => {
   const { query } = useRouter();

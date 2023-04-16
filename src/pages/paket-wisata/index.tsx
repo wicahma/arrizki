@@ -5,7 +5,7 @@ import WisataCard from "@/components/micros/cards/WisataCard";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { wrapper } from "@/store/store";
 import axios from "axios";
-import { selectMobilState, setWisataState } from "@/store/produkSlice";
+import { setWisataState } from "@/store/produkSlice";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -28,7 +28,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 
 const index = (props: any) => {
   const wisata = useSelector((state: any) => state.produk.tableWisata);
-  console.log(wisata);
+  // console.log(wisata);
   const rupiah = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
@@ -42,6 +42,7 @@ const index = (props: any) => {
             .filter((data: any) => data.status === "aktif")
             .map((wisata: any, i: number) => (
               <WisataCard
+                key={i}
                 image={wisata.image}
                 price={wisata.hargaMinimum}
                 title={wisata.namaPaket}
