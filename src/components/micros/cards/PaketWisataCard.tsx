@@ -13,22 +13,43 @@ import {
 } from "@material-tailwind/react";
 import Image from "next/image";
 
-const PaketWisataCard = (props: any) => {
+const PaketWisataCard = ({ paketData, index }: any) => {
+  const rupiah = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  });
   const data = [
     {
       label: "Harga",
       value: "harga",
       icon: "UserCircleIcon",
-      desc: `Because it's about motivating the doers. Because I'm here
-      to follow my dreams and inspire other people to follow their dreams, too.`,
+      desc: (
+        <ul>
+          {paketData.pax.map((item: any, index: number) => (
+            <li key={index}>
+              {item.jumlah} Orang: {rupiah.format(item.harga)}
+            </li>
+          ))}
+          <li className="text-sm my-2">
+            <span className="text-red-400">*</span> Apabila jumlah orang
+            melebihi data diatas, mohon untuk menghubungi admin pada Whatsapp
+          </li>
+        </ul>
+      ),
     },
     {
       label: "Rundown",
       value: "rundown",
       icon: "Cog6ToothIcon",
-      desc: `We're not always in the position that we want to be at.
-      We're constantly growing. We're constantly making mistakes. We're
-      constantly trying to express ourselves and actualize our dreams.`,
+      desc: (
+        <ul className="space-y-2">
+          {paketData.rundown.map((item: any, index: number) => (
+            <li className="list-inside list-disc" key={index}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      ),
     },
   ];
   return (
@@ -45,13 +66,15 @@ const PaketWisataCard = (props: any) => {
       <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">
         <div className="px-3">
           <Typography variant="h5" className="mb-2">
-            Cozy 5 Stars Apartment
+            Paket Wisata {index}
           </Typography>
-          <div className="flex justify-center"></div>
           <Typography>
-            The place is close to Barceloneta Beach and bus stop just 2 min by
-            walk and near to "Naviglio" where you can enjoy the main night life
-            in Barcelona.
+            {paketData.tempatWisata.map((item: any, index: number) => (
+              <span key={index}>
+                {" "}
+                {item} {index < paketData.tempatWisata.length - 1 && "-"}
+              </span>
+            ))}
           </Typography>
         </div>
         <div className="w-[100%] px-3">

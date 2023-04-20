@@ -12,7 +12,13 @@ import MiniCard from "@/components/HomeSection/MiniCard";
 import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
 import { wrapper } from "@/store/store";
 import axios from "axios";
+import { setPaketWisata } from "@/store/produkSlice";
+import { useSelector } from "react-redux";
+import { createWisata } from "@/pages/admin/produk/produkInterface";
+import { Formik } from "formik";
+import * as Yup from "yup";
 
+//NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
@@ -20,28 +26,86 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { params } = etc;
       const id = params?.id;
       console.log(id);
-      if (getState().produk.tableMobil.length === 0) {
-        await axios
-          .get(`${process.env.API_URL}/api/v1/wisata/${id}`)
-          .then((datas) => {
-            const { data } = datas.data;
-            dispatch({ type: "produk/setPaketWisata", payload: data });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      await axios
+        .get(`${process.env.API_URL}/api/v1/wisata/${id}`)
+        .then((datas) => {
+          const { data } = datas.data;
+          dispatch(setPaketWisata(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       return { props: {} };
     }
 );
 
-const DetailWisata = (props: any) => {
-  const { query } = useRouter();
-  const [formOpener, setForm] = useState<Boolean>(true);
-  const [onTop, setOnTop] = useState<Boolean>(false);
-  const headerRef = React.useRef<HTMLDivElement>(null);
+interface wisata extends createWisata {
+  namaPaket: string;
+}
 
-  console.log(query);
+//NOTE - Wisata Form Interface
+interface WisataFormProps {
+  nama: string | undefined;
+  email: string | undefined;
+  nomorTelepon: string | undefined;
+  paketID: string | undefined;
+  jumlahPeserta: number | undefined;
+  tanggalReservasi: Date | undefined;
+  waktuJemput: string | undefined;
+  lokasiJemput: string | undefined;
+  pesananTambahan: string | undefined;
+}
+
+//NOTE - Wisata Validation Schema
+const wisataValidator = Yup.object().shape({
+  nama: Yup.string().required("Nama harus diisi !"),
+  email: Yup.string()
+    .email("Email tidak valid")
+    .required("Email harus diisi !"),
+  nomorTelepon: Yup.string()
+    .required("Nomor telepon harus diisi !")
+    .test(
+      "must-start-with-08",
+      "Nomor Telepon harus dimulai dengan 08",
+      (value, context) => (value?.toString().startsWith("08") ? true : false)
+    )
+    .test("only-digits", "Masukan Nomor telepon yang valid !", (value) =>
+      /^\d+$/g.test(value?.toString()) ? true : false
+    )
+    .min(9, "Nomor telepon harus nimimal 9 digit !"),
+  paketID: Yup.string().required("Paket wisata harus diisi !"),
+  jumlahPeserta: Yup.number()
+    .typeError("Jumlah peserta harus diisi !")
+    .required("Jumlah peserta harus diisi !"),
+  tanggalReservasi: Yup.date()
+    .typeError("Tanggal reservasi harus berupa tanggal !")
+    .required("Tanggal reservasi harus diisi !")
+    .min(new Date(), "Tanggal reservasi tidak boleh kurang dari hari ini !"),
+  waktuJemput: Yup.string().required("Waktu jemput harus diisi !"),
+  lokasiJemput: Yup.string().required("Lokasi jemput harus diisi !"),
+});
+
+//NOTE - Main page Function
+const DetailWisata = (props: any) => {
+  const { query } = useRouter(),
+    [formOpener, setForm] = useState<Boolean>(true),
+    [onTop, setOnTop] = useState<Boolean>(false),
+    headerRef = React.useRef<HTMLDivElement>(null),
+    paketWisata: wisata = useSelector((state: any) => state.produk.paketWisata),
+    selectedJumlahPeserta = useSelector(
+      (state: any) => state.produk.selectedJumlahPeserta
+    ),
+    initialValues: WisataFormProps = {
+      nama: undefined,
+      email: undefined,
+      nomorTelepon: undefined,
+      paketID: undefined,
+      jumlahPeserta: selectedJumlahPeserta,
+      tanggalReservasi: undefined,
+      waktuJemput: undefined,
+      lokasiJemput: undefined,
+      pesananTambahan: "",
+    };
 
   useEffect(() => {
     window.addEventListener("resize", () => {
@@ -68,34 +132,42 @@ const DetailWisata = (props: any) => {
         className="pt-16 container bottom-0 mx-auto text-center bg-white"
       >
         <Typography variant="h4" className="text-4xl mt-8">
-          Judul wisata
+          {paketWisata.namaPaket}
         </Typography>
         <div className="flex mb-10 mt-3 flex-row flex-wrap gap-3 columns-4 justify-center">
-          <MiniCard
-            onClick={(e) => console.log(e)}
-            className="py-1"
-            teks="Wisata 1"
-          />
+          {paketWisata &&
+            paketWisata.jenisPaket.map((item, i: number) => (
+              <MiniCard
+                key={i}
+                onClick={(e) => console.log(e)}
+                className="py-1"
+                teks={`Paket Wisata ${i + 1}`}
+              />
+            ))}
         </div>
       </div>
 
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
-        <div className="sm:col-span-4 relative col-span-6 px-2 sm:px-0 space-y-14">
+        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0 space-y-14">
           <div
             className={`sticky border-b py-4 border-gray-300 duration-300 transition-all w-full text-center z-50 bg-white ${
               onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
             }`}
           >
-            <div className="flex flex-row flex-wrap gap-3 columns-4 justify-center">
-              <MiniCard
-                onClick={(e) => console.log(e)}
-                className="py-1"
-                teks="Wisata 1"
-              />
+            <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 columns-4 justify-center">
+              {paketWisata &&
+                paketWisata.jenisPaket.map((item, i: number) => (
+                  <MiniCard
+                    key={i}
+                    onClick={(e) => console.log(e)}
+                    className="py-1"
+                    teks={`Paket Wisata ${i + 1}`}
+                  />
+                ))}
             </div>
           </div>
-          {[1, 1, 1, 1, 1, 1].map((item, i) => {
-            return <PaketWisataCard />;
+          {paketWisata.jenisPaket.map((item, i: number) => {
+            return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
           })}
         </div>
 
@@ -108,7 +180,21 @@ const DetailWisata = (props: any) => {
         >
           <div className={`p-5 lg:p-0 pb-16`}>
             <h3 className="text-2xl mb-3 font-medium">Pesan Sekarang</h3>
-            <WisataForm />
+            <Formik
+              initialValues={initialValues}
+              validationSchema={wisataValidator}
+              validateOnChange
+              validateOnMount
+              onSubmit={(values, { setSubmitting }) => {
+                setTimeout(() => {
+                  alert(JSON.stringify(values, null, 2));
+                  setSubmitting(false);
+                }, 400);
+                console.log(values);
+              }}
+            >
+              <WisataForm jenisPaket={paketWisata.jenisPaket} />
+            </Formik>
           </div>
           <div
             className={`items-center px-4 py-2 flex justify-end transition-all right-5 duration-500 fixed shadow-2xl ${

@@ -44,31 +44,30 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 const index = (props: any) => {
-  const mobil = useSelector((state: any) => state.produk.tableMobil);
-  const selectedCar = useSelector((state: any) => state.produk.selectedCar);
-  const [mobilFormData, setMobilFormData] = useState<MobilFormProps>();
-  const [alert, setAlert] = useState<AlertProps>({
-    type: "success",
-    message: "Berhasil membuat reservasi!",
-    show: false,
-  });
-  const [formOpener, setForm] = useState<Boolean>(true);
-  const [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false);
-  const rupiah = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
-
-  const initialValues: MobilFormProps = {
-    nama: undefined,
-    email: undefined,
-    nomorTelepon: undefined,
-    jenisMobil: selectedCar,
-    tanggalReservasi: undefined,
-    waktuAntar: undefined,
-    lokasiAntar: undefined,
-    pesananTambahan: "",
-  };
+  const mobil = useSelector((state: any) => state.produk.tableMobil),
+    selectedCar = useSelector((state: any) => state.produk.selectedCar),
+    [mobilFormData, setMobilFormData] = useState<MobilFormProps>(),
+    [alert, setAlert] = useState<AlertProps>({
+      type: "success",
+      message: "Berhasil membuat reservasi!",
+      show: false,
+    }),
+    [formOpener, setForm] = useState<Boolean>(true),
+    [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
+    rupiah = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }),
+    initialValues: MobilFormProps = {
+      nama: undefined,
+      email: undefined,
+      nomorTelepon: undefined,
+      jenisMobil: selectedCar,
+      tanggalReservasi: undefined,
+      waktuAntar: undefined,
+      lokasiAntar: undefined,
+      pesananTambahan: "",
+    };
 
   useEffect(() => {
     window.addEventListener("resize", () => {

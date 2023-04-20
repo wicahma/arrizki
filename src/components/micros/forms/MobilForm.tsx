@@ -10,15 +10,13 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const MobilForm = ({ mobilData }: any) => {
-  const dispatch = useDispatch();
-  const { setFieldValue, touched, isSubmitting, errors }: any =
-    useFormikContext();
-  const selectedCar = useSelector((state: any) => state.produk.selectedCar);
+  const dispatch = useDispatch(),
+    { setFieldValue, touched, isSubmitting, errors }: any = useFormikContext(),
+    selectedCar = useSelector((state: any) => state.produk.selectedCar);
 
   useEffect(() => {
     setFieldValue("jenisMobil", selectedCar);
   }, [selectedCar]);
-
 
   return (
     <Form className="">

@@ -9,6 +9,7 @@ const initialState: Produk = {
   tableWisata: [],
   tableMobil: [],
   selectedCar: "",
+  selectedJumlahPeserta: "",
   paketWisata: [],
 };
 
@@ -17,23 +18,39 @@ export const produkSlice = createSlice({
   initialState,
   reducers: {
     setMobilState(state, action) {
-      state.tableMobil = action.payload;
+      console.log(state);
+      return {
+        ...state,
+        tableMobil: action.payload,
+      };
     },
 
     setWisataState(state, action) {
-      state.tableWisata = action.payload;
+      return {
+        ...state,
+        tableWisata: action.payload,
+      };
     },
 
     setSelectedCar(state, action) {
-      state.selectedCar = action.payload;
+      return {
+        ...state,
+        selectedCar: action.payload,
+      };
     },
 
     setPaketWisata(state, action) {
-      console.group("SET PAKET WISATA");
-      console.log({ action });
-      console.log({ state });
-      console.groupEnd();
-      state.paketWisata = action.payload;
+      return {
+        ...state,
+        paketWisata: action.payload,
+      };
+    },
+
+    setSelectedJumlahPeserta(state, action) {
+      return {
+        ...state,
+        selectedJumlahPeserta: action.payload,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -49,7 +66,7 @@ export const produkSlice = createSlice({
   },
 });
 
-export const { setMobilState, setWisataState, setSelectedCar } =
+export const { setMobilState, setWisataState, setSelectedCar, setPaketWisata, setSelectedJumlahPeserta } =
   produkSlice.actions;
 
 export const selectMobilState = (state: Produk) => state.tableMobil;

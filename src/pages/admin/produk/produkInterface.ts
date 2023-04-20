@@ -26,7 +26,8 @@ interface paketWisata {
 export default interface Produk {
   tableWisata: wisata[];
   tableMobil: mobil[];
-  selectedCar: string;
+  selectedCar: string | null;
+  selectedJumlahPeserta: string | null;
   paketWisata: paketWisata[];
 }
 
@@ -36,6 +37,7 @@ interface pax {
 }
 
 interface jenisPaket {
+  _id?: string;
   rundown: string[];
   tempatWisata: string[];
   pax: pax[];
@@ -43,6 +45,7 @@ interface jenisPaket {
 }
 
 export interface createWisata {
+  _id?: string;
   fasilitas: string[];
   nama: string;
   jenisPaket: jenisPaket[];
