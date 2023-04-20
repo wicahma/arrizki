@@ -53,7 +53,7 @@ const PaketWisataCard = ({ paketData, index }: any) => {
     },
   ];
   return (
-    <Card className="w-full shadow-none border-l border-gray-300">
+    <Card id={`wisata-${index}`} className="w-full shadow-none border-l border-gray-300">
       <CardHeader color="red" className="relative h-56">
         <Image
           src="/"

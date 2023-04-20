@@ -105,8 +105,9 @@ const DetailWisata = (props: any) => {
       waktuJemput: undefined,
       lokasiJemput: undefined,
       pesananTambahan: "",
-    };
-
+    },
+    router = useRouter();
+  console.log(query);
   useEffect(() => {
     window.addEventListener("resize", () => {
       window.innerWidth > 960 && setForm(true);
@@ -136,10 +137,11 @@ const DetailWisata = (props: any) => {
         </Typography>
         <div className="flex mb-10 mt-3 flex-row flex-wrap gap-3 columns-4 justify-center">
           {paketWisata &&
+            paketWisata.jenisPaket &&
             paketWisata.jenisPaket.map((item, i: number) => (
               <MiniCard
                 key={i}
-                onClick={(e) => console.log(e)}
+                onClick={(e) => router.push(`#wisata-${i + 1}`)}
                 className="py-1"
                 teks={`Paket Wisata ${i + 1}`}
               />
@@ -156,19 +158,22 @@ const DetailWisata = (props: any) => {
           >
             <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 columns-4 justify-center">
               {paketWisata &&
+                paketWisata.jenisPaket &&
                 paketWisata.jenisPaket.map((item, i: number) => (
                   <MiniCard
                     key={i}
-                    onClick={(e) => console.log(e)}
+                    onClick={(e) => router.push(`#wisata-${i + 1}`)}
                     className="py-1"
                     teks={`Paket Wisata ${i + 1}`}
                   />
                 ))}
             </div>
           </div>
-          {paketWisata.jenisPaket.map((item, i: number) => {
-            return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
-          })}
+          {paketWisata &&
+            paketWisata.jenisPaket &&
+            paketWisata.jenisPaket.map((item, i: number) => {
+              return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
+            })}
         </div>
 
         <div
@@ -193,7 +198,9 @@ const DetailWisata = (props: any) => {
                 console.log(values);
               }}
             >
-              <WisataForm jenisPaket={paketWisata.jenisPaket} />
+              {paketWisata && paketWisata.jenisPaket && (
+                <WisataForm jenisPaket={paketWisata.jenisPaket} />
+              )}
             </Formik>
           </div>
           <div
@@ -218,7 +225,7 @@ const DetailWisata = (props: any) => {
                 defaultChecked={true}
                 className=""
                 color="red"
-                label="Pesan sekarang?"
+                label={`${!formOpener ? "Pesan sekarang?" : "Tutup Form"}`}
                 onClick={(e: any) => setForm(e.target.checked)}
               />
             </Tooltip>

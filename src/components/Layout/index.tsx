@@ -26,12 +26,10 @@ const Index = (props: LayoutProps) => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={className}>
+      <main className={`${className} scroll-smooth`}>
         {!router.pathname.includes("/admin") ? <Header /> : <AdminHeader />}
         {router.pathname.includes("/admin") ? (
-          <div
-            className="min-h-screen w-screen border-l grow flex flex-col overflow-hidden"
-          >
+          <div className="min-h-screen w-screen border-l grow flex flex-col overflow-hidden">
             <div className="flex gap-5 bg-red-400 pb-20 pt-20 justify-center items-center flex-col lg:flex-row">
               <div className={Layout.adminCard}>
                 <div className={Layout.header}>
