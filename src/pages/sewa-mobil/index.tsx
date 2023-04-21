@@ -23,6 +23,7 @@ import {
   carValidation,
 } from "@/components/micros/forms/carProps";
 import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
+import Loading from "@/components/micros/loading";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -47,6 +48,7 @@ const index = (props: any) => {
   const mobil = useSelector((state: any) => state.produk.tableMobil),
     selectedCar = useSelector((state: any) => state.produk.selectedCar),
     [mobilFormData, setMobilFormData] = useState<MobilFormProps>(),
+    [isLoading, setIsLoading] = useState<boolean>(false),
     [alert, setAlert] = useState<AlertProps>({
       type: "success",
       message: "Berhasil membuat reservasi!",
@@ -86,12 +88,32 @@ const index = (props: any) => {
   }, [alert.show]);
 
   const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
-    setHandleOpenDialog(!handleOpenDialog);
-    return setAlert({ ...alert, show: true });
+    setIsLoading(true);
+    setHandleOpenDialog(false);
+    axios
+      .post(`${process.env.API_URL}/api/v1/res-car`, values)
+      .then((_) => {
+        setIsLoading(false);
+        setAlert({
+          show: true,
+          message: "Berhasil membuat reservasi, Silahkan cek email anda!",
+          type: "success",
+        });
+      })
+      .catch((_) => {
+        setIsLoading(false);
+        setAlert({
+          show: true,
+          message: "Gagal membuat reservasi!",
+          type: "error",
+        });
+        console.log(_);
+      });
   };
 
   return (
     <Layout pageTitle="Sewa Mobil">
+      <Loading isActive={isLoading} />
       <Alert show={alert.show} message={alert.message} type={alert.type} />
       <div className="pt-14 container mx-auto">
         <TextHeader

@@ -12,56 +12,94 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 const PaketWisataCard = ({ paketData, index }: any) => {
-  const rupiah = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
-  const data = [
-    {
-      label: "Harga",
-      value: "harga",
-      icon: "UserCircleIcon",
-      desc: (
-        <ul>
-          {paketData.pax.map((item: any, index: number) => (
-            <li key={index}>
-              {item.jumlah} Orang: {rupiah.format(item.harga)}
-            </li>
-          ))}
-          <li className="text-sm my-2">
-            <span className="text-red-400">*</span> Apabila jumlah orang
-            melebihi data diatas, mohon untuk menghubungi admin pada Whatsapp
-          </li>
-        </ul>
-      ),
+  const responsive = {
+      desktop: {
+        breakpoint: { max: 3000, min: 0 },
+        items: 1,
+        slidesToSlide: 1, // optional, default to 1.
+      },
     },
-    {
-      label: "Rundown",
-      value: "rundown",
-      icon: "Cog6ToothIcon",
-      desc: (
-        <ul className="space-y-2">
-          {paketData.rundown.map((item: any, index: number) => (
-            <li className="list-inside list-disc" key={index}>
-              {item}
+    rupiah = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }),
+    { pax, rundown, tempatWisata, images } = paketData,
+    data = [
+      {
+        label: "Harga",
+        value: "harga",
+        icon: "UserCircleIcon",
+        desc: (
+          <ul>
+            {pax.map((item: any, index: number) => (
+              <li key={index}>
+                {item.jumlah} Orang: {rupiah.format(item.harga)}
+              </li>
+            ))}
+            <li className="text-sm my-2">
+              <span className="text-red-400">*</span> Apabila jumlah orang
+              melebihi data diatas, mohon untuk menghubungi admin pada Whatsapp
             </li>
-          ))}
-        </ul>
-      ),
-    },
-  ];
+          </ul>
+        ),
+      },
+      {
+        label: "Rundown",
+        value: "rundown",
+        icon: "Cog6ToothIcon",
+        desc: (
+          <ul className="space-y-2">
+            {rundown.map((item: any, index: number) => (
+              <li className="list-inside list-disc" key={index}>
+                {item}
+              </li>
+            ))}
+          </ul>
+        ),
+      },
+    ];
   return (
-    <Card id={`wisata-${index}`} className="w-full shadow-none border-l border-gray-300">
-      <CardHeader color="red" className="relative h-56">
-        <Image
-          src="/"
-          alt="img-blur-shadow"
-          width={300}
-          height={300}
-          className="h-full w-full"
-        />
+    <Card
+      id={`wisata-${index}`}
+      className="w-full shadow-none border-l border-gray-300"
+    >
+      <CardHeader color="white" className="relative h-56">
+        <Carousel
+          swipeable
+          draggable
+          ssr
+          infinite
+          autoPlay
+          showDots
+          arrows
+          keyBoardControl
+          responsive={responsive}
+          autoPlaySpeed={1500}
+          transitionDuration={300}
+          containerClass="carousel-container w-full h-full z-[10]"
+          dotListClass="custom-dot-list-style"
+          itemClass="carousel-item-padding-40-px"
+        >
+          {[
+            "/assets/images/telaga.png",
+            "/assets/images/telaga.png",
+            "/assets/images/telaga.png",
+          ].map((item: string, index: number) => {
+            return (
+              <Image
+                src={item}
+                alt={`Gambar ${index}`}
+                height={220}
+                width={850}
+                className="h-full w-full object-cover"
+              />
+            );
+          })}
+        </Carousel>
       </CardHeader>
       <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">
         <div className="px-3">
@@ -69,10 +107,10 @@ const PaketWisataCard = ({ paketData, index }: any) => {
             Paket Wisata {index}
           </Typography>
           <Typography>
-            {paketData.tempatWisata.map((item: any, index: number) => (
+            {tempatWisata.map((item: any, index: number) => (
               <span key={index}>
                 {" "}
-                {item} {index < paketData.tempatWisata.length - 1 && "-"}
+                {item} {index < tempatWisata.length - 1 && "-"}
               </span>
             ))}
           </Typography>
