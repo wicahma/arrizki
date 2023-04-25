@@ -3,7 +3,6 @@ import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogBody,
   DialogFooter,
@@ -223,13 +222,14 @@ const DetailWisata = (props: any) => {
                 ))}
             </div>
           </div>
+{/* //NOTE - Paket Section */}
           {paketWisata &&
             paketWisata.jenisPaket &&
             paketWisata.jenisPaket.map((item, i: number) => {
               return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
             })}
         </div>
-
+{/* //NOTE - Form Section */}
         <div
           className={`fixed right-0 overflow-y-auto lg:px-5 shadow-2xl lg:rounded-none lg:shadow-none lg:col-span-2 z-50 duration-500 transition-all lg:w-full lg:max-h-max lg:sticky lg:top-20 ${
             formOpener

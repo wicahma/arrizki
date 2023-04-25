@@ -8,7 +8,10 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
+import MobilForm from "../micros/forms/admin/MobilForm";
+import { mobilPilihan } from "@/pages/admin/produk/produkInterface";
+import { useFormikContext } from "formik";
 
 interface Table {
   identifier: string;
@@ -17,14 +20,21 @@ interface Table {
 }
 
 const ProductTable = (props: Table) => {
-  const { tableTitle, tableData, identifier } = props;
-  const [handleOpenDelete, setHandleOpenDelete] =
-    React.useState<boolean>(false);
-  const [handleOpenEdit, setHandleOpenEdit] = React.useState<boolean>(false);
-  const [handleOpenEditImage, setHandleOpenEditImage] =
-    React.useState<boolean>(false);
-  const [selectedID, setSelectedID] = React.useState<string>("");
-  const [selectedData, setSelectedData] = React.useState<any>({});
+  const { tableTitle, tableData, identifier } = props,
+    [handleOpenDelete, setHandleOpenDelete] = React.useState<boolean>(false),
+    [handleOpenEdit, setHandleOpenEdit] = React.useState<boolean>(false),
+    [handleOpenEditImage, setHandleOpenEditImage] =
+      React.useState<boolean>(false),
+    [selectedID, setSelectedID] = React.useState<string>(""),
+    [selectedData, setSelectedData] = React.useState<mobilPilihan>(),
+    { values, setFieldValue }: any = useFormikContext();
+
+  useEffect(() => {
+    setFieldValue("nama", undefined);
+    setFieldValue("seat", undefined);
+    setFieldValue("harga", undefined);
+    setFieldValue("images", undefined);
+  }, [handleOpenEdit]);
 
   const updateStatus = (id: string, status: boolean) => {
     alert(
@@ -36,11 +46,11 @@ const ProductTable = (props: Table) => {
     alert("Data berhasil dihapus");
   };
 
-  const handleEdit = (data: object) => {
-    alert("data berhasil di update");
+  const handleEdit = (data: mobilPilihan | undefined) => {
+    alert(JSON.stringify({ ...values, id: data?._id }));
   };
 
-  const handleEditImage = (data: object) => {
+  const handleEditImage = (data: mobilPilihan | undefined) => {
     alert("data gambar berhasil di update");
   };
 
@@ -124,6 +134,7 @@ const ProductTable = (props: Table) => {
               )}
               <td className="py-3 px-6 text-center">
                 <div className="flex item-center bg-gray-300 space-x-2 px-3 py-1 rounded-full w-fit mx-auto justify-center">
+                  {/* //NOTE - Lihat Preview */}
                   <Tooltip
                     content={"Lihat preview"}
                     animate={{
@@ -157,6 +168,7 @@ const ProductTable = (props: Table) => {
                       </svg>
                     </div>
                   </Tooltip>
+                  {/* //NOTE - Edit Kolom */}
                   <Tooltip
                     content={"Edit Kolom ini"}
                     animate={{
@@ -187,6 +199,7 @@ const ProductTable = (props: Table) => {
                       </svg>
                     </div>
                   </Tooltip>
+                  {/* //NOTE - Update Gambar */}
                   <Tooltip
                     content={"Update Gambar"}
                     animate={{
@@ -206,18 +219,19 @@ const ProductTable = (props: Table) => {
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
-                        stroke-width="2"
+                        strokeWidth="2"
                         stroke="currentColor"
                         className="w-4 aspect-square"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                           d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
                         />
                       </svg>
                     </div>
                   </Tooltip>
+                  {/* //NOTE - Hapus Data */}
                   <Tooltip
                     content={"Hapus data kolom ini"}
                     animate={{
@@ -294,10 +308,10 @@ const ProductTable = (props: Table) => {
       >
         <DialogHeader>Edit data.</DialogHeader>
         <DialogBody divider>
-          {selectedData &&
-            Object.values(selectedData).map(
-              (value, i): React.ReactNode => <p key={i}>{String(value)}</p>
-            )}
+          <h2 className="text-sm mb-4 mx-auto bg-red-500 w-fit px-3 py-1 text-white rounded-xl uppercase">
+            ID - {selectedData && selectedData._id}
+          </h2>
+          <MobilForm dataMobilPilihan={selectedData} />
         </DialogBody>
         <DialogFooter>
           <Button
@@ -331,7 +345,7 @@ const ProductTable = (props: Table) => {
           {identifier === "mobil" && (
             <>
               <Image
-                src={`${process.env.API_URL}/images/${selectedData.imageId}`}
+                src={`${process.env.API_URL}/images/${selectedData?.imageId}`}
                 alt="Gambar Mobil yang mau diupdate"
                 height={400}
                 width={500}

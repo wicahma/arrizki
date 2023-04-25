@@ -27,12 +27,11 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 const index = (props: any) => {
-  const wisata = useSelector((state: any) => state.produk.tableWisata);
-  // console.log(wisata);
-  const rupiah = new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-  });
+  const wisata = useSelector((state: any) => state.produk.tableWisata),
+    rupiah = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    });
   return (
     <Layout pageTitle="Paket Wisata">
       <div className="pt-14 container mx-auto">

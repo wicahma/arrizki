@@ -7,6 +7,19 @@ interface mobil {
   harga: string;
 }
 
+enum status {
+  "aktif",
+  "nonaktif",
+}
+
+export interface mobilPilihan extends mobil {
+  _id: string;
+  unitName: string;
+  pricePerDay: string;
+  imageId: string;
+  status: status;
+}
+
 interface wisata {
   id?: string;
   nama: string;

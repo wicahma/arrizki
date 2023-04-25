@@ -56,117 +56,115 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 const index = (props: Produk) => {
-  const wisata = useSelector((state: any) => state.produk.tableWisata);
-  const mobil = useSelector((state: any) => state.produk.tableMobil);
+  const wisata = useSelector((state: any) => state.produk.tableWisata),
+    mobil = useSelector((state: any) => state.produk.tableMobil),
+    [formOpener, setForm] = React.useState<Boolean>(true),
+    data = [
+      {
+        label: "Wisata",
+        value: "wisata",
+        desc: (
+          <Formik
+            initialValues={createWisataData}
+            validationSchema={wisataValidationSchema}
+            validateOnChange
+            validateOnMount
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
 
-  const [formOpener, setForm] = React.useState<Boolean>(true);
+              alert(JSON.stringify(values, null, 2));
 
-  const data = [
-    {
-      label: "Wisata",
-      value: "wisata",
-      desc: (
-        <Formik
-          initialValues={createWisataData}
-          validationSchema={wisataValidationSchema}
-          validateOnChange
-          validateOnMount
-          onSubmit={async (values, { setSubmitting }) => {
-            setSubmitting(true);
+              console.log({ values });
+              return false;
+            }}
+          >
+            <Form>
+              <Button
+                onClick={() => setForm(!formOpener)}
+                color="red"
+                fullWidth
+                className="mb-10"
+              >{`${!formOpener ? "Buka form" : "Tutup form"}`}</Button>
+              <div
+                className={`${
+                  formOpener
+                    ? "block border-y-2 border-y-gray-600 py-10 mb-10"
+                    : "hidden"
+                }`}
+              >
+                <WisataForm />
+              </div>
+              <div className="w-full overflow-x-auto">
+                <ProductTable
+                  identifier="wisata"
+                  tableTitle={[
+                    "ID",
+                    "Nama Paket",
+                    "ID Jenis Paket",
+                    "Harga Minimum",
+                    "Status",
+                    "Gambar",
+                  ]}
+                  tableData={wisata}
+                />
+              </div>
+            </Form>
+          </Formik>
+        ),
+      },
+      {
+        label: "Mobil",
+        value: "mobil",
+        desc: (
+          <Formik
+            initialValues={createMobilData}
+            validationSchema={mobilValidationSchema}
+            validateOnChange
+            validateOnMount
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
 
-            alert(JSON.stringify(values, null, 2));
+              alert(JSON.stringify(values, null, 2));
 
-            console.log({ values });
-            return false;
-          }}
-        >
-          <Form>
-            <Button
-              onClick={() => setForm(!formOpener)}
-              color="red"
-              fullWidth
-              className="mb-10"
-            >{`${!formOpener ? "Buka form" : "Tutup form"}`}</Button>
-            <div
-              className={`${
-                formOpener
-                  ? "block border-y-2 border-y-gray-600 py-10 mb-10"
-                  : "hidden"
-              }`}
-            >
-              <WisataForm />
-            </div>
-            <div className="w-full overflow-x-auto">
-              <ProductTable
-                identifier="wisata"
-                tableTitle={[
-                  "ID",
-                  "Nama Paket",
-                  "ID Jenis Paket",
-                  "Harga Minimum",
-                  "Status",
-                  "Gambar",
-                ]}
-                tableData={wisata}
-              />
-            </div>
-          </Form>
-        </Formik>
-      ),
-    },
-    {
-      label: "Mobil",
-      value: "mobil",
-      desc: (
-        <Formik
-          initialValues={createMobilData}
-          validationSchema={mobilValidationSchema}
-          validateOnChange
-          validateOnMount
-          onSubmit={async (values, { setSubmitting }) => {
-            setSubmitting(true);
-
-            alert(JSON.stringify(values, null, 2));
-
-            console.log({ values });
-            return false;
-          }}
-        >
-          <Form>
-            <Button
-              onClick={() => setForm(!formOpener)}
-              color="red"
-              fullWidth
-              className="mb-10"
-            >{`${!formOpener ? "Buka form" : "Tutup form"}`}</Button>
-            <div
-              className={`${
-                formOpener
-                  ? "block border-y-2 border-y-gray-600 py-10 mb-10"
-                  : "hidden"
-              }`}
-            >
-              <MobilForm />
-            </div>
-            <div className="w-full overflow-x-auto">
-              <ProductTable
-                identifier="mobil"
-                tableTitle={[
-                  "ID",
-                  "Nama Mobil",
-                  "Seat",
-                  "Harga",
-                  "Gambar",
-                  "Status",
-                ]}
-                tableData={mobil}
-              />
-            </div>
-          </Form>
-        </Formik>
-      ),
-    },
-  ];
+              console.log({ values });
+              return false;
+            }}
+          >
+            <Form>
+              <Button
+                onClick={() => setForm(!formOpener)}
+                color="red"
+                fullWidth
+                className="mb-10"
+              >{`${!formOpener ? "Buka form" : "Tutup form"}`}</Button>
+              <div
+                className={`${
+                  formOpener
+                    ? "block border-y-2 border-y-gray-600 py-10 mb-10"
+                    : "hidden"
+                }`}
+              >
+                <MobilForm />
+              </div>
+              <div className="w-full overflow-x-auto">
+                <ProductTable
+                  identifier="mobil"
+                  tableTitle={[
+                    "ID",
+                    "Nama Mobil",
+                    "Seat",
+                    "Harga",
+                    "Gambar",
+                    "Status",
+                  ]}
+                  tableData={mobil}
+                />
+              </div>
+            </Form>
+          </Formik>
+        ),
+      },
+    ];
   return (
     <Layout className="flex" pageTitle="Produk">
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
