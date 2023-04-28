@@ -10,8 +10,14 @@ import {
 import Image from "next/image";
 import React, { useEffect } from "react";
 import MobilForm from "../micros/forms/admin/MobilForm";
-import { mobilPilihan } from "@/pages/admin/produk/produkInterface";
+import {
+  mobilPilihan,
+  wisataPilihan,
+} from "@/pages/admin/produk/produkInterface";
 import { useFormikContext } from "formik";
+import axios from "axios";
+import Loading from "../micros/loading";
+import { useDispatch } from "react-redux";
 
 interface Table {
   identifier: string;
@@ -22,19 +28,44 @@ interface Table {
 const ProductTable = (props: Table) => {
   const { tableTitle, tableData, identifier } = props,
     [handleOpenDelete, setHandleOpenDelete] = React.useState<boolean>(false),
-    [handleOpenEdit, setHandleOpenEdit] = React.useState<boolean>(false),
     [handleOpenEditImage, setHandleOpenEditImage] =
       React.useState<boolean>(false),
     [selectedID, setSelectedID] = React.useState<string>(""),
-    [selectedData, setSelectedData] = React.useState<mobilPilihan>(),
-    { values, setFieldValue }: any = useFormikContext();
+    [selectedDataMobil, setSelectedDataMobil] = React.useState<mobilPilihan>(),
+    [selectedDataWisata, setSelectedDataWisata] =
+      React.useState<wisataPilihan>(),
+    { values, setFieldValue, resetForm, errors, touched, isSubmitting }: any =
+      useFormikContext(),
+    [isLoading, setIsLoading] = React.useState<boolean>(false),
+    dispatch = useDispatch(),
+    gambar = React.useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    setFieldValue("nama", undefined);
-    setFieldValue("seat", undefined);
-    setFieldValue("harga", undefined);
-    setFieldValue("images", undefined);
-  }, [handleOpenEdit]);
+  const getDataProduk = async (data: any, identifier: string) => {
+    setIsLoading(true);
+    axios
+      .get(`${process.env.API_URL}/api/v1/${identifier}/${data._id}`)
+      .then((res) => {
+        switch (identifier) {
+          case "mobil":
+            setSelectedDataMobil(res.data.data);
+            break;
+          case "wisata":
+            setSelectedDataWisata(res.data.data);
+            dispatch({
+              type: "produk/setSelectedDataWisata",
+              payload: res.data.data,
+            });
+            break;
+          default:
+            break;
+        }
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
 
   const updateStatus = (id: string, status: boolean) => {
     alert(
@@ -43,14 +74,18 @@ const ProductTable = (props: Table) => {
   };
 
   const handleDelete = (id: string) => {
-    alert("Data berhasil dihapus");
+    alert(`Data berhasil dihapus ${id}`);
   };
 
-  const handleEdit = (data: mobilPilihan | undefined) => {
-    alert(JSON.stringify({ ...values, id: data?._id }));
-  };
+  // const handleEdit = (data: mobilPilihan | wisataPilihan | undefined) => {
+  //   if (Object.keys(errors).length !== 0 && Object.keys(touched).length !== 0 ) {
+  //     alert("form masih ada yang belum diisi");
+  //   }
+  //   console.log(errors, touched);
+  //   console.log({ ...values, id: data?._id });
+  // };
 
-  const handleEditImage = (data: mobilPilihan | undefined) => {
+  const handleEditImage = (data: mobilPilihan | wisataPilihan | undefined) => {
     alert("data gambar berhasil di update");
   };
 
@@ -58,7 +93,7 @@ const ProductTable = (props: Table) => {
     switch (identifier) {
       case "wisata":
         window.open(
-          `/paket-wisata/${data.namaPaket}/${data._id}/detail`,
+          `/paket-wisata/${data?.namaPaket}/${data?._id}/detail`,
           "_blank"
         );
         break;
@@ -72,6 +107,7 @@ const ProductTable = (props: Table) => {
 
   return (
     <>
+      <Loading isActive={isLoading} />
       <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -179,8 +215,16 @@ const ProductTable = (props: Table) => {
                   >
                     <div
                       onClick={() => {
-                        setSelectedData(data);
-                        setHandleOpenEdit(!handleOpenEdit);
+                        switch (identifier) {
+                          case "mobil":
+                            setSelectedDataMobil(data);
+                            break;
+                          case "wisata":
+                            getDataProduk(data, identifier);
+                            break;
+                          default:
+                            break;
+                        }
                       }}
                       className="w-4 transform hover:text-red-500 hover:scale-110"
                     >
@@ -210,7 +254,9 @@ const ProductTable = (props: Table) => {
                   >
                     <div
                       onClick={() => {
-                        setSelectedData(data);
+                        identifier === "mobil"
+                          ? setSelectedDataMobil(data)
+                          : setSelectedDataWisata(data);
                         setHandleOpenEditImage(!handleOpenEditImage);
                       }}
                       className="w-4 transform hover:text-red-500 hover:scale-110"
@@ -300,40 +346,7 @@ const ProductTable = (props: Table) => {
           </Button>
         </DialogFooter>
       </Dialog>
-      {/* NOTE - Dialog Edit Data */}
-      <Dialog
-        open={handleOpenEdit}
-        size={"xs"}
-        handler={() => setHandleOpenEdit(!handleOpenEdit)}
-      >
-        <DialogHeader>Edit data.</DialogHeader>
-        <DialogBody divider>
-          <h2 className="text-sm mb-4 mx-auto bg-red-500 w-fit px-3 py-1 text-white rounded-xl uppercase">
-            ID - {selectedData && selectedData._id}
-          </h2>
-          <MobilForm dataMobilPilihan={selectedData} />
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            variant="text"
-            color="red"
-            onClick={() => setHandleOpenEdit(!handleOpenEdit)}
-            className="mr-1"
-          >
-            <span>Batal edit</span>
-          </Button>
-          <Button
-            variant="gradient"
-            color="green"
-            onClick={() => {
-              setHandleOpenEdit(!handleOpenEdit);
-              handleEdit(selectedData);
-            }}
-          >
-            <span>Simpan perubahan</span>
-          </Button>
-        </DialogFooter>
-      </Dialog>
+     
       {/* NOTE - Dialog Update Image */}
       <Dialog
         open={handleOpenEditImage}
@@ -343,15 +356,78 @@ const ProductTable = (props: Table) => {
         <DialogHeader>Update Gambar.</DialogHeader>
         <DialogBody divider>
           {identifier === "mobil" && (
-            <>
+            <div className="space-y-3">
               <Image
-                src={`${process.env.API_URL}/images/${selectedData?.imageId}`}
+                src={
+                  values.images
+                    ? URL.createObjectURL(values.images)
+                    : `${process.env.API_URL}/images/${selectedDataMobil?.imageId}`
+                }
                 alt="Gambar Mobil yang mau diupdate"
                 height={400}
                 width={500}
                 className="w-full aspect-auto rounded-lg"
               />
-            </>
+              <div className="flex justify-center items-center gap-5">
+                <input
+                  type="file"
+                  ref={gambar}
+                  accept="image/*"
+                  onChange={(image: any) => {
+                    const data = image.target.files[0];
+                    if (data) {
+                      return (
+                        data.type.includes("image") &&
+                        data.size <= 5_000_000 &&
+                        setFieldValue("images", data)
+                      );
+                    }
+                    image.target.files = [];
+                    image.target.value = "";
+                    return setFieldValue("images", undefined);
+                  }}
+                  className="relative m-0 block w-full min-w-0 flex-auto rounded-md border border-solid border-gray-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-gray-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-gray-400 file:px-3 file:py-[0.32rem] file:text-white file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-gray-200 focus:border-primary focus:text-gray-700 focus:shadow-te-primary focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:file:bg-gray-700 dark:file:text-gray-100 dark:focus:border-primary"
+                />
+                <Tooltip
+                  content={"Hapus gambar!"}
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                  className="bg-white text-gray-700 shadow-xl"
+                >
+                  <Button
+                    disabled={!values.images}
+                    className="p-2 flex justify-center items-center aspect-square rounded-full"
+                    color="red"
+                    onClick={() => {
+                      setFieldValue("images", undefined);
+                      gambar.current!.value = "";
+                      gambar.current!.files = null;
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 aspect-square"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                      />
+                    </svg>
+                  </Button>
+                </Tooltip>
+              </div>
+              <p className="text-xs font-light">
+                <span className="text-red-500">*</span> Pastikan ukuran file
+                tidak lebih dari 5 Mb.
+              </p>
+            </div>
           )}
         </DialogBody>
         <DialogFooter>
@@ -368,7 +444,9 @@ const ProductTable = (props: Table) => {
             color="green"
             onClick={() => {
               setHandleOpenEditImage(!handleOpenEditImage);
-              handleEditImage(selectedData);
+              identifier === "mobil"
+                ? handleEditImage(selectedDataMobil)
+                : handleEditImage(selectedDataWisata);
             }}
           >
             <span>Simpan perubahan</span>

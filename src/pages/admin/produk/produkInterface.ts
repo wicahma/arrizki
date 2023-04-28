@@ -28,6 +28,14 @@ interface wisata {
   status: boolean;
 }
 
+export interface wisataPilihan extends Omit<wisata, "status"> {
+  _id?: string;
+  jenisPaket: jenisPaket[];
+  namaPaket: string;
+  rundown: string[];
+  status: status;
+}
+
 interface paketWisata {
   id: string;
   rundown: string[];
@@ -42,6 +50,7 @@ export default interface Produk {
   selectedCar: string | null;
   selectedJumlahPeserta: string | null;
   paketWisata: paketWisata[];
+  selectedDataWisata: wisataPilihan | null;
 }
 
 interface pax {

@@ -3,12 +3,27 @@ import navbar from "@/styles/AdminNavbar.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Button } from "@material-tailwind/react";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+} from "@material-tailwind/react";
 
 const AdminHeader = (props: any) => {
-  const { pathname } = useRouter();
-  const activeStyle: string = "!bg-red-500 text-white";
-  const [openNavbar, setOpenNavbar] = React.useState(true);
+  const { pathname } = useRouter(),
+    activeStyle: string = "!bg-red-500 text-white",
+    router = useRouter(),
+    [openDialog, setOpenDialog] = React.useState<boolean>(false),
+    [openNavbar, setOpenNavbar] = React.useState<boolean>(true),
+    handleOpenDialog = () => setOpenDialog(!openDialog);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin-data-set");
+    sessionStorage.removeItem("admin-data-set");
+    router.replace("/");
+  };
 
   useEffect(() => {
     if (window) {
@@ -91,6 +106,39 @@ const AdminHeader = (props: any) => {
           Transaksi
         </Link>
       </ul>
+      <div>
+        <button
+          onClick={() => handleOpenDialog()}
+          className={`${navbar.navlist} border w-full border-red-600 hover:!bg-red-600 text-red-600`}
+        >
+          Logout
+        </button>
+        <Dialog size="xs" open={openDialog} handler={handleOpenDialog}>
+          <DialogBody className="text-xl border-b">
+            Apakah anda yakin ingin keluar dari dashboard admin?, anda harus login kembali apabila anda logout.
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="text"
+              color="red"
+              onClick={handleOpenDialog}
+              className="mr-1"
+            >
+              <span>Batal</span>
+            </Button>
+            <Button
+              variant="gradient"
+              color="green"
+              onClick={() => {
+                handleOpenDialog();
+                handleLogout();
+              }}
+            >
+              <span>Ya, logout sekarang</span>
+            </Button>
+          </DialogFooter>
+        </Dialog>
+      </div>
     </nav>
   );
 };

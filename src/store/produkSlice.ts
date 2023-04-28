@@ -11,6 +11,7 @@ const initialState: Produk = {
   selectedCar: "",
   selectedJumlahPeserta: "",
   paketWisata: [],
+  selectedDataWisata: null,
 };
 
 export const produkSlice = createSlice({
@@ -22,6 +23,13 @@ export const produkSlice = createSlice({
       return {
         ...state,
         tableMobil: action.payload,
+      };
+    },
+
+    setSelectedDataWisata(state, action) {
+      return {
+        ...state,
+        selectedDataWisata: action.payload,
       };
     },
 
@@ -66,8 +74,14 @@ export const produkSlice = createSlice({
   },
 });
 
-export const { setMobilState, setWisataState, setSelectedCar, setPaketWisata, setSelectedJumlahPeserta } =
-  produkSlice.actions;
+export const {
+  setMobilState,
+  setWisataState,
+  setSelectedDataWisata,
+  setSelectedCar,
+  setPaketWisata,
+  setSelectedJumlahPeserta,
+} = produkSlice.actions;
 
 export const selectMobilState = (state: Produk) => state.tableMobil;
 
