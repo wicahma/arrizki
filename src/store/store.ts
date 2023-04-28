@@ -1,9 +1,11 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import { produkSlice } from "./produkSlice";
+import { mainSlice } from "./mainSlice";
 
 const store = configureStore({
   reducer: {
+    [mainSlice.name]: mainSlice.reducer,
     [produkSlice.name]: produkSlice.reducer,
   },
   devTools: process.env.NODE_ENV !== "production",

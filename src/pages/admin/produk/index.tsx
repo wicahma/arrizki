@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import ProductTable from "@/components/tables/ProductTable";
 import {
@@ -21,11 +21,12 @@ import Produk, {
 import { wrapper } from "@/store/store";
 import axios from "axios";
 import { setMobilState, setWisataState } from "@/store/produkSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import WisataForm from "@/components/micros/forms/admin/WisataForm";
 import MobilForm from "@/components/micros/forms/admin/MobilForm";
 import Loading from "@/components/micros/loading";
+import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -58,38 +59,81 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 );
 
-const fetchProduk = async (
-  identifier: String,
-  data: createMobil | createWisata
-): Promise<any> => {
-  let method;
-  switch (data.fetchType) {
-    case "create":
-      method = "POST";
-      break;
-    case "update":
-      method = "PUT";
-    default:
-      break;
-  }
-  return await axios({
-    method: method,
-    url: `${process.env.API_URL}/api/v1/${identifier}/${
-      method === "POST" ? "" : data._id
-    }`,
-    data,
-  })
-    .then((res) => {
-      console.log(res);
-      const { data } = res.data;
-      return data;
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
-
 const index = (props: Produk) => {
+  const dispatch = useDispatch(),
+    fetchProduk = async (
+      identifier: String,
+      data: createMobil | createWisata | any
+    ): Promise<any> => {
+      let methods;
+      switch (data.fetchType || data.get("fetchType")) {
+        case "create":
+          methods = "POST";
+          break;
+        case "update":
+          methods = "PUT";
+        default:
+          break;
+      }
+      return await axios({
+        method: methods,
+        url: `${process.env.API_URL}/api/v1/${identifier}${
+          methods === "POST" ? "" : `/${data._id}`
+        }`,
+        data: data,
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            (localStorage.getItem("token") ||
+              sessionStorage.getItem("token")) ??
+              ""
+          )}`,
+        },
+      })
+        .then(({ status, data }) => {
+          setLoading(false);
+          setAlert({
+            type: "success",
+            message: `${data.message}, status ${status}`,
+            show: true,
+          });
+          console.log(data.message);
+
+          axios
+            .get(`${process.env.API_URL}/api/v1/${identifier}`)
+            .then((datas) => {
+              const { data } = datas.data;
+              dispatch({ type: "produk/setMobilState", payload: data });
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+
+          return data;
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+          setAlert({
+            type: "error",
+            message: `${err.response.status} - ${err.response.data.message}`,
+            show: true,
+          });
+        });
+    },
+    [alert, setAlert] = useState<AlertProps>({
+      type: "error",
+      message: "Anda berhasil login!",
+      show: false,
+    });
+
+  useEffect(() => {
+    if (alert.show === true) {
+      setTimeout(() => {
+        setAlert({ ...alert, show: false });
+      }, 3000);
+    }
+  }, [alert.show]);
+
   const wisata = useSelector((state: reduxState) => state.produk.tableWisata),
     mobil = useSelector((state: reduxState) => state.produk.tableMobil),
     [formOpener, setForm] = React.useState<boolean>(true),
@@ -106,8 +150,6 @@ const index = (props: Produk) => {
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
-
-              alert(JSON.stringify(values, null, 2));
 
               console.log({ values });
               return false;
@@ -157,11 +199,16 @@ const index = (props: Produk) => {
             validateOnChange
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
-              setSubmitting(true);
               setLoading(true);
-              await fetchProduk("mobil", values);
-              setLoading(false);
-              // alert(JSON.stringify(values, null, 2));
+              setSubmitting(true);
+              const mobil = new FormData();
+              Object.entries(values).map(([key, value]) => {
+                mobil.append(key, value);
+              });
+              for (let value of mobil.keys()) {
+                console.log(value);
+              }
+              fetchProduk("car", mobil);
               return false;
             }}
           >
@@ -183,7 +230,7 @@ const index = (props: Produk) => {
               </div>
               <div className="w-full overflow-x-auto">
                 <ProductTable
-                  identifier="mobil"
+                  identifier="car"
                   tableTitle={[
                     "ID",
                     "Nama Mobil",
@@ -202,6 +249,7 @@ const index = (props: Produk) => {
     ];
   return (
     <Layout className="flex" pageTitle="Produk">
+      <Alert message={alert.message} show={alert.show} type={alert.type} />
       <Loading isActive={isLoading} />
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
         <Tabs value="wisata" className="max-w-full">

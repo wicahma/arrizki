@@ -12,12 +12,14 @@ import React, { useEffect } from "react";
 import MobilForm from "../micros/forms/admin/MobilForm";
 import {
   mobilPilihan,
+  reduxState,
   wisataPilihan,
 } from "@/pages/admin/produk/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
 import Loading from "../micros/loading";
 import { useDispatch, useSelector } from "react-redux";
+import Alert, { AlertProps } from "../micros/alerts/Alert";
 
 interface Table {
   identifier: string;
@@ -31,12 +33,24 @@ const ProductTable = (props: Table) => {
     [handleOpenEditImage, setHandleOpenEditImage] =
       React.useState<boolean>(false),
     [selectedID, setSelectedID] = React.useState<string>(""),
-    { values, setFieldValue }: any =
-      useFormikContext(),
+    { values, setFieldValue }: any = useFormikContext(),
     [isLoading, setIsLoading] = React.useState<boolean>(false),
     dispatch = useDispatch(),
-    produk = useSelector((state: any) => state.produk),
-    gambar = React.useRef<HTMLInputElement>(null);
+    produk = useSelector((state: reduxState) => state.produk),
+    gambar = React.useRef<HTMLInputElement>(null),
+    [alert, setAlert] = React.useState<AlertProps>({
+      type: "error",
+      message: "Anda berhasil login!",
+      show: false,
+    });
+
+  useEffect(() => {
+    if (alert.show === true) {
+      setTimeout(() => {
+        setAlert({ ...alert, show: false });
+      }, 3000);
+    }
+  }, [alert.show]);
 
   const getDataProduk = async (data: any, identifier: string) => {
     setIsLoading(true);
@@ -62,17 +76,51 @@ const ProductTable = (props: Table) => {
   };
 
   const updateStatus = (id: string, status: boolean) => {
-    alert(
-      `Status berhasil di update | ${status ? "aktif" : "nonaktif"} | ${id}`
-    );
+    // alert(
+    //   `Status berhasil di update | ${status ? "aktif" : "nonaktif"} | ${id}`
+    // );
   };
 
-  const handleDelete = (id: string) => {
-    alert(`Data berhasil dihapus ${id}`);
+  const handleDelete = async (id: string) => {
+    setIsLoading(true);
+    await axios
+      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`)
+      .then(({ data, status }) => {
+        setIsLoading(false);
+        let state;
+        switch (identifier) {
+          case "wisata":
+            state = "produk/setWisataState";
+            break;
+          case "car":
+            state = "produk/setMobilState";
+            break;
+          default:
+            break;
+        }
+        const newTableData = tableData.filter((data) => data._id !== id);
+        dispatch({ type: state, payload: newTableData });
+        setAlert({
+          type: "success",
+          message: data.message,
+          show: true,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+        setAlert({
+          type: "error",
+          message:
+            err.response.data.message ||
+            "Terjadi kesalahan, data gagal dihapus!",
+          show: true,
+        });
+      });
   };
 
   const handleEditImage = (data: mobilPilihan | wisataPilihan | undefined) => {
-    alert("data gambar berhasil di update");
+    // alert("data gambar berhasil di update");
   };
 
   const handlePreviewPage = (data: any, identifier: string) => {
@@ -83,7 +131,7 @@ const ProductTable = (props: Table) => {
           "_blank"
         );
         break;
-      case "mobil":
+      case "car":
         window.open(`/sewa-mobil`, "_blank");
         break;
       default:
@@ -94,6 +142,7 @@ const ProductTable = (props: Table) => {
   return (
     <>
       <Loading isActive={isLoading} />
+      <Alert message={alert.message} show={alert.show} type={alert.type} />
       <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -202,7 +251,7 @@ const ProductTable = (props: Table) => {
                     <div
                       onClick={() => {
                         switch (identifier) {
-                          case "mobil":
+                          case "car":
                             dispatch({
                               type: "produk/setSelectedDataMobil",
                               payload: data,
@@ -244,7 +293,7 @@ const ProductTable = (props: Table) => {
                     <div
                       onClick={() => {
                         switch (identifier) {
-                          case "mobil":
+                          case "car":
                             dispatch({
                               type: "produk/setSelectedDataMobil",
                               payload: data,
@@ -353,7 +402,7 @@ const ProductTable = (props: Table) => {
       >
         <DialogHeader>Update Gambar.</DialogHeader>
         <DialogBody divider>
-          {identifier === "mobil" && (
+          {identifier === "car" && (
             <div className="space-y-3">
               <Image
                 src={

@@ -20,9 +20,9 @@ const AdminHeader = (props: any) => {
     handleOpenDialog = () => setOpenDialog(!openDialog);
 
   const handleLogout = () => {
-    localStorage.removeItem("admin-data-set");
-    sessionStorage.removeItem("admin-data-set");
-    router.replace("/");
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    router.replace("/admin/643559f95161557cf734e52f");
   };
 
   useEffect(() => {
@@ -36,7 +36,7 @@ const AdminHeader = (props: any) => {
 
   return (
     <nav
-      className="md:p-3 md:w-[400px] min-w-[400px] w-screen bg-white shadow-lg md:shadow-none md:space-y-3 md:sticky md:self-start md:h-full md:top-0 fixed z-[1000]"
+      className="md:p-3 md:w-[400px] min-w-[400px] w-screen bg-white shadow-lg md:shadow-none md:space-y-3 md:sticky md:self-start md:h-full md:top-0 fixed !z-[600]"
       id="navbar"
     >
       <div className="self-center bg-white md:shadow-lg rounded-xl w-screen md:w-full flex justify-between md:justify-center items-center md:py-5 md:px-0 px-3 py-2">
@@ -115,7 +115,8 @@ const AdminHeader = (props: any) => {
         </button>
         <Dialog size="xs" open={openDialog} handler={handleOpenDialog}>
           <DialogBody className="text-xl border-b">
-            Apakah anda yakin ingin keluar dari dashboard admin?, anda harus login kembali apabila anda logout.
+            Apakah anda yakin ingin keluar dari dashboard admin?, anda harus
+            login kembali apabila anda logout.
           </DialogBody>
           <DialogFooter>
             <Button

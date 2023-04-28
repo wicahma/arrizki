@@ -145,7 +145,6 @@ const DetailWisata = (props: any) => {
   }, [headerRef]);
 
   useEffect(() => {
-    console.log("autoClose");
     if (alert.show === true) {
       setTimeout(() => {
         setAlert({ ...alert, show: false });

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import AdminHeader from "../Header/AdminHeader";
 import Layout from "@/styles/Layout.module.css";
+import Alert, { AlertProps } from "../micros/alerts/Alert";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -13,8 +14,22 @@ interface LayoutProps {
 }
 
 const Index = (props: LayoutProps) => {
-  const { pageTitle, children, className } = props;
-  const router = useRouter();
+  const { pageTitle, children, className } = props,
+    router = useRouter(),
+    [alert, setAlert] = useState<AlertProps>({
+      type: "error",
+      message: "Anda berhasil login!",
+      show: false,
+    });
+
+  useEffect(() => {
+    if (alert.show === true) {
+      setTimeout(() => {
+        setAlert({ ...alert, show: false });
+      }, 3000);
+    }
+  }, [alert.show]);
+
   return (
     <>
       <Head>
@@ -27,6 +42,7 @@ const Index = (props: LayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${className} scroll-smooth`}>
+        <Alert message={alert.message} show={alert.show} type={alert.type} />
         {!router.pathname.includes("/admin") ? <Header /> : <AdminHeader />}
         {router.pathname.includes("/admin") ? (
           <div className="min-h-screen w-screen border-l grow flex flex-col overflow-hidden">

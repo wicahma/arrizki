@@ -29,11 +29,11 @@ const Alert = (props: AlertProps) => {
       default:
         break;
     }
-  }, []);
+  }, [type]);
 
   return (
     <Peringatan
-      className="fixed lg:container w-[90%] top-16 left-1/2 z-[2000]"
+      className="fixed lg:container w-[90%] top-16 left-1/2 !z-[2000]"
       color={color}
       icon={
         <svg

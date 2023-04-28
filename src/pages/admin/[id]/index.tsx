@@ -4,6 +4,9 @@ import { Button, Checkbox, Input } from "@material-tailwind/react";
 import * as Yup from "yup";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import axios from "axios";
+import Loading from "@/components/micros/loading";
+import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
 
 interface adminProps {
   id?: string;
@@ -20,26 +23,68 @@ const adminValidation = Yup.object().shape({
 });
 
 const index = (props: any) => {
-  const router = useRouter();
-  const [seePassword, setSeePassword] = useState(false);
-  const [focus, setFocus] = useState(false);
-  const [saveLogin, setSaveLogin] = useState(false);
+  const router = useRouter(),
+    [seePassword, setSeePassword] = useState<boolean>(false),
+    [focus, setFocus] = useState<boolean>(false),
+    [saveLogin, setSaveLogin] = useState<boolean>(false),
+    [isLoading, setIsLoading] = useState<boolean>(false),
+    [alert, setAlert] = useState<AlertProps>({
+      type: "error",
+      message: "Anda berhasil login!",
+      show: false,
+    }),
+    initialValues: adminProps = {
+      email: null,
+      password: null,
+    };
 
-  const initialValues: adminProps = {
-    email: null,
-    password: null,
+  const handleLogin = async (dataLogin: adminProps) => {
+      axios
+        .put(`${process.env.API_URL}/api/v1/user`, {
+          email: dataLogin.email,
+          pass: dataLogin.password,
+        })
+        .then(({ status, data }) => {
+          setIsLoading(false);
+          if (status === 200) {
+            setAlert({
+              type: "success",
+              message: "Berhasil login, sedang mengalihkan ke Admin Panel!",
+              show: true,
+            });
+            dataLogin.saveLogin
+              ? localStorage.setItem("token", JSON.stringify(data.data.token))
+              : sessionStorage.setItem(
+                  "token",
+                  JSON.stringify(data.data.token)
+                );
+            setTimeout(() => {
+              router.push("/admin/dashboard");
+            }, 1500);
+          }
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          setAlert({
+            type: "error",
+            message: err.response.data.message,
+            show: true,
+          });
+        });
   };
 
-  const handleLogin = (data: adminProps) => {
-    // alert(JSON.stringify(data));
-    data.saveLogin
-      ? localStorage.setItem("admin-data-set", JSON.stringify(data))
-      : sessionStorage.setItem("admin-data-set", JSON.stringify(data));
-    router.push("/admin/dashboard");
-  };
+  useEffect(() => {
+    if (alert.show === true) {
+      setTimeout(() => {
+        setAlert({ ...alert, show: false });
+      }, 3000);
+    }
+  }, [alert.show]);
 
   return (
     <div className="flex w-screen h-screen">
+      <Alert message={alert.message} show={alert.show} type={alert.type} />
+      <Loading isActive={isLoading} />
       <div className="flex grow justify-center items-center">
         <Formik
           initialValues={initialValues}
@@ -47,8 +92,10 @@ const index = (props: any) => {
           validateOnChange
           validateOnMount
           onSubmit={async (values, { setSubmitting }) => {
+            setIsLoading(true);
+            setSubmitting(true);
             const data = { id: props.id, ...values, saveLogin: saveLogin };
-            handleLogin(data);
+            await handleLogin(data);
             return false;
           }}
         >
@@ -135,16 +182,13 @@ const index = (props: any) => {
                 />
               </div>
               <Checkbox
-                onChange={(_) => setSaveLogin(!saveLogin)}
+                onChange={(_) => setSaveLogin(_.target.checked)}
                 color="blue"
                 label="Ingat Saya"
               />
               <Button
                 className="mt-3"
                 type="submit"
-                onClick={() => {
-                  console.log({ errors });
-                }}
                 disabled={isSubmitting}
                 color="blue"
                 fullWidth
@@ -178,9 +222,15 @@ const index = (props: any) => {
   );
 };
 
-export async function getServerSideProps(context: any) {
-  console.log(context);
-  if (context.params.id === "diama")
+export const getServerSideProps = async (context: any) => {
+  let validated: boolean = false;
+  await axios
+    .get(`${process.env.API_URL}/api/v1/user/check/${context.params.id}`)
+    .then((res) => {
+      console.log({ validated_datas: res.data.validated });
+      if (res.data.validated) validated = true;
+    });
+  if (validated)
     return {
       props: {
         id: context.params.id,
@@ -189,6 +239,6 @@ export async function getServerSideProps(context: any) {
   return {
     notFound: true,
   };
-}
+};
 
 export default index;
