@@ -1,6 +1,10 @@
 import loadingStyle from "./loading.module.css";
 
-const Loading = ({ isActive }: any) => {
+interface LoadingProps {
+  isActive: boolean;
+}
+
+const Loading = ({ isActive }: LoadingProps) => {
   return (
     <div
       className={`${

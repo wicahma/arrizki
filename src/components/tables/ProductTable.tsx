@@ -17,7 +17,7 @@ import {
 import { useFormikContext } from "formik";
 import axios from "axios";
 import Loading from "../micros/loading";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Table {
   identifier: string;
@@ -31,13 +31,11 @@ const ProductTable = (props: Table) => {
     [handleOpenEditImage, setHandleOpenEditImage] =
       React.useState<boolean>(false),
     [selectedID, setSelectedID] = React.useState<string>(""),
-    [selectedDataMobil, setSelectedDataMobil] = React.useState<mobilPilihan>(),
-    [selectedDataWisata, setSelectedDataWisata] =
-      React.useState<wisataPilihan>(),
-    { values, setFieldValue, resetForm, errors, touched, isSubmitting }: any =
+    { values, setFieldValue }: any =
       useFormikContext(),
     [isLoading, setIsLoading] = React.useState<boolean>(false),
     dispatch = useDispatch(),
+    produk = useSelector((state: any) => state.produk),
     gambar = React.useRef<HTMLInputElement>(null);
 
   const getDataProduk = async (data: any, identifier: string) => {
@@ -46,11 +44,7 @@ const ProductTable = (props: Table) => {
       .get(`${process.env.API_URL}/api/v1/${identifier}/${data._id}`)
       .then((res) => {
         switch (identifier) {
-          case "mobil":
-            setSelectedDataMobil(res.data.data);
-            break;
           case "wisata":
-            setSelectedDataWisata(res.data.data);
             dispatch({
               type: "produk/setSelectedDataWisata",
               payload: res.data.data,
@@ -76,14 +70,6 @@ const ProductTable = (props: Table) => {
   const handleDelete = (id: string) => {
     alert(`Data berhasil dihapus ${id}`);
   };
-
-  // const handleEdit = (data: mobilPilihan | wisataPilihan | undefined) => {
-  //   if (Object.keys(errors).length !== 0 && Object.keys(touched).length !== 0 ) {
-  //     alert("form masih ada yang belum diisi");
-  //   }
-  //   console.log(errors, touched);
-  //   console.log({ ...values, id: data?._id });
-  // };
 
   const handleEditImage = (data: mobilPilihan | wisataPilihan | undefined) => {
     alert("data gambar berhasil di update");
@@ -217,7 +203,10 @@ const ProductTable = (props: Table) => {
                       onClick={() => {
                         switch (identifier) {
                           case "mobil":
-                            setSelectedDataMobil(data);
+                            dispatch({
+                              type: "produk/setSelectedDataMobil",
+                              payload: data,
+                            });
                             break;
                           case "wisata":
                             getDataProduk(data, identifier);
@@ -254,9 +243,18 @@ const ProductTable = (props: Table) => {
                   >
                     <div
                       onClick={() => {
-                        identifier === "mobil"
-                          ? setSelectedDataMobil(data)
-                          : setSelectedDataWisata(data);
+                        switch (identifier) {
+                          case "mobil":
+                            dispatch({
+                              type: "produk/setSelectedDataMobil",
+                              payload: data,
+                            });
+                            break;
+                          case "wisata":
+                            break;
+                          default:
+                            break;
+                        }
                         setHandleOpenEditImage(!handleOpenEditImage);
                       }}
                       className="w-4 transform hover:text-red-500 hover:scale-110"
@@ -346,7 +344,7 @@ const ProductTable = (props: Table) => {
           </Button>
         </DialogFooter>
       </Dialog>
-     
+
       {/* NOTE - Dialog Update Image */}
       <Dialog
         open={handleOpenEditImage}
@@ -361,9 +359,9 @@ const ProductTable = (props: Table) => {
                 src={
                   values.images
                     ? URL.createObjectURL(values.images)
-                    : `${process.env.API_URL}/images/${selectedDataMobil?.imageId}`
+                    : `${process.env.API_URL}/images/${produk.selectedDataMobil?.imageId}`
                 }
-                alt="Gambar Mobil yang mau diupdate"
+                alt={`Gambar Mobil - ${produk.selectedDataMobil?.imageId}`}
                 height={400}
                 width={500}
                 className="w-full aspect-auto rounded-lg"
@@ -444,9 +442,6 @@ const ProductTable = (props: Table) => {
             color="green"
             onClick={() => {
               setHandleOpenEditImage(!handleOpenEditImage);
-              identifier === "mobil"
-                ? handleEditImage(selectedDataMobil)
-                : handleEditImage(selectedDataWisata);
             }}
           >
             <span>Simpan perubahan</span>

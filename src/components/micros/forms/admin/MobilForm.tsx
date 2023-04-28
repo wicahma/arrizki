@@ -1,13 +1,27 @@
-import { mobilPilihan } from "@/pages/admin/produk/produkInterface";
-import { Button, Input, Tooltip } from "@material-tailwind/react";
+import { mobilPilihan, reduxState } from "@/pages/admin/produk/produkInterface";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Input,
+  Tooltip,
+} from "@material-tailwind/react";
 import { ErrorMessage, useFormikContext } from "formik";
 import Image from "next/image";
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const MobilForm = (props: any) => {
-  const dataMobilPilihan: mobilPilihan | undefined = props.dataMobilPilihan,
-    { setFieldValue, touched, isSubmitting, errors, values }: any =
+  const dataMobilPilihan: mobilPilihan | undefined | null = useSelector(
+      (state: reduxState) => state.produk.selectedDataMobil
+    ),
+    { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
+    dispatch = useDispatch(),
+    [openPreview, setOpenPreview] = React.useState(false),
+    handleOpenPreview = () => setOpenPreview(!openPreview),
     gambar = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -22,43 +36,80 @@ const MobilForm = (props: any) => {
       setFieldValue("nama", dataMobilPilihan.unitName);
       setFieldValue("seat", dataMobilPilihan.seat);
       setFieldValue("harga", dataMobilPilihan.pricePerDay);
+      setFieldValue("fetchType", "update");
     }
   }, [dataMobilPilihan]);
 
   return (
     <div className="space-y-5">
+      {dataMobilPilihan && (
+        <div className="bg-white shadow-xl rounded-lg px-3 py-2 uppercase text-center font-normal">
+          <span className="bg-red-400 rounded-md px-2 text-white mx-1">
+            update
+          </span>
+          Id - {dataMobilPilihan._id}
+        </div>
+      )}
       <Input
         type="text"
         color="orange"
         label={`${errors.nama && touched.nama ? errors.nama : "Nama Mobil"}`}
-        onChange={(_) => setFieldValue("nama", _.target.value)}
+        onChange={(e) => setFieldValue("nama", e.target.value)}
         error={errors.nama && touched.nama}
-        defaultValue={dataMobilPilihan?.unitName}
+        value={values.nama ?? ""}
       />
       <Input
         type="number"
         color="orange"
         label={`${errors.seat && touched.seat ? errors.seat : "Seat"}`}
-        onChange={(_) => setFieldValue("seat", _.target.value)}
+        onChange={(e) => setFieldValue("seat", e.target.value)}
         error={errors.seat && touched.seat}
-        defaultValue={dataMobilPilihan?.seat}
+        value={values.seat ?? ""}
       />
       <Input
         type="number"
         color="orange"
         label={`${errors.harga && touched.harga ? errors.harga : "Harga"}`}
-        onChange={(_) => setFieldValue("harga", _.target.value)}
+        onChange={(e) => {
+          setFieldValue("harga", e.target.value);
+        }}
         error={errors.harga && touched.harga}
-        defaultValue={dataMobilPilihan?.pricePerDay}
+        value={values.harga ?? ""}
       />
       {dataMobilPilihan ? (
-        <a
-          className="text-blue-500 hover:underline block text-sm font-normal mx-auto w-fit"
-          target="_blank"
-          href={`${process.env.API_URL}/images/${dataMobilPilihan.imageId}`}
-        >
-          Lihat gambar
-        </a>
+        <>
+          <Button
+            color="light-blue"
+            variant="outlined"
+            size="sm"
+            onClick={handleOpenPreview}
+            className="mx-auto block"
+          >
+            Lihat Gambar
+          </Button>
+          <Dialog open={openPreview} handler={handleOpenPreview}>
+            <DialogBody className="border-b">
+              <Image
+                src={`${process.env.API_URL}/images/${dataMobilPilihan.imageId}`}
+                alt={`Gambar Mobil - ${dataMobilPilihan.imageId}`}
+                width={400}
+                height={400}
+                className="rounded-lg w-full"
+              />
+            </DialogBody>
+            <DialogFooter>
+              <Button
+                variant="outlined"
+                color="green"
+                size="sm"
+                onClick={handleOpenPreview}
+                className="mr-1"
+              >
+                <span>Oke</span>
+              </Button>
+            </DialogFooter>
+          </Dialog>
+        </>
       ) : (
         <>
           <div className="flex justify-between gap-5 flex-wrap md:flex-nowrap">
@@ -139,19 +190,32 @@ const MobilForm = (props: any) => {
               className="bg-black md:w-1/2 w-full object-cover rounded-xl"
             />
           </div>
-          <Button
-            fullWidth
-            color="green"
-            onClick={() => {
-              console.log({ values });
-            }}
-            type="submit"
-            disabled={isSubmitting}
-          >
-            Kirim
-          </Button>
         </>
       )}
+      <div className="flex gap-3 justify-end">
+        <Button
+          color="red"
+          variant="text"
+          onClick={() => {
+            dispatch({ type: "produk/setSelectedDataMobil", payload: null });
+            resetForm();
+          }}
+          // disabled={!values ? true : false}
+        >
+          Bersihkan Form
+        </Button>
+        <Button
+          color="green"
+          onClick={() => {
+            console.log(values);
+            console.log(errors);
+          }}
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {dataMobilPilihan ? "Update Mobil" : "Tambah Mobil"}
+        </Button>
+      </div>
     </div>
   );
 };

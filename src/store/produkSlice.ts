@@ -12,6 +12,7 @@ const initialState: Produk = {
   selectedJumlahPeserta: "",
   paketWisata: [],
   selectedDataWisata: null,
+  selectedDataMobil: null,
 };
 
 export const produkSlice = createSlice({
@@ -30,6 +31,13 @@ export const produkSlice = createSlice({
       return {
         ...state,
         selectedDataWisata: action.payload,
+      };
+    },
+
+    setSelectedDataMobil(state, action) {
+      return {
+        ...state,
+        selectedDataMobil: action.payload,
       };
     },
 
@@ -78,6 +86,7 @@ export const {
   setMobilState,
   setWisataState,
   setSelectedDataWisata,
+  setSelectedDataMobil,
   setSelectedCar,
   setPaketWisata,
   setSelectedJumlahPeserta,

@@ -2,6 +2,7 @@ import Produk, {
   jenisPaket,
   jenisPaketData,
   pax,
+  reduxState,
   wisataPilihan,
 } from "@/pages/admin/produk/produkInterface";
 import { Button, Input, Textarea, Tooltip } from "@material-tailwind/react";
@@ -10,8 +11,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const WisataForm = (props: any) => {
-  const dataWisataPilihan: wisataPilihan | undefined = useSelector(
-      (state: any) => state.produk.selectedDataWisata
+  const dataWisataPilihan: wisataPilihan | undefined | null = useSelector(
+      (state: reduxState) => state.produk.selectedDataWisata
     ),
     { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
@@ -19,9 +20,11 @@ const WisataForm = (props: any) => {
 
   useEffect(() => {
     if (dataWisataPilihan) {
-      setFieldValue("fasilitas", dataWisataPilihan?.fasilitas);
-      setFieldValue("jenisPaket", dataWisataPilihan?.jenisPaket);
-      setFieldValue("nama", dataWisataPilihan?.namaPaket);
+      setFieldValue("fasilitas", dataWisataPilihan.fasilitas);
+      setFieldValue("jenisPaket", dataWisataPilihan.jenisPaket);
+      setFieldValue("nama", dataWisataPilihan.namaPaket);
+      setFieldValue("fetchType", "update");
+      console.log("jalan");
     }
   }, [dataWisataPilihan]);
 
@@ -43,22 +46,20 @@ const WisataForm = (props: any) => {
         onChange={(e) => {
           setFieldValue("nama", e.target.value);
         }}
-        value={values.nama}
-        defaultValue={dataWisataPilihan && values?.nama}
+        value={values.nama ?? ""}
         error={errors.nama && touched.nama ? true : false}
       />
       <Textarea
         variant="outlined"
         color="orange"
         size="lg"
-        value={values?.fasilitas.join(",")}
+        value={values?.fasilitas.join(",") ?? ""}
         label={`${
           errors.fasilitas && touched.fasilitas ? errors.fasilitas : "Fasilitas"
         }`}
         onChange={(e) => {
           setFieldValue("fasilitas", e.target.value.split(","));
         }}
-        defaultValue={dataWisataPilihan && values?.fasilitas}
         error={errors.fasilitas && touched.fasilitas ? true : false}
       />
       <h3 className="text-2xl font-semibold">Jenis Paket</h3>
@@ -150,11 +151,9 @@ const WisataForm = (props: any) => {
                     color="orange"
                     size="lg"
                     label={"Tempat Wisata"}
-                    defaultValue={
-                      dataWisataPilihan &&
-                      values?.jenisPaket[index].tempatWisata?.join(", ")
+                    value={
+                      values?.jenisPaket[index].tempatWisata?.join(",") ?? ""
                     }
-                    value={values?.jenisPaket[index].tempatWisata?.join(",")}
                     onChange={(e) => {
                       setFieldValue(
                         `jenisPaket.${index}.tempatWisata`,
@@ -170,11 +169,7 @@ const WisataForm = (props: any) => {
                     color="orange"
                     size="lg"
                     label="Rundown"
-                    defaultValue={
-                      dataWisataPilihan &&
-                      values?.jenisPaket[index].rundown?.join(", ")
-                    }
-                    value={values?.jenisPaket[index].rundown?.join(",")}
+                    value={values?.jenisPaket[index].rundown?.join(",") ?? ""}
                     onChange={(e) => {
                       setFieldValue(
                         `jenisPaket.${index}.rundown`,
@@ -268,14 +263,9 @@ const WisataForm = (props: any) => {
                                   size="lg"
                                   label="Jumlah Orang"
                                   type="number"
-                                  defaultValue={
-                                    dataWisataPilihan &&
-                                    values?.jenisPaket[index].pax[paxIndex]
-                                      .jumlah
-                                  }
                                   value={
                                     values?.jenisPaket[index].pax[paxIndex]
-                                      .jumlah
+                                      .jumlah ?? ""
                                   }
                                   onChange={(e) =>
                                     setFieldValue(
@@ -290,14 +280,9 @@ const WisataForm = (props: any) => {
                                   size="lg"
                                   label="Harga"
                                   type="number"
-                                  defaultValue={
-                                    dataWisataPilihan &&
-                                    values?.jenisPaket[index].pax[paxIndex]
-                                      .harga
-                                  }
                                   value={
                                     values?.jenisPaket[index].pax[paxIndex]
-                                      .harga
+                                      .harga ?? ""
                                   }
                                   onChange={(e) =>
                                     setFieldValue(
@@ -344,6 +329,7 @@ const WisataForm = (props: any) => {
       <div className="flex gap-3 justify-end">
         <Button
           color="red"
+          variant="text"
           onClick={() => {
             dispatch({ type: "produk/setSelectedDataWisata", payload: null });
             resetForm();

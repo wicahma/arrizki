@@ -1,3 +1,5 @@
+import { type } from "os";
+import { EnumType } from "typescript";
 import * as Yup from "yup";
 
 interface mobil {
@@ -12,8 +14,10 @@ enum status {
   "nonaktif",
 }
 
+type fetchType = "create" | "update";
+
 export interface mobilPilihan extends mobil {
-  _id: string;
+  _id?: string;
   unitName: string;
   pricePerDay: string;
   imageId: string;
@@ -51,6 +55,11 @@ export default interface Produk {
   selectedJumlahPeserta: string | null;
   paketWisata: paketWisata[];
   selectedDataWisata: wisataPilihan | null;
+  selectedDataMobil: mobilPilihan | null;
+}
+
+export interface reduxState {
+  produk: Produk;
 }
 
 interface pax {
@@ -71,6 +80,7 @@ export interface createWisata {
   fasilitas: string[];
   nama: string;
   jenisPaket: jenisPaket[];
+  fetchType: fetchType;
 }
 
 export const paxData: pax = {
@@ -86,23 +96,27 @@ export const jenisPaketData: jenisPaket = {
 };
 
 export const createWisataData: createWisata = {
-  fasilitas: [],
+  fasilitas: [""],
   nama: "",
   jenisPaket: [jenisPaketData],
+  fetchType: "create",
 };
 
 export interface createMobil {
+  _id?: string;
   nama: string | undefined;
   seat: number | undefined;
   harga: number | undefined;
   images: string | undefined;
+  fetchType: fetchType;
 }
 
 export const createMobilData: createMobil = {
-  nama: undefined,
-  seat: undefined,
-  harga: undefined,
-  images: undefined,
+  nama: "",
+  seat: 0,
+  harga: 0,
+  images: "",
+  fetchType: "create",
 };
 
 export const wisataValidationSchema = Yup.object().shape({
@@ -150,9 +164,12 @@ export const mobilValidationSchema = Yup.object().shape({
   harga: Yup.number()
     .required("Harga mobil harus diisi !")
     .min(1, "Harga mobil minimal 1 "),
-  images: Yup.mixed().required(
-    "Pastikan file merupakan gambar dan berukuran kurang dari 5Mb !"
-  ),
+  images: Yup.mixed().when(["fetchType"], (fetchType, schema) => {
+    if (fetchType.toString() === "create") {
+      return schema.required("Gambar mobil harus diisi !");
+    }
+    return schema;
+  }),
 });
 
 export type { jenisPaket, pax };
