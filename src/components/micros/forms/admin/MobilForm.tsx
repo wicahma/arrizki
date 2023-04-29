@@ -1,4 +1,5 @@
-import { mobilPilihan, reduxState } from "@/pages/admin/produk/produkInterface";
+import { mobilPilihan } from "@/pages/admin/produk/produkInterface";
+import { reduxState } from "@/store/reduxInterface";
 import {
   Button,
   Dialog,
