@@ -1,4 +1,4 @@
-import { jenisPaket } from "@/pages/admin/produk/produkInterface";
+import { jenisPaket } from "@/interfaces/produkInterface";
 import { setSelectedJumlahPeserta } from "@/store/produkSlice";
 import {
   Button,

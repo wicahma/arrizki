@@ -3,8 +3,8 @@ import Produk, {
   jenisPaketData,
   pax,
   wisataPilihan,
-} from "@/pages/admin/produk/produkInterface";
-import { reduxState } from "@/store/reduxInterface";
+} from "@/interfaces/produkInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
 import { Button, Input, Textarea, Tooltip } from "@material-tailwind/react";
 import { ErrorMessage, FieldArray, useFormikContext } from "formik";
 import React, { useEffect } from "react";

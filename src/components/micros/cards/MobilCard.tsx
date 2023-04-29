@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import { MobilCardProps } from "./mobilCardInterface";
+import { MobilCardProps } from "../../../interfaces/mobilCardInterface";
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { setSelectedCar } from "@/store/produkSlice";

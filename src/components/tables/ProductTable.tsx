@@ -13,12 +13,12 @@ import MobilForm from "../micros/forms/admin/MobilForm";
 import {
   mobilPilihan,
   wisataPilihan,
-} from "@/pages/admin/produk/produkInterface";
+} from "@/interfaces/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
 import Loading from "../micros/loading";
 import { useDispatch, useSelector } from "react-redux";
-import { reduxState } from "@/store/reduxInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
 
 interface Table {
   identifier: string;

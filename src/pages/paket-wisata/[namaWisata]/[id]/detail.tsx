@@ -18,10 +18,10 @@ import { wrapper } from "@/store/store";
 import axios from "axios";
 import { setPaketWisata } from "@/store/produkSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { createWisata } from "@/pages/admin/produk/produkInterface";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import Loading from "@/components/micros/loading";
+import { createWisata } from "@/interfaces/produkInterface";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(

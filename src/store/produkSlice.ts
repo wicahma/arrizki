@@ -1,4 +1,4 @@
-import Produk from "@/pages/admin/produk/produkInterface";
+import Produk from "@/interfaces/produkInterface";
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { AppState } from "./store";

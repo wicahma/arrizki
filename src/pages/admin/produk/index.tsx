@@ -16,7 +16,7 @@ import Produk, {
   createWisataData,
   mobilValidationSchema,
   wisataValidationSchema,
-} from "./produkInterface";
+} from "../../../interfaces/produkInterface";
 import { wrapper } from "@/store/store";
 import axios from "axios";
 import { setMobilState, setWisataState } from "@/store/produkSlice";
@@ -25,7 +25,7 @@ import { Form, Formik } from "formik";
 import WisataForm from "@/components/micros/forms/admin/WisataForm";
 import MobilForm from "@/components/micros/forms/admin/MobilForm";
 import Loading from "@/components/micros/loading";
-import { reduxState } from "@/store/reduxInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>

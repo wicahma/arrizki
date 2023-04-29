@@ -18,10 +18,7 @@ import axios from "axios";
 import { setMobilState } from "@/store/produkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
-import {
-  MobilFormProps,
-  carValidation,
-} from "@/components/micros/forms/carProps";
+import { MobilFormProps, carValidation } from "@/interfaces/carProps";
 import Loading from "@/components/micros/loading";
 
 export const getServerSideProps = wrapper.getServerSideProps(

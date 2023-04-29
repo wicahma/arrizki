@@ -7,7 +7,7 @@ import AdminHeader from "../Header/AdminHeader";
 import Layout from "@/styles/Layout.module.css";
 import Alert, { AlertProps } from "../micros/alerts/Alert";
 import { useDispatch, useSelector } from "react-redux";
-import { reduxState } from "@/store/reduxInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
 
 interface LayoutProps {
   children?: React.ReactNode;
