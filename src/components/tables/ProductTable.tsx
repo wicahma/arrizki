@@ -107,15 +107,23 @@ const ProductTable = (props: Table) => {
         setIsLoading(false);
         const newTableData: any[] = [...tableData];
         newTableData.splice(
-          tableData.findIndex((_) => _.id === data._id),
+          tableData.findIndex((d) => d._id === data.data._id),
           1,
           {
-            ...tableData.filter((_) => _.id === data._id)[0],
+            ...tableData.filter((d) => d._id === data.data._id)[0],
             status: status ? "aktif" : "nonaktif",
           }
         );
         console.log(newTableData);
         dispatch({ type: state, payload: newTableData });
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "success",
+            message: "Sukses mengubah status produk!",
+            show: true,
+          },
+        });
       })
       .catch((err) => {
         setIsLoading(false);
@@ -222,7 +230,7 @@ const ProductTable = (props: Table) => {
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">
-          {tableData.map((data: any, i) => (
+          {tableData.map((data: any, i: number) => (
             <tr
               key={i}
               className="border-b border-gray-200 bg-gray-50 hover:bg-gray-100"
@@ -241,6 +249,7 @@ const ProductTable = (props: Table) => {
                         className="bg-white text-gray-700 shadow-xl"
                       >
                         <Switch
+                          key={i}
                           id={`switch-${i}-${ind}-${data._id}`}
                           defaultChecked={
                             String(value) === "aktif" ? true : false

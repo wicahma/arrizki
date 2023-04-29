@@ -20,7 +20,6 @@ export const produkSlice = createSlice({
   initialState,
   reducers: {
     setMobilState(state, action) {
-      console.log(state);
       return {
         ...state,
         tableMobil: action.payload,
