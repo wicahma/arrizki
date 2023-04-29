@@ -17,11 +17,10 @@ import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
 import { wrapper } from "@/store/store";
 import axios from "axios";
 import { setPaketWisata } from "@/store/produkSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createWisata } from "@/pages/admin/produk/produkInterface";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
 import Loading from "@/components/micros/loading";
 
 //NOTE - Get data from server redux
@@ -94,6 +93,7 @@ const wisataValidator = Yup.object().shape({
 //NOTE - Main page Function
 const DetailWisata = (props: any) => {
   const { query } = useRouter(),
+    dispatch = useDispatch(),
     [formOpener, setForm] = useState<Boolean>(true),
     [onTop, setOnTop] = useState<Boolean>(false),
     [wisataFormData, setWisataFormData] = useState<WisataFormProps>(),
@@ -119,11 +119,6 @@ const DetailWisata = (props: any) => {
       lokasiJemput: undefined,
       pesananTambahan: "",
     },
-    [alert, setAlert] = useState<AlertProps>({
-      type: "success",
-      message: "Berhasil membuat reservasi!",
-      show: false,
-    }),
     router = useRouter();
 
   useEffect(() => {
@@ -144,14 +139,6 @@ const DetailWisata = (props: any) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [headerRef]);
 
-  useEffect(() => {
-    if (alert.show === true) {
-      setTimeout(() => {
-        setAlert({ ...alert, show: false });
-      }, 3000);
-    }
-  }, [alert.show]);
-
   const handleCreateReservasi = (values: WisataFormProps | undefined): void => {
     setIsLoading(true);
     setHandleOpenDialog(false);
@@ -159,18 +146,24 @@ const DetailWisata = (props: any) => {
       .post(`${process.env.API_URL}/api/v1/res-wisata`, values)
       .then((_) => {
         setIsLoading(false);
-        setAlert({
-          show: true,
-          message: "Berhasil membuat reservasi, Silahkan cek email anda!",
-          type: "success",
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            show: true,
+            message: "Berhasil membuat reservasi, Silahkan cek email anda!",
+            type: "success",
+          },
         });
       })
       .catch((_) => {
         setIsLoading(false);
-        setAlert({
-          show: true,
-          message: "Gagal membuat reservasi!",
-          type: "error",
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            show: true,
+            message: "Gagal membuat reservasi!",
+            type: "error",
+          },
         });
         console.log(_);
       });
@@ -179,7 +172,6 @@ const DetailWisata = (props: any) => {
   return (
     <Layout>
       <Loading isActive={isLoading} />
-      <Alert show={alert.show} message={alert.message} type={alert.type} />
       <div
         ref={headerRef}
         className="pt-16 container bottom-0 mx-auto text-center bg-white"
@@ -221,14 +213,14 @@ const DetailWisata = (props: any) => {
                 ))}
             </div>
           </div>
-{/* //NOTE - Paket Section */}
+          {/* //NOTE - Paket Section */}
           {paketWisata &&
             paketWisata.jenisPaket &&
             paketWisata.jenisPaket.map((item, i: number) => {
               return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
             })}
         </div>
-{/* //NOTE - Form Section */}
+        {/* //NOTE - Form Section */}
         <div
           className={`fixed right-0 overflow-y-auto lg:px-5 shadow-2xl lg:rounded-none lg:shadow-none lg:col-span-2 z-50 duration-500 transition-all lg:w-full lg:max-h-max lg:sticky lg:top-20 ${
             formOpener

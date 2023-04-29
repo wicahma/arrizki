@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import AdminHeader from "../Header/AdminHeader";
 import Layout from "@/styles/Layout.module.css";
 import Alert, { AlertProps } from "../micros/alerts/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { reduxState } from "@/store/reduxInterface";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -16,16 +18,16 @@ interface LayoutProps {
 const Index = (props: LayoutProps) => {
   const { pageTitle, children, className } = props,
     router = useRouter(),
-    [alert, setAlert] = useState<AlertProps>({
-      type: "error",
-      message: "Anda berhasil login!",
-      show: false,
-    });
+    dispatch = useDispatch(),
+    alert = useSelector((state: reduxState) => state.main.alert);
 
   useEffect(() => {
     if (alert.show === true) {
       setTimeout(() => {
-        setAlert({ ...alert, show: false });
+        dispatch({
+          type: "main/setAlert",
+          payload: { ...alert, show: false },
+        });
       }, 3000);
     }
   }, [alert.show]);

@@ -16,13 +16,12 @@ import {
 import { wrapper } from "@/store/store";
 import axios from "axios";
 import { setMobilState } from "@/store/produkSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import {
   MobilFormProps,
   carValidation,
 } from "@/components/micros/forms/carProps";
-import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
 import Loading from "@/components/micros/loading";
 
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -47,13 +46,9 @@ export const getServerSideProps = wrapper.getServerSideProps(
 const index = (props: any) => {
   const mobil = useSelector((state: any) => state.produk.tableMobil),
     selectedCar = useSelector((state: any) => state.produk.selectedCar),
+    dispatch = useDispatch(),
     [mobilFormData, setMobilFormData] = useState<MobilFormProps>(),
     [isLoading, setIsLoading] = useState<boolean>(false),
-    [alert, setAlert] = useState<AlertProps>({
-      type: "success",
-      message: "Berhasil membuat reservasi!",
-      show: false,
-    }),
     [formOpener, setForm] = useState<Boolean>(true),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     rupiah = new Intl.NumberFormat("id-ID", {
@@ -78,15 +73,6 @@ const index = (props: any) => {
     console.log(formOpener);
   }, [formOpener]);
 
-  useEffect(() => {
-    console.log("autoClose");
-    if (alert.show === true) {
-      setTimeout(() => {
-        setAlert({ ...alert, show: false });
-      }, 3000);
-    }
-  }, [alert.show]);
-
   const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
     setIsLoading(true);
     setHandleOpenDialog(false);
@@ -94,18 +80,24 @@ const index = (props: any) => {
       .post(`${process.env.API_URL}/api/v1/res-car`, values)
       .then((_) => {
         setIsLoading(false);
-        setAlert({
-          show: true,
-          message: "Berhasil membuat reservasi, Silahkan cek email anda!",
-          type: "success",
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            show: true,
+            message: "Berhasil membuat reservasi, Silahkan cek email anda!",
+            type: "success",
+          },
         });
       })
       .catch((_) => {
         setIsLoading(false);
-        setAlert({
-          show: true,
-          message: "Gagal membuat reservasi!",
-          type: "error",
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            show: true,
+            message: "Gagal membuat reservasi!",
+            type: "error",
+          },
         });
         console.log(_);
       });
@@ -114,7 +106,6 @@ const index = (props: any) => {
   return (
     <Layout pageTitle="Sewa Mobil">
       <Loading isActive={isLoading} />
-      <Alert show={alert.show} message={alert.message} type={alert.type} />
       <div className="pt-14 container mx-auto">
         <TextHeader
           className="mt-10"

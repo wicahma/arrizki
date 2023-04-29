@@ -15,7 +15,6 @@ import Produk, {
   createWisata,
   createWisataData,
   mobilValidationSchema,
-  reduxState,
   wisataValidationSchema,
 } from "./produkInterface";
 import { wrapper } from "@/store/store";
@@ -26,7 +25,7 @@ import { Form, Formik } from "formik";
 import WisataForm from "@/components/micros/forms/admin/WisataForm";
 import MobilForm from "@/components/micros/forms/admin/MobilForm";
 import Loading from "@/components/micros/loading";
-import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
+import { reduxState } from "@/store/reduxInterface";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -91,10 +90,13 @@ const index = (props: Produk) => {
       })
         .then(({ status, data }) => {
           setLoading(false);
-          setAlert({
-            type: "success",
-            message: `${data.message}, status ${status}`,
-            show: true,
+          dispatch({
+            type: "main/setAlert",
+            payload: {
+              type: "success",
+              message: `${data.message}, status ${status}`,
+              show: true,
+            },
           });
           console.log(data.message);
 
@@ -113,26 +115,16 @@ const index = (props: Produk) => {
         .catch((err) => {
           console.log(err);
           setLoading(false);
-          setAlert({
-            type: "error",
-            message: `${err.response.status} - ${err.response.data.message}`,
-            show: true,
+          dispatch({
+            type: "main/setAlert",
+            payload: {
+              type: "error",
+              message: `${err.response.status} - ${err.response.data.message}`,
+              show: true,
+            },
           });
         });
-    },
-    [alert, setAlert] = useState<AlertProps>({
-      type: "error",
-      message: "Anda berhasil login!",
-      show: false,
-    });
-
-  useEffect(() => {
-    if (alert.show === true) {
-      setTimeout(() => {
-        setAlert({ ...alert, show: false });
-      }, 3000);
-    }
-  }, [alert.show]);
+    };
 
   const wisata = useSelector((state: reduxState) => state.produk.tableWisata),
     mobil = useSelector((state: reduxState) => state.produk.tableMobil),
@@ -249,7 +241,6 @@ const index = (props: Produk) => {
     ];
   return (
     <Layout className="flex" pageTitle="Produk">
-      <Alert message={alert.message} show={alert.show} type={alert.type} />
       <Loading isActive={isLoading} />
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
         <Tabs value="wisata" className="max-w-full">

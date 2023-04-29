@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Loading from "@/components/micros/loading";
-import Alert, { AlertProps } from "@/components/micros/alerts/Alert";
+import { useDispatch } from "react-redux";
 
 interface adminProps {
   id?: string;
@@ -24,66 +24,57 @@ const adminValidation = Yup.object().shape({
 
 const index = (props: any) => {
   const router = useRouter(),
+    dispatch = useDispatch(),
     [seePassword, setSeePassword] = useState<boolean>(false),
     [focus, setFocus] = useState<boolean>(false),
     [saveLogin, setSaveLogin] = useState<boolean>(false),
     [isLoading, setIsLoading] = useState<boolean>(false),
-    [alert, setAlert] = useState<AlertProps>({
-      type: "error",
-      message: "Anda berhasil login!",
-      show: false,
-    }),
     initialValues: adminProps = {
       email: null,
       password: null,
     };
 
   const handleLogin = async (dataLogin: adminProps) => {
-      axios
-        .put(`${process.env.API_URL}/api/v1/user`, {
-          email: dataLogin.email,
-          pass: dataLogin.password,
-        })
-        .then(({ status, data }) => {
-          setIsLoading(false);
-          if (status === 200) {
-            setAlert({
+    axios
+      .put(`${process.env.API_URL}/api/v1/user`, {
+        email: dataLogin.email,
+        pass: dataLogin.password,
+      })
+      .then(({ status, data }) => {
+        setIsLoading(false);
+        if (status === 200) {
+          dispatch({
+            type: "main/setAlert",
+            payload: {
               type: "success",
               message: "Berhasil login, sedang mengalihkan ke Admin Panel!",
               show: true,
-            });
-            dataLogin.saveLogin
-              ? localStorage.setItem("token", JSON.stringify(data.data.token))
-              : sessionStorage.setItem(
-                  "token",
-                  JSON.stringify(data.data.token)
-                );
-            setTimeout(() => {
-              router.push("/admin/dashboard");
-            }, 1500);
-          }
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          setAlert({
+            },
+          });
+          dataLogin.saveLogin
+            ? localStorage.setItem("token", JSON.stringify(data.data.token))
+            : sessionStorage.setItem("token", JSON.stringify(data.data.token));
+          setTimeout(() => {
+            router.push("/admin/dashboard");
+          }, 1500);
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        dispatch({
+          type: "main/setAlert",
+          payload: {
             type: "error",
             message: err.response.data.message,
             show: true,
-          });
+          },
         });
+      });
   };
 
-  useEffect(() => {
-    if (alert.show === true) {
-      setTimeout(() => {
-        setAlert({ ...alert, show: false });
-      }, 3000);
-    }
-  }, [alert.show]);
 
   return (
     <div className="flex w-screen h-screen">
-      <Alert message={alert.message} show={alert.show} type={alert.type} />
       <Loading isActive={isLoading} />
       <div className="flex grow justify-center items-center">
         <Formik

@@ -35,6 +35,7 @@ const Alert = (props: AlertProps) => {
     <Peringatan
       className="fixed lg:container w-[90%] top-16 left-1/2 !z-[2000]"
       color={color}
+      variant="gradient"
       icon={
         <svg
           xmlns="http://www.w3.org/2000/svg"

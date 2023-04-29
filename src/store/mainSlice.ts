@@ -1,13 +1,9 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { AppState } from "./store";
-import { AlertProps } from "@/components/micros/alerts/Alert";
+import { Main } from "./reduxInterface";
 
 const hydrate = createAction<AppState>(HYDRATE);
-
-interface Main {
-  alert: AlertProps;
-}
 
 const initialState: Main = {
   alert: {

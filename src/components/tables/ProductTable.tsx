@@ -8,18 +8,17 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import Image from "next/image";
-import React, { useEffect } from "react";
+import React from "react";
 import MobilForm from "../micros/forms/admin/MobilForm";
 import {
   mobilPilihan,
-  reduxState,
   wisataPilihan,
 } from "@/pages/admin/produk/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
 import Loading from "../micros/loading";
 import { useDispatch, useSelector } from "react-redux";
-import Alert, { AlertProps } from "../micros/alerts/Alert";
+import { reduxState } from "@/store/reduxInterface";
 
 interface Table {
   identifier: string;
@@ -37,20 +36,7 @@ const ProductTable = (props: Table) => {
     [isLoading, setIsLoading] = React.useState<boolean>(false),
     dispatch = useDispatch(),
     produk = useSelector((state: reduxState) => state.produk),
-    gambar = React.useRef<HTMLInputElement>(null),
-    [alert, setAlert] = React.useState<AlertProps>({
-      type: "error",
-      message: "Anda berhasil login!",
-      show: false,
-    });
-
-  useEffect(() => {
-    if (alert.show === true) {
-      setTimeout(() => {
-        setAlert({ ...alert, show: false });
-      }, 3000);
-    }
-  }, [alert.show]);
+    gambar = React.useRef<HTMLInputElement>(null);
 
   const getDataProduk = async (data: any, identifier: string) => {
     setIsLoading(true);
@@ -75,16 +61,89 @@ const ProductTable = (props: Table) => {
       });
   };
 
-  const updateStatus = (id: string, status: boolean) => {
-    // alert(
-    //   `Status berhasil di update | ${status ? "aktif" : "nonaktif"} | ${id}`
-    // );
+  //NOTE - Update Status Handler
+  const updateStatus = (
+    dataSelected: wisataPilihan | mobilPilihan | any,
+    status: boolean
+  ) => {
+    let carried;
+    let state: any;
+    switch (identifier) {
+      case "wisata":
+        state = "produk/setWisataState";
+        carried = {
+          ...dataSelected,
+          status: status ? "aktif" : "nonaktif",
+        };
+        break;
+      case "car":
+        state = "produk/setMobilState";
+        carried = {
+          nama: dataSelected.unitName,
+          harga: dataSelected.pricePerDay,
+          seat: dataSelected.seat,
+          status: status ? "aktif" : "nonaktif",
+        };
+        break;
+      default:
+        break;
+    }
+    setIsLoading(true);
+    axios
+      .put(
+        `${process.env.API_URL}/api/v1/${identifier}/${dataSelected._id}`,
+        carried,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              (localStorage.getItem("token") ||
+                sessionStorage.getItem("token")) ??
+                ""
+            )}`,
+          },
+        }
+      )
+      .then(({ data }) => {
+        setIsLoading(false);
+        const newTableData: any[] = [...tableData];
+        newTableData.splice(
+          tableData.findIndex((_) => _.id === data._id),
+          1,
+          {
+            ...tableData.filter((_) => _.id === data._id)[0],
+            status: status ? "aktif" : "nonaktif",
+          }
+        );
+        console.log(newTableData);
+        dispatch({ type: state, payload: newTableData });
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "error",
+            message: err.response?.data.message,
+            show: true,
+          },
+        });
+        console.log(err);
+      });
   };
 
+  //NOTE - Delete Handler
   const handleDelete = async (id: string) => {
     setIsLoading(true);
     await axios
-      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`)
+      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            (localStorage.getItem("token") ||
+              sessionStorage.getItem("token")) ??
+              ""
+          )}`,
+        },
+      })
       .then(({ data, status }) => {
         setIsLoading(false);
         let state;
@@ -100,29 +159,37 @@ const ProductTable = (props: Table) => {
         }
         const newTableData = tableData.filter((data) => data._id !== id);
         dispatch({ type: state, payload: newTableData });
-        setAlert({
-          type: "success",
-          message: data.message,
-          show: true,
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "success",
+            message: data.message,
+            show: true,
+          },
         });
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
-        setAlert({
-          type: "error",
-          message:
-            err.response.data.message ||
-            "Terjadi kesalahan, data gagal dihapus!",
-          show: true,
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "error",
+            message:
+              err.response.data.message ||
+              "Terjadi kesalahan, data gagal dihapus!",
+            show: true,
+          },
         });
       });
   };
 
+  //NOTE - Edit Image Handler
   const handleEditImage = (data: mobilPilihan | wisataPilihan | undefined) => {
-    // alert("data gambar berhasil di update");
+    alert("data gambar berhasil di update");
   };
 
+  //NOTE - Handle Preview Page
   const handlePreviewPage = (data: any, identifier: string) => {
     switch (identifier) {
       case "wisata":
@@ -142,7 +209,7 @@ const ProductTable = (props: Table) => {
   return (
     <>
       <Loading isActive={isLoading} />
-      <Alert message={alert.message} show={alert.show} type={alert.type} />
+      {/* <Alert message={alert.message} show={alert.show} type={alert.type} /> */}
       <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
@@ -178,9 +245,7 @@ const ProductTable = (props: Table) => {
                           defaultChecked={
                             String(value) === "aktif" ? true : false
                           }
-                          onChange={(e) =>
-                            updateStatus(data._id, e.target.checked)
-                          }
+                          onChange={(e) => updateStatus(data, e.target.checked)}
                           label={
                             <span
                               className={`${

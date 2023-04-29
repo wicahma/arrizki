@@ -58,10 +58,6 @@ export default interface Produk {
   selectedDataMobil: mobilPilihan | null;
 }
 
-export interface reduxState {
-  produk: Produk;
-}
-
 interface pax {
   jumlah: number;
   harga: number;
