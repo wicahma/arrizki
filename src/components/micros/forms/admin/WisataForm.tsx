@@ -2,9 +2,9 @@ import Produk, {
   jenisPaket,
   jenisPaketData,
   pax,
-  reduxState,
   wisataPilihan,
 } from "@/pages/admin/produk/produkInterface";
+import { reduxState } from "@/store/reduxInterface";
 import { Button, Input, Textarea, Tooltip } from "@material-tailwind/react";
 import { ErrorMessage, FieldArray, useFormikContext } from "formik";
 import React, { useEffect } from "react";
