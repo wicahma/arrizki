@@ -14,7 +14,6 @@ import {
 const AdminHeader = (props: any) => {
   const { pathname } = useRouter(),
     activeStyle: string = "!bg-red-500 text-white",
-    router = useRouter(),
     [openDialog, setOpenDialog] = React.useState<boolean>(false),
     [openNavbar, setOpenNavbar] = React.useState<boolean>(true),
     handleOpenDialog = () => setOpenDialog(!openDialog);
