@@ -6,7 +6,10 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Loading from "@/components/micros/loading";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { reduxState } from "@/interfaces/reduxInterface";
+import Alert from "@/components/micros/alerts/Alert";
+import Link from "next/link";
 
 interface adminProps {
   id?: string;
@@ -28,11 +31,22 @@ const index = (props: any) => {
     [seePassword, setSeePassword] = useState<boolean>(false),
     [focus, setFocus] = useState<boolean>(false),
     [saveLogin, setSaveLogin] = useState<boolean>(false),
-    [isLoading, setIsLoading] = useState<boolean>(false),
     initialValues: adminProps = {
       email: null,
       password: null,
-    };
+    },
+    alert = useSelector((state: reduxState) => state.main.alert);
+
+  useEffect(() => {
+    if (alert.show === true) {
+      setTimeout(() => {
+        dispatch({
+          type: "main/setAlert",
+          payload: { ...alert, show: false },
+        });
+      }, 3000);
+    }
+  }, [alert.show]);
 
   const handleLogin = async (dataLogin: adminProps) => {
     axios
@@ -41,7 +55,10 @@ const index = (props: any) => {
         pass: dataLogin.password,
       })
       .then(({ status, data }) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         if (status === 200) {
           dispatch({
             type: "main/setAlert",
@@ -52,15 +69,22 @@ const index = (props: any) => {
             },
           });
           dataLogin.saveLogin
-            ? localStorage.setItem("token", JSON.stringify(data.data.token))
-            : sessionStorage.setItem("token", JSON.stringify(data.data.token));
-          setTimeout(() => {
-            router.push("/admin/dashboard");
-          }, 1500);
+            ? localStorage.setItem("token", data.data.token)
+            : sessionStorage.setItem("token", data.data.token);
+          dispatch({
+            type: "main/setToken",
+            payload: {
+              token: data.data.token.toString(),
+            },
+          });
+          router.push("/admin/dashboard");
         }
       })
       .catch((err) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -72,10 +96,9 @@ const index = (props: any) => {
       });
   };
 
-
   return (
     <div className="flex w-screen h-screen">
-      <Loading isActive={isLoading} />
+      <Alert message={alert.message} show={alert.show} type={alert.type} />
       <div className="flex grow justify-center items-center">
         <Formik
           initialValues={initialValues}
@@ -83,7 +106,10 @@ const index = (props: any) => {
           validateOnChange
           validateOnMount
           onSubmit={async (values, { setSubmitting }) => {
-            setIsLoading(true);
+            dispatch({
+              type: "main/setLoading",
+              payload: true,
+            });
             setSubmitting(true);
             const data = { id: props.id, ...values, saveLogin: saveLogin };
             await handleLogin(data);
@@ -97,7 +123,7 @@ const index = (props: any) => {
                 onBlurCapture={() => setFocus(false)}
                 className="flex flex-col gap-3 sm:w-80 w-full sm:p-0 px-3"
               >
-                <div className="bg-blue-400 p-4 rounded-lg">
+                <div className="bg-red-400 p-4 rounded-lg">
                   <h3 className="text-3xl font-serif text-white font-bold">
                     Login
                   </h3>
@@ -177,21 +203,34 @@ const index = (props: any) => {
                 color="blue"
                 label="Ingat Saya"
               />
-              <Button
-                className="mt-3"
-                type="submit"
-                disabled={isSubmitting}
-                color="blue"
-                fullWidth
-              >
-                Masuk
-              </Button>
+              <div className="text-center">
+                <Button
+                  className="mt-3"
+                  type="submit"
+                  disabled={isSubmitting}
+                  color="green"
+                  fullWidth
+                >
+                  Masuk
+                </Button>
+                <p className="mt-3 text-xs text-gray-400">atau</p>
+                <Link href={"/"}>
+                  <Button
+                    className="mt-3"
+                    disabled={isSubmitting}
+                    color="red"
+                    fullWidth
+                  >
+                    Ke Main Page
+                  </Button>
+                </Link>
+              </div>
             </Form>
           )}
         </Formik>
       </div>
       <div
-        className={`bg-light-blue-300 text-white lg:block fixed w-full h-full lg:h-auto lg:relative lg:w-2/4 -z-10 lg:m-3 p-5 shadow-lg transition-all lg:rounded-2xl ${
+        className={`bg-red-300 text-white lg:block fixed w-full h-full lg:h-auto lg:relative lg:w-2/4 -z-10 lg:m-3 p-5 shadow-lg transition-all lg:rounded-2xl ${
           focus ? "blur-xl" : "blur-0"
         }`}
       >

@@ -76,6 +76,7 @@ export interface createWisata {
   fasilitas: string[];
   nama: string;
   jenisPaket: jenisPaket[];
+  status: string | "aktif" | "nonaktif" | undefined;
   fetchType: fetchType;
 }
 
@@ -92,8 +93,10 @@ export const jenisPaketData: jenisPaket = {
 };
 
 export const createWisataData: createWisata = {
+  _id: "",
   fasilitas: [""],
   nama: "",
+  status: "true",
   jenisPaket: [jenisPaketData],
   fetchType: "create",
 };
@@ -104,14 +107,17 @@ export interface createMobil {
   seat: number | undefined;
   harga: number | undefined;
   images: string | undefined;
+  status: string | "aktif" | "nonaktif" | undefined;
   fetchType: fetchType;
 }
 
 export const createMobilData: createMobil = {
+  _id: "",
   nama: "",
   seat: 0,
   harga: 0,
   images: "",
+  status: "",
   fetchType: "create",
 };
 

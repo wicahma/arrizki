@@ -12,6 +12,7 @@ import {
 } from "@material-tailwind/react";
 
 const AdminHeader = (props: any) => {
+  const router = useRouter();
   const { pathname } = useRouter(),
     activeStyle: string = "!bg-red-500 text-white",
     [openDialog, setOpenDialog] = React.useState<boolean>(false),

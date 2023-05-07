@@ -10,10 +10,7 @@ import {
 import Image from "next/image";
 import React from "react";
 import MobilForm from "../micros/forms/admin/MobilForm";
-import {
-  mobilPilihan,
-  wisataPilihan,
-} from "@/interfaces/produkInterface";
+import { mobilPilihan, wisataPilihan } from "@/interfaces/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
 import Loading from "../micros/loading";
@@ -39,7 +36,10 @@ const ProductTable = (props: Table) => {
     gambar = React.useRef<HTMLInputElement>(null);
 
   const getDataProduk = async (data: any, identifier: string) => {
-    setIsLoading(true);
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
     axios
       .get(`${process.env.API_URL}/api/v1/${identifier}/${data._id}`)
       .then((res) => {
@@ -53,11 +53,17 @@ const ProductTable = (props: Table) => {
           default:
             break;
         }
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
       });
   };
 
@@ -88,7 +94,10 @@ const ProductTable = (props: Table) => {
       default:
         break;
     }
-    setIsLoading(true);
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
     axios
       .put(
         `${process.env.API_URL}/api/v1/${identifier}/${dataSelected._id}`,
@@ -104,7 +113,10 @@ const ProductTable = (props: Table) => {
         }
       )
       .then(({ data }) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         const newTableData: any[] = [...tableData];
         newTableData.splice(
           tableData.findIndex((d) => d._id === data.data._id),
@@ -126,7 +138,10 @@ const ProductTable = (props: Table) => {
         });
       })
       .catch((err) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -216,8 +231,6 @@ const ProductTable = (props: Table) => {
 
   return (
     <>
-      <Loading isActive={isLoading} />
-      {/* <Alert message={alert.message} show={alert.show} type={alert.type} /> */}
       <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
         <thead>
           <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">

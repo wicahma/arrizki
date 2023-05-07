@@ -171,7 +171,6 @@ const DetailWisata = (props: any) => {
 
   return (
     <Layout>
-      <Loading isActive={isLoading} />
       <div
         ref={headerRef}
         className="pt-16 container bottom-0 mx-auto text-center bg-white"

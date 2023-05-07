@@ -3,6 +3,8 @@ import Produk from "./produkInterface";
 
 export interface Main {
   alert: AlertProps;
+  token: string;
+  isLoading: boolean;
 }
 
 export interface reduxState {

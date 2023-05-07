@@ -8,6 +8,7 @@ import Layout from "@/styles/Layout.module.css";
 import Alert, { AlertProps } from "../micros/alerts/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import { reduxState } from "@/interfaces/reduxInterface";
+import Loading from "../micros/loading";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -19,7 +20,8 @@ const Index = (props: LayoutProps) => {
   const { pageTitle, children, className } = props,
     router = useRouter(),
     dispatch = useDispatch(),
-    alert = useSelector((state: reduxState) => state.main.alert);
+    alert = useSelector((state: reduxState) => state.main.alert),
+    isLoading = useSelector((state: reduxState) => state.main.isLoading);
 
   useEffect(() => {
     if (alert.show === true) {
@@ -31,6 +33,27 @@ const Index = (props: LayoutProps) => {
       }, 3000);
     }
   }, [alert.show]);
+
+  useEffect(() => {
+    let token = localStorage.getItem("token")
+      ? localStorage.getItem("token")
+      : sessionStorage.getItem("token");
+    return () => {
+      if (router.pathname.includes("/admin")) {
+        console.log(token);
+        if (!token) {
+          router.replace("/");
+        } else {
+          dispatch({
+            type: "main/setToken",
+            payload: {
+              token: token,
+            },
+          });
+        }
+      }
+    };
+  }, []);
 
   return (
     <>
@@ -45,6 +68,7 @@ const Index = (props: LayoutProps) => {
       </Head>
       <main className={`${className} scroll-smooth`}>
         <Alert message={alert.message} show={alert.show} type={alert.type} />
+        <Loading isActive={isLoading} />
         {!router.pathname.includes("/admin") ? <Header /> : <AdminHeader />}
         {router.pathname.includes("/admin") ? (
           <div className="min-h-screen w-screen border-l grow flex flex-col overflow-hidden">

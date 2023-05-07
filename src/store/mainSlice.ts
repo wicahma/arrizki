@@ -11,13 +11,14 @@ const initialState: Main = {
     message: "none",
     show: false,
   },
+  isLoading: false,
+  token: "",
 };
 
 export const mainSlice = createSlice({
   name: "main",
   initialState,
   reducers: {
-    
     setAlert(state, action) {
       return {
         ...state,
@@ -25,12 +26,26 @@ export const mainSlice = createSlice({
       };
     },
 
+    setLoading(state, action) {
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    },
+
+    setToken(state, action) {
+      return {
+        ...state,
+        token: action.payload,
+      };
+    },
+    
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
-      console.group("HYDRATE");
-      console.log({ action, state });
-      console.groupEnd();
+      // console.group("HYDRATE");
+      // console.log({ action, state });
+      // console.groupEnd();
       return {
         ...state,
         ...action.payload.main,
@@ -39,6 +54,6 @@ export const mainSlice = createSlice({
   },
 });
 
-export const {} = mainSlice.actions;
+export const { setToken, setAlert } = mainSlice.actions;
 
 export default mainSlice.reducer;

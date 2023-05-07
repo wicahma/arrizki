@@ -34,6 +34,8 @@ const MobilForm = (props: any) => {
 
   useEffect(() => {
     if (dataMobilPilihan) {
+      setFieldValue("_id", dataMobilPilihan._id);
+      setFieldValue("status", dataMobilPilihan.status);
       setFieldValue("nama", dataMobilPilihan.unitName);
       setFieldValue("seat", dataMobilPilihan.seat);
       setFieldValue("harga", dataMobilPilihan.pricePerDay);

@@ -62,7 +62,8 @@ const index = (props: Produk) => {
   const dispatch = useDispatch(),
     fetchProduk = async (
       identifier: String,
-      data: createMobil | createWisata | any
+      data: createMobil | createWisata | any,
+      id: string | undefined
     ): Promise<any> => {
       let methods;
       switch (data.fetchType || data.get("fetchType")) {
@@ -77,19 +78,22 @@ const index = (props: Produk) => {
       return await axios({
         method: methods,
         url: `${process.env.API_URL}/api/v1/${identifier}${
-          methods === "POST" ? "" : `/${data._id}`
+          methods === "POST" ? "" : `/${id}`
         }`,
         data: data,
         headers: {
-          Authorization: `Bearer ${JSON.parse(
+          Authorization: `Bearer ${
             (localStorage.getItem("token") ||
               sessionStorage.getItem("token")) ??
-              ""
-          )}`,
+            ""
+          }`,
         },
       })
         .then(({ status, data }) => {
-          setLoading(false);
+          dispatch({
+            type: "main/setLoading",
+            payload: false,
+          });
           dispatch({
             type: "main/setAlert",
             payload: {
@@ -98,7 +102,8 @@ const index = (props: Produk) => {
               show: true,
             },
           });
-          console.log(data.message);
+          console.log(data);
+          console.log(status);
 
           axios
             .get(`${process.env.API_URL}/api/v1/${identifier}`)
@@ -114,7 +119,10 @@ const index = (props: Produk) => {
         })
         .catch((err) => {
           console.log(err);
-          setLoading(false);
+          dispatch({
+            type: "main/setLoading",
+            payload: false,
+          });
           dispatch({
             type: "main/setAlert",
             payload: {
@@ -129,7 +137,6 @@ const index = (props: Produk) => {
   const wisata = useSelector((state: reduxState) => state.produk.tableWisata),
     mobil = useSelector((state: reduxState) => state.produk.tableMobil),
     [formOpener, setForm] = React.useState<boolean>(true),
-    [isLoading, setLoading] = React.useState<boolean>(false),
     data = [
       {
         label: "Wisata",
@@ -142,8 +149,13 @@ const index = (props: Produk) => {
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
               setSubmitting(true);
-
+              dispatch({
+                type: "main/setLoading",
+                payload: true,
+              });
+              setSubmitting(true);
               console.log({ values });
+              fetchProduk("wisata", values, values._id);
               return false;
             }}
           >
@@ -191,16 +203,22 @@ const index = (props: Produk) => {
             validateOnChange
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
-              setLoading(true);
-              setSubmitting(true);
-              const mobil = new FormData();
-              Object.entries(values).map(([key, value]) => {
-                mobil.append(key, value);
+              dispatch({
+                type: "main/setLoading",
+                payload: true,
               });
-              for (let value of mobil.keys()) {
-                console.log(value);
+              setSubmitting(true);
+              let mobil: FormData | createMobil | any;
+              if (values.fetchType === "create") {
+                mobil = new FormData();
+                Object.entries(values).map(([key, value]) => {
+                  mobil.append(key, value);
+                });
+                fetchProduk("car", mobil, values._id);
+              } else {
+                console.log(values);
+                fetchProduk("car", values, values._id);
               }
-              fetchProduk("car", mobil);
               return false;
             }}
           >
@@ -241,7 +259,6 @@ const index = (props: Produk) => {
     ];
   return (
     <Layout className="flex" pageTitle="Produk">
-      <Loading isActive={isLoading} />
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
         <Tabs value="wisata" className="max-w-full">
           <TabsHeader className="">

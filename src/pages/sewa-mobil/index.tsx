@@ -45,7 +45,6 @@ const index = (props: any) => {
     selectedCar = useSelector((state: any) => state.produk.selectedCar),
     dispatch = useDispatch(),
     [mobilFormData, setMobilFormData] = useState<MobilFormProps>(),
-    [isLoading, setIsLoading] = useState<boolean>(false),
     [formOpener, setForm] = useState<Boolean>(true),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     rupiah = new Intl.NumberFormat("id-ID", {
@@ -71,12 +70,18 @@ const index = (props: any) => {
   }, [formOpener]);
 
   const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
-    setIsLoading(true);
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
     setHandleOpenDialog(false);
     axios
       .post(`${process.env.API_URL}/api/v1/res-car`, values)
       .then((_) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -87,7 +92,10 @@ const index = (props: any) => {
         });
       })
       .catch((_) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -102,7 +110,6 @@ const index = (props: any) => {
 
   return (
     <Layout pageTitle="Sewa Mobil">
-      <Loading isActive={isLoading} />
       <div className="pt-14 container mx-auto">
         <TextHeader
           className="mt-10"
