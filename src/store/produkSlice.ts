@@ -13,6 +13,8 @@ const initialState: Produk = {
   paketWisata: [],
   selectedDataWisata: null,
   selectedDataMobil: null,
+  selectedDataWisataImage: null,
+  newWistaImage: null,
 };
 
 export const produkSlice = createSlice({
@@ -23,6 +25,20 @@ export const produkSlice = createSlice({
       return {
         ...state,
         tableMobil: action.payload,
+      };
+    },
+
+    setSelectedDataWisataImage(state, action) {
+      return {
+        ...state,
+        selectedDataWisataImage: action.payload,
+      };
+    },
+
+    setNewWistaImage(state, action) {
+      return {
+        ...state,
+        newWistaImage: action.payload,
       };
     },
 

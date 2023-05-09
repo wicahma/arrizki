@@ -4,16 +4,15 @@ import {
   DialogBody,
   DialogFooter,
   DialogHeader,
+  Radio,
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
 import Image from "next/image";
 import React from "react";
-import MobilForm from "../micros/forms/admin/MobilForm";
 import { mobilPilihan, wisataPilihan } from "@/interfaces/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
-import Loading from "../micros/loading";
 import { useDispatch, useSelector } from "react-redux";
 import { reduxState } from "@/interfaces/reduxInterface";
 
@@ -30,12 +29,15 @@ const ProductTable = (props: Table) => {
       React.useState<boolean>(false),
     [selectedID, setSelectedID] = React.useState<string>(""),
     { values, setFieldValue }: any = useFormikContext(),
-    [isLoading, setIsLoading] = React.useState<boolean>(false),
     dispatch = useDispatch(),
     produk = useSelector((state: reduxState) => state.produk),
     gambar = React.useRef<HTMLInputElement>(null);
 
-  const getDataProduk = async (data: any, identifier: string) => {
+  const getDataProduk = async (
+    data: any,
+    identifier: string,
+    type?: string | undefined
+  ) => {
     dispatch({
       type: "main/setLoading",
       payload: true,
@@ -45,21 +47,24 @@ const ProductTable = (props: Table) => {
       .then((res) => {
         switch (identifier) {
           case "wisata":
-            dispatch({
-              type: "produk/setSelectedDataWisata",
-              payload: res.data.data,
-            });
+            type === "edit"
+              ? dispatch({
+                  type: "produk/setSelectedDataWisata",
+                  payload: res.data.data,
+                })
+              : dispatch({
+                  type: "produk/setSelectedDataWisataImage",
+                  payload: res.data.data.jenisPaket,
+                });
             break;
           default:
             break;
         }
-        dispatch({
-          type: "main/setLoading",
-          payload: false,
-        });
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
         dispatch({
           type: "main/setLoading",
           payload: false,
@@ -98,17 +103,18 @@ const ProductTable = (props: Table) => {
       type: "main/setLoading",
       payload: true,
     });
+    console.log(carried);
     axios
       .put(
         `${process.env.API_URL}/api/v1/${identifier}/${dataSelected._id}`,
         carried,
         {
           headers: {
-            Authorization: `Bearer ${JSON.parse(
+            Authorization: `Bearer ${
               (localStorage.getItem("token") ||
                 sessionStorage.getItem("token")) ??
-                ""
-            )}`,
+              ""
+            }`,
           },
         }
       )
@@ -156,19 +162,25 @@ const ProductTable = (props: Table) => {
 
   //NOTE - Delete Handler
   const handleDelete = async (id: string) => {
-    setIsLoading(true);
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
     await axios
       .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
         headers: {
-          Authorization: `Bearer ${JSON.parse(
+          Authorization: `Bearer ${
             (localStorage.getItem("token") ||
               sessionStorage.getItem("token")) ??
-              ""
-          )}`,
+            ""
+          }`,
         },
       })
       .then(({ data, status }) => {
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         let state;
         switch (identifier) {
           case "wisata":
@@ -193,7 +205,10 @@ const ProductTable = (props: Table) => {
       })
       .catch((err) => {
         console.log(err);
-        setIsLoading(false);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -263,7 +278,8 @@ const ProductTable = (props: Table) => {
                       >
                         <Switch
                           key={i}
-                          id={`switch-${i}-${ind}-${data._id}`}
+                          id={`switch-${i}-${data._id}`}
+                          // checked={String(value) === "aktif" ? true : false}
                           defaultChecked={
                             String(value) === "aktif" ? true : false
                           }
@@ -345,7 +361,7 @@ const ProductTable = (props: Table) => {
                             });
                             break;
                           case "wisata":
-                            getDataProduk(data, identifier);
+                            getDataProduk(data, identifier, "edit");
                             break;
                           default:
                             break;
@@ -387,6 +403,7 @@ const ProductTable = (props: Table) => {
                             });
                             break;
                           case "wisata":
+                            getDataProduk(data, identifier);
                             break;
                           default:
                             break;
@@ -489,6 +506,7 @@ const ProductTable = (props: Table) => {
       >
         <DialogHeader>Update Gambar.</DialogHeader>
         <DialogBody divider>
+          {/*//NOTE - Update Gambar Mobil*/}
           {identifier === "car" && (
             <div className="space-y-3">
               <Image
@@ -561,6 +579,39 @@ const ProductTable = (props: Table) => {
                 <span className="text-red-500">*</span> Pastikan ukuran file
                 tidak lebih dari 5 Mb.
               </p>
+            </div>
+          )}
+          {/*//NOTE - Update Gambar Wisata*/}
+          {identifier === "wisata" && (
+            <div className="space-y-3">
+              <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-3">
+                <h2>Paket ke berapa yang ingin anda update?</h2>
+                <div className="flex">
+                  {produk.selectedDataWisataImage &&
+                    produk.selectedDataWisataImage.map((gambarPaket, i) => (
+                      <Radio
+                        key={i}
+                        id={`type-${i}`}
+                        name="type"
+                        label={`Paket ${i + 1}`}
+                        onClick={() => {
+                          {
+                            /*//TODO - Ngerefresh selected multiple image file pas onclick */
+                          }
+                          dispatch({
+                            type: "produk/setNewDataImage",
+                            payload: gambarPaket,
+                          });
+                        }}
+                        ripple={true}
+                        defaultChecked={i === 0}
+                      />
+                    ))}
+                </div>
+              </div>
+              {/*//TODO - Ngebuat input multiple image file & ngedisplay semua image yang dipilih */}
+              <input type="file" multiple />
+              {/*//TODO - Ngebuat button update image && button delete all image */}
             </div>
           )}
         </DialogBody>

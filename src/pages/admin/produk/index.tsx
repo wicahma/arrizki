@@ -31,28 +31,25 @@ export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
-      if (getState().produk.tableWisata.length === 0) {
-        await axios
-          .get(`${process.env.API_URL}/api/v1/wisata`)
-          .then((datas) => {
-            const { data } = datas.data;
-            dispatch(setWisataState(data));
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-      if (getState().produk.tableMobil.length === 0) {
-        await axios
-          .get(`${process.env.API_URL}/api/v1/car`)
-          .then((datas) => {
-            const { data } = datas.data;
-            dispatch(setMobilState(data));
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
+      await axios
+        .get(`${process.env.API_URL}/api/v1/wisata`)
+        .then((datas) => {
+          const { data } = datas.data;
+          console.log(datas.data.data);
+          dispatch(setWisataState(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      await axios
+        .get(`${process.env.API_URL}/api/v1/car`)
+        .then((datas) => {
+          const { data } = datas.data;
+          dispatch(setMobilState(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       return { props: {} };
     }
@@ -75,6 +72,7 @@ const index = (props: Produk) => {
         default:
           break;
       }
+      console.log({ methods });
       return await axios({
         method: methods,
         url: `${process.env.API_URL}/api/v1/${identifier}${
@@ -89,7 +87,7 @@ const index = (props: Produk) => {
           }`,
         },
       })
-        .then(({ status, data }) => {
+        .then((response) => {
           dispatch({
             type: "main/setLoading",
             payload: false,
@@ -98,18 +96,22 @@ const index = (props: Produk) => {
             type: "main/setAlert",
             payload: {
               type: "success",
-              message: `${data.message}, status ${status}`,
+              message: `${response.data.message}, status ${response.status}`,
               show: true,
             },
           });
-          console.log(data);
-          console.log(status);
+          console.log({ response });
+          console.log({ identifier });
 
           axios
             .get(`${process.env.API_URL}/api/v1/${identifier}`)
             .then((datas) => {
               const { data } = datas.data;
-              dispatch({ type: "produk/setMobilState", payload: data });
+              console.log({ data });
+              if (identifier === "wisata")
+                dispatch({ type: "produk/setWisataState", payload: data });
+              else if (identifier === "mobil")
+                dispatch({ type: "produk/setMobilState", payload: data });
             })
             .catch((err) => {
               console.log(err);
@@ -154,7 +156,6 @@ const index = (props: Produk) => {
                 payload: true,
               });
               setSubmitting(true);
-              console.log({ values });
               fetchProduk("wisata", values, values._id);
               return false;
             }}
@@ -181,7 +182,7 @@ const index = (props: Produk) => {
                   tableTitle={[
                     "ID",
                     "Nama Paket",
-                    "ID Jenis Paket",
+                    "List Wisata",
                     "Harga Minimum",
                     "Status",
                     "Gambar",
