@@ -9,7 +9,7 @@ import {
   Tooltip,
 } from "@material-tailwind/react";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { mobilPilihan, wisataPilihan } from "@/interfaces/produkInterface";
 import { useFormikContext } from "formik";
 import axios from "axios";
@@ -31,7 +31,13 @@ const ProductTable = (props: Table) => {
     { values, setFieldValue }: any = useFormikContext(),
     dispatch = useDispatch(),
     produk = useSelector((state: reduxState) => state.produk),
+    gambarWisata = React.useRef<HTMLInputElement>(null),
+    [dataGambarWisata, setDataGambarWisata] = React.useState<any>([]),
     gambar = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    console.log(dataGambarWisata);
+  }, [dataGambarWisata]);
 
   const getDataProduk = async (
     data: any,
@@ -602,6 +608,9 @@ const ProductTable = (props: Table) => {
                             type: "produk/setNewDataImage",
                             payload: gambarPaket,
                           });
+                          setDataGambarWisata(undefined);
+                          gambarWisata.current!.value = "";
+                          gambarWisata.current!.files = null;
                         }}
                         ripple={true}
                         defaultChecked={i === 0}
@@ -610,7 +619,24 @@ const ProductTable = (props: Table) => {
                 </div>
               </div>
               {/*//TODO - Ngebuat input multiple image file & ngedisplay semua image yang dipilih */}
-              <input type="file" multiple />
+              <input
+                type="file"
+                multiple
+                ref={gambarWisata}
+                onChange={(_) => setDataGambarWisata(_.target.files)}
+              />
+              <Button
+                color="red"
+                type="button"
+                onClick={() => {
+                  setDataGambarWisata(undefined);
+                  gambarWisata.current!.value = "";
+                  gambarWisata.current!.files = null;
+                }}
+                ripple
+              >
+                Hapus File
+              </Button>
               {/*//TODO - Ngebuat button update image && button delete all image */}
             </div>
           )}
