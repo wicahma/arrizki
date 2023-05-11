@@ -57,7 +57,7 @@ export default interface Produk {
   selectedDataWisata: wisataPilihan | null;
   selectedDataMobil: mobilPilihan | null;
   selectedDataWisataImage: jenisPaket[] | null;
-  newWistaImage: Object | null;
+  newWisataImage: any | null;
 }
 
 interface pax {

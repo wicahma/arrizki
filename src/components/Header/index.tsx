@@ -1,7 +1,7 @@
 import React from "react";
 import Navbars from "../Navbar";
 
-const Index = (props: any) => {
+const index = (props: any) => {
   return (
     <>
       <Navbars />
@@ -9,4 +9,4 @@ const Index = (props: any) => {
   );
 };
 
-export default Index;
+export default index;

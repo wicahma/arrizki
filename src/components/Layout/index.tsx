@@ -16,7 +16,7 @@ interface LayoutProps {
   className?: string;
 }
 
-const Index = (props: LayoutProps) => {
+const index = (props: LayoutProps) => {
   const { pageTitle, children, className } = props,
     router = useRouter(),
     dispatch = useDispatch(),
@@ -171,4 +171,4 @@ const Index = (props: LayoutProps) => {
   );
 };
 
-export default Index;
+export default index;

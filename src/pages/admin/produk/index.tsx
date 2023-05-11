@@ -35,7 +35,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
         .get(`${process.env.API_URL}/api/v1/wisata`)
         .then((datas) => {
           const { data } = datas.data;
-          console.log(datas.data.data);
           dispatch(setWisataState(data));
         })
         .catch((err) => {

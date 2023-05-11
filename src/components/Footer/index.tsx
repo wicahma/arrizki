@@ -3,7 +3,7 @@ import FooterList from "./FooterList";
 import Link from "next/link";
 import Image from "next/image";
 
-const Index = (props: any) => {
+const index = (props: any) => {
   return (
     <div className="bg-white pt-10 z-0">
       <div className="flex flex-col mx-auto container gap-10 divide-y-4 divide-red-400">
@@ -96,4 +96,4 @@ const Index = (props: any) => {
   );
 };
 
-export default Index;
+export default index;

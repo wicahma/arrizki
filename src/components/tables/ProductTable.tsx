@@ -31,13 +31,13 @@ const ProductTable = (props: Table) => {
     { values, setFieldValue }: any = useFormikContext(),
     dispatch = useDispatch(),
     produk = useSelector((state: reduxState) => state.produk),
+    [dataUpdateGambar, setDataGambar] = React.useState<any>([]),
     gambarWisata = React.useRef<HTMLInputElement>(null),
-    [dataGambarWisata, setDataGambarWisata] = React.useState<any>([]),
-    gambar = React.useRef<HTMLInputElement>(null);
+    gambarCar = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    console.log(dataGambarWisata);
-  }, [dataGambarWisata]);
+    setDataGambar([]);
+  }, [handleOpenEditImage]);
 
   const getDataProduk = async (
     data: any,
@@ -229,8 +229,84 @@ const ProductTable = (props: Table) => {
   };
 
   //NOTE - Edit Image Handler
-  const handleEditImage = (data: mobilPilihan | wisataPilihan | undefined) => {
-    alert("data gambar berhasil di update");
+  const handleEditImage = async (
+    data: Array<File> | undefined,
+    identifier: string | undefined,
+    id: string | undefined
+  ): Promise<any> => {
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
+    if (!id) {
+      dispatch({
+        type: "main/setLoading",
+        payload: false,
+      });
+      return dispatch({
+        type: "main/setAlert",
+        payload: {
+          type: "error",
+          message:
+            "ID belum terinput, Silahkan pilih ulang data yang akan diupdate terlebih dahulu",
+          show: true,
+        },
+      });
+    }
+    const formData = new FormData();
+    data?.map((file, i) => {
+      formData.append("images", file);
+    });
+    axios
+      .put(
+        `${process.env.API_URL}/api/v1/${identifier}/${id}/images`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              (localStorage.getItem("token") ||
+                sessionStorage.getItem("token")) ??
+              ""
+            }`,
+          },
+        }
+      )
+      .then((res) => {
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "success",
+            message: res.data.message,
+            show: true,
+          },
+        });
+        axios.get(`${process.env.API_URL}/api/v1/${identifier}`).then((res) => {
+          let state;
+          switch (identifier) {
+            case "wisata":
+              state = "produk/setWisataState";
+              break;
+            case "car":
+              state = "produk/setMobilState";
+              break;
+            default:
+              break;
+          }
+          dispatch({ type: state, payload: res.data.data });
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "error",
+            message: "Terjadi kesalahan pada server! data gambar diupdate!",
+            show: true,
+          },
+        });
+        console.log(err);
+      })
+      .finally(() => dispatch({ type: "main/setLoading", payload: false }));
   };
 
   //NOTE - Handle Preview Page
@@ -508,7 +584,18 @@ const ProductTable = (props: Table) => {
       <Dialog
         open={handleOpenEditImage}
         size={"xs"}
-        handler={() => setHandleOpenEditImage(!handleOpenEditImage)}
+        handler={() => {
+          setHandleOpenEditImage(!handleOpenEditImage);
+          setDataGambar([]);
+          if (gambarWisata.current) {
+            gambarWisata.current!.value = "";
+            gambarWisata.current!.files = null;
+          }
+          if (gambarCar.current) {
+            gambarCar.current!.value = "";
+            gambarCar.current!.files = null;
+          }
+        }}
       >
         <DialogHeader>Update Gambar.</DialogHeader>
         <DialogBody divider>
@@ -517,8 +604,8 @@ const ProductTable = (props: Table) => {
             <div className="space-y-3">
               <Image
                 src={
-                  values.images
-                    ? URL.createObjectURL(values.images)
+                  dataUpdateGambar.length > 0
+                    ? URL.createObjectURL(dataUpdateGambar[0])
                     : `${process.env.API_URL}/images/${produk.selectedDataMobil?.imageId}`
                 }
                 alt={`Gambar Mobil - ${produk.selectedDataMobil?.imageId}`}
@@ -526,10 +613,10 @@ const ProductTable = (props: Table) => {
                 width={500}
                 className="w-full aspect-auto rounded-lg"
               />
-              <div className="flex justify-center items-center gap-5">
+              <div className="flex justify-center items-center gap-3">
                 <input
                   type="file"
-                  ref={gambar}
+                  ref={gambarCar}
                   accept="image/*"
                   onChange={(image: any) => {
                     const data = image.target.files[0];
@@ -537,12 +624,12 @@ const ProductTable = (props: Table) => {
                       return (
                         data.type.includes("image") &&
                         data.size <= 5_000_000 &&
-                        setFieldValue("images", data)
+                        setDataGambar([data])
                       );
                     }
                     image.target.files = [];
                     image.target.value = "";
-                    return setFieldValue("images", undefined);
+                    return setDataGambar([]);
                   }}
                   className="relative m-0 block w-full min-w-0 flex-auto rounded-md border border-solid border-gray-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-gray-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit file:bg-gray-400 file:px-3 file:py-[0.32rem] file:text-white file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-gray-200 focus:border-primary focus:text-gray-700 focus:shadow-te-primary focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:file:bg-gray-700 dark:file:text-gray-100 dark:focus:border-primary"
                 />
@@ -555,13 +642,13 @@ const ProductTable = (props: Table) => {
                   className="bg-white text-gray-700 shadow-xl"
                 >
                   <Button
-                    disabled={!values.images}
+                    disabled={dataUpdateGambar.length > 0 ? false : true}
                     className="p-2 flex justify-center items-center aspect-square rounded-full"
                     color="red"
                     onClick={() => {
-                      setFieldValue("images", undefined);
-                      gambar.current!.value = "";
-                      gambar.current!.files = null;
+                      setDataGambar([]);
+                      gambarCar.current!.value = "";
+                      gambarCar.current!.files = null;
                     }}
                   >
                     <svg
@@ -600,43 +687,96 @@ const ProductTable = (props: Table) => {
                         id={`type-${i}`}
                         name="type"
                         label={`Paket ${i + 1}`}
-                        onClick={() => {
-                          {
-                            /*//TODO - Ngerefresh selected multiple image file pas onclick */
-                          }
+                        onClick={() =>
                           dispatch({
-                            type: "produk/setNewDataImage",
+                            type: "produk/setNewWisataImage",
                             payload: gambarPaket,
-                          });
-                          setDataGambarWisata(undefined);
-                          gambarWisata.current!.value = "";
-                          gambarWisata.current!.files = null;
-                        }}
+                          })
+                        }
                         ripple={true}
-                        defaultChecked={i === 0}
+                        // defaultChecked={i === 0}
                       />
                     ))}
                 </div>
               </div>
-              {/*//TODO - Ngebuat input multiple image file & ngedisplay semua image yang dipilih */}
-              <input
-                type="file"
-                multiple
-                ref={gambarWisata}
-                onChange={(_) => setDataGambarWisata(_.target.files)}
-              />
-              <Button
-                color="red"
-                type="button"
-                onClick={() => {
-                  setDataGambarWisata(undefined);
-                  gambarWisata.current!.value = "";
-                  gambarWisata.current!.files = null;
-                }}
-                ripple
-              >
-                Hapus File
-              </Button>
+              {/*//TODO - Ngebuat input multiple image file & ngedisplay semua image yang dipilih DONE*/}
+              <div className="flex flex-nowrap gap-3">
+                <input
+                  type="file"
+                  multiple
+                  ref={gambarWisata}
+                  accept="image/*"
+                  onChange={(_: any) => {
+                    const data: FileList = _.target.files;
+                    setDataGambar([]);
+                    if (data) {
+                      return Array.from(data).forEach((file: File) => {
+                        file.type.includes("image") &&
+                          file.size <= 5_000_000 &&
+                          setDataGambar((prev: any) => [...prev, file]);
+                      });
+                    }
+                  }}
+                  className="relative m-0 block w-full min-w-0 flex-auto rounded-md border border-solid border-gray-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-gray-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:bg-gray-400 file:px-3 file:py-[0.45rem] file:text-white file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-gray-200 focus:border-primary focus:text-gray-700 focus:shadow-te-primary focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:file:bg-gray-700 dark:file:text-gray-100 dark:focus:border-primary"
+                />
+                <Tooltip
+                  content={"Hapus data ini"}
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                  className="bg-white text-gray-700 shadow-xl"
+                >
+                  <Button
+                    ripple
+                    disabled={dataUpdateGambar.length > 0 ? false : true}
+                    onClick={() => {
+                      setDataGambar([]);
+                      gambarWisata.current!.value = "";
+                      gambarWisata.current!.files = null;
+                    }}
+                    className="p-2 rounded-full"
+                    color="red"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 aspect-square"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                      />
+                    </svg>
+                  </Button>
+                </Tooltip>
+              </div>
+              <p className="text-xs font-light">
+                <span className="text-red-500">*</span> Pastikan ukuran setiap
+                file tidak lebih dari 5 Mb.
+              </p>
+              <div>
+                {dataUpdateGambar.length > 0 ? (
+                  <div>
+                    <h3 className="text-lg text-black/80 text-start">
+                      List Gambar
+                    </h3>
+                    {dataUpdateGambar.map((gambar: File, i: number) => (
+                      <p key={i} className="text-black/70">
+                        - {gambar.name}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="bg-blue-500 text-white rounded-md px-3 py-0">
+                    File gambar belum ditambahkan
+                  </p>
+                )}
+              </div>
               {/*//TODO - Ngebuat button update image && button delete all image */}
             </div>
           )}
@@ -645,7 +785,18 @@ const ProductTable = (props: Table) => {
           <Button
             variant="text"
             color="red"
-            onClick={() => setHandleOpenEditImage(!handleOpenEditImage)}
+            onClick={() => {
+              setHandleOpenEditImage(!handleOpenEditImage);
+              setDataGambar([]);
+              if (gambarWisata.current) {
+                gambarWisata.current!.value = "";
+                gambarWisata.current!.files = null;
+              }
+              if (gambarCar.current) {
+                gambarCar.current!.value = "";
+                gambarCar.current!.files = null;
+              }
+            }}
             className="mr-1"
           >
             <span>Batal update</span>
@@ -653,7 +804,20 @@ const ProductTable = (props: Table) => {
           <Button
             variant="gradient"
             color="green"
+            disabled={dataUpdateGambar.length > 0 ? false : true}
             onClick={() => {
+              let id;
+              switch (identifier) {
+                case "car":
+                  id = produk.selectedDataMobil?._id;
+                  break;
+                case "wisata":
+                  id = produk.newWisataImage?._id;
+                  break;
+                default:
+                  break;
+              }
+              handleEditImage(dataUpdateGambar, identifier, id);
               setHandleOpenEditImage(!handleOpenEditImage);
             }}
           >

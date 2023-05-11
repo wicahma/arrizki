@@ -14,7 +14,7 @@ const initialState: Produk = {
   selectedDataWisata: null,
   selectedDataMobil: null,
   selectedDataWisataImage: null,
-  newWistaImage: null,
+  newWisataImage: null,
 };
 
 export const produkSlice = createSlice({
@@ -35,10 +35,10 @@ export const produkSlice = createSlice({
       };
     },
 
-    setNewWistaImage(state, action) {
+    setNewWisataImage(state, action) {
       return {
         ...state,
-        newWistaImage: action.payload,
+        newWisataImage: action.payload,
       };
     },
 
@@ -86,9 +86,9 @@ export const produkSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
-      console.group("HYDRATE");
-      console.log({ action, state });
-      console.groupEnd();
+      // console.group("HYDRATE");
+      // console.log({ action, state });
+      // console.groupEnd();
       return {
         ...state,
         ...action.payload.produk,

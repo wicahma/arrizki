@@ -8,11 +8,42 @@ import {
   TabsHeader,
 } from "@material-tailwind/react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PesananTable from "@/components/tables/PesananTable";
+import { wrapper } from "@/store/store";
+import { setReservasiMobil, setReservasiWisata } from "@/store/pesananSlice";
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ req, res, ...etc }) => {
+      const { dispatch, getState } = store;
+      await axios
+        .get(`${process.env.API_URL}/api/v1/res-wisata`)
+        .then((datas) => {
+          const { data } = datas.data;
+          dispatch(setReservasiWisata(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      await axios
+        .get(`${process.env.API_URL}/api/v1/res-car`)
+        .then((datas) => {
+          const { data } = datas.data;
+          dispatch(setReservasiMobil(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      return { props: {} };
+    }
+);
 
 const index = (props: any) => {
-  const [formOpener, setForm] = React.useState<boolean>(true),
+  const { reservasiMobil, reservasiWisata } = useSelector(
+      (state: any) => state.pesanan
+    ),
     data = [
       {
         label: "Reservasi Wisata",
@@ -30,7 +61,7 @@ const index = (props: any) => {
                 "Lokasi Jemput",
                 "Pesanan Tambahan",
               ]}
-              tableData={[""]}
+              tableData={reservasiWisata}
             />
           </>
         ),
@@ -50,8 +81,8 @@ const index = (props: any) => {
                 "Waktu Antar",
                 "Lokasi Antar",
                 "Pesanan Tambahan",
-                ]}
-              tableData={[""]}
+              ]}
+              tableData={reservasiMobil}
             />
           </>
         ),
@@ -97,9 +128,6 @@ const index = (props: any) => {
               show: true,
             },
           });
-          console.log(data);
-          console.log(status);
-
           axios
             .get(`${process.env.API_URL}/api/v1/${identifier}`)
             .then((datas) => {
@@ -109,7 +137,6 @@ const index = (props: any) => {
             .catch((err) => {
               console.log(err);
             });
-
           return data;
         })
         .catch((err) => {
