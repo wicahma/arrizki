@@ -84,14 +84,10 @@ const PaketWisataCard = ({ paketData, index }: any) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          {[
-            "/assets/images/telaga.png",
-            "/assets/images/telaga.png",
-            "/assets/images/telaga.png",
-          ].map((item: string, index: number) => {
+          {images.map((item: string, index: number) => {
             return (
               <Image
-                src={item}
+                src={`${process.env.API_URL}/public/images/${item}`}
                 alt={`Gambar ${index}`}
                 height={220}
                 width={850}

@@ -2,11 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["via.placeholder.com", "localhost"],
+    domains: ["via.placeholder.com", "localhost", "api.arrizkitour.com"],
   },
   env: {
-    API_URL: "http://localhost:4000",
-  }
+    API_URL: "https://api.arrizkitour.com",
+  },
 };
 
 module.exports = nextConfig;

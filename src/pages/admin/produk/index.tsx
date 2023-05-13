@@ -71,7 +71,7 @@ const index = (props: Produk) => {
         default:
           break;
       }
-      console.log({ methods });
+      console.log({ data });
       return await axios({
         method: methods,
         url: `${process.env.API_URL}/api/v1/${identifier}${

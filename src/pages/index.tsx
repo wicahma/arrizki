@@ -33,7 +33,7 @@ export default function Home() {
             <Link href={""}>
               <Button color="red">Tentang Kami</Button>
             </Link>
-            <Link href={"/paket-wisata"}>
+            <Link href={"/paket-tour/private"}>
               <Button color="red">Cari Wisata</Button>
             </Link>
           </div>
@@ -155,7 +155,7 @@ export default function Home() {
             <h1 className="text-4xl font-semibold mb-3">
               Mulai perjalananmu bersama kami
             </h1>
-            <Link href={"/paket-wisata"}>
+            <Link href={"/paket-tour/private"}>
               <Button
                 color="red"
                 className="normal-case max-w-max font-normal text-sm py-2 text-white"

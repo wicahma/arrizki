@@ -18,7 +18,7 @@ const WisataCard = (props: WisataCardProps) => {
   return (
     <Link
       key={id}
-      href={`/paket-wisata/${title}/${id}/detail`}
+      href={`/paket-tour/private/${title}/${id}/detail`}
       className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
     >
       <div className="bg-black flex flex-col text-left z-10 group-hover:bottom-10 bottom-0 transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">
@@ -35,7 +35,11 @@ const WisataCard = (props: WisataCardProps) => {
           </ul>
         </div>
         <Image
-          src={image}
+          src={
+            image === "https://via.placeholder.com/150"
+              ? image
+              : `${process.env.API_URL}/public/images/${image}`
+          }
           alt={`wisata-${image}`}
           className="absolute opacity-50 top-0 w-full h-full object-cover left-0"
           width={300}

@@ -314,7 +314,7 @@ const ProductTable = (props: Table) => {
     switch (identifier) {
       case "wisata":
         window.open(
-          `/paket-wisata/${data?.namaPaket}/${data?._id}/detail`,
+          `/paket-tour/private/${data?.namaPaket}/${data?._id}/detail`,
           "_blank"
         );
         break;

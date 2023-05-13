@@ -13,7 +13,9 @@ const NavList = (props: any) => {
         variant="small"
         color="blue-gray"
         className={`p-1 font-normal relative after:absolute hover:after:w-full ${
-          pathname === "/" ? "after:w-full after:bg-red-500" : "after:w-0 after:bg-red-300"
+          pathname === "/"
+            ? "after:w-full after:bg-red-500"
+            : "after:w-0 after:bg-red-300"
         } after:h-[2px] after:bottom-1 after:left-0 after:transition-all after:duration-300`}
       >
         <Link href="/" className="flex items-center">
@@ -25,11 +27,13 @@ const NavList = (props: any) => {
         variant="small"
         color="blue-gray"
         className={`p-1 font-normal relative after:absolute hover:after:w-full ${
-          pathname.includes("paket-wisata") ? "after:w-full after:bg-red-500 " : "after:w-0 after:bg-red-300"
+          pathname.includes("paket-tour")
+            ? "after:w-full after:bg-red-500 "
+            : "after:w-0 after:bg-red-300"
         } after:h-[2px] after:bottom-1 after:left-0 after:transition-all after:duration-300`}
       >
-        <Link href="/paket-wisata" className="flex items-center">
-          Paket Wisata
+        <Link href="/paket-tour/private" className="flex items-center">
+          Paket Tour
         </Link>
       </Typography>
       <Typography
@@ -37,7 +41,9 @@ const NavList = (props: any) => {
         variant="small"
         color="blue-gray"
         className={`p-1 font-normal relative after:absolute hover:after:w-full ${
-          pathname.includes("sewa-mobil") ? "after:w-full after:bg-red-500" : "after:w-0 after:bg-red-300"
+          pathname.includes("sewa-mobil")
+            ? "after:w-full after:bg-red-500"
+            : "after:w-0 after:bg-red-300"
         } after:h-[2px] after:bottom-1 after:left-0 after:transition-all after:duration-300`}
       >
         <Link href="/sewa-mobil" className="flex items-center">

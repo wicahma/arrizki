@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
-import TextHeader from "@/components/TextHeader";
+import TextHeader from "@/components/TextHeader/main";
 import MobilCard from "@/components/micros/cards/MobilCard";
 import "@/styles/Sewa.module.css";
 import MobilForm from "@/components/micros/forms/MobilForm";

@@ -1,5 +1,5 @@
 import React from "react";
-import TextHeader from "../TextHeader";
+import TextHeader from "../TextHeader/main";
 interface LayoutProps {
   children?: React.ReactNode;
   title: string;
