@@ -8,13 +8,18 @@ const hydrate = createAction<AppState>(HYDRATE);
 const initialState: Produk = {
   tableWisata: [],
   tableMobil: [],
+  tableOutbond: [],
   selectedCar: "",
   selectedJumlahPeserta: "",
   paketWisata: [],
+  paketOutbond: [],
   selectedDataWisata: null,
   selectedDataMobil: null,
+  selectedDataOutbond: null,
   selectedDataWisataImage: null,
+  selectedDataOutbondImage: null,
   newWisataImage: null,
+  newOutbondImage: null,
 };
 
 export const produkSlice = createSlice({
@@ -25,6 +30,34 @@ export const produkSlice = createSlice({
       return {
         ...state,
         tableMobil: action.payload,
+      };
+    },
+
+    setOutbondState(state, action) {
+      return {
+        ...state,
+        tableOutbond: action.payload,
+      };
+    },
+
+    setSelectedDataOutbond(state, action) {
+      return {
+        ...state,
+        selectedDataOutbond: action.payload,
+      };
+    },
+
+    setSelectedDataOutbondImage(state, action) {
+      return {
+        ...state,
+        selectedDataOutbondImage: action.payload,
+      };
+    },
+
+    setNewOutbondImage(state, action) {
+      return {
+        ...state,
+        newOutbondImage: action.payload,
       };
     },
 
@@ -77,6 +110,13 @@ export const produkSlice = createSlice({
       };
     },
 
+    setPaketOutbond(state, action) {
+      return {
+        ...state,
+        paketOutbond: action.payload,
+      };
+    },
+
     setSelectedJumlahPeserta(state, action) {
       return {
         ...state,
@@ -104,6 +144,8 @@ export const {
   setSelectedDataMobil,
   setSelectedCar,
   setPaketWisata,
+  setPaketOutbond,
+  setOutbondState,
   setSelectedJumlahPeserta,
 } = produkSlice.actions;
 

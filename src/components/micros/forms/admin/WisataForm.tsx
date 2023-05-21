@@ -269,7 +269,7 @@ const WisataForm = (props: any) => {
                                   color="orange"
                                   size="lg"
                                   label="Jumlah Orang"
-                                  type="number"
+                                  type="text"
                                   value={
                                     values?.jenisPaket[index].pax[paxIndex]
                                       .jumlah ?? ""
@@ -286,7 +286,7 @@ const WisataForm = (props: any) => {
                                   color="orange"
                                   size="lg"
                                   label="Harga"
-                                  type="number"
+                                  type="text"
                                   value={
                                     values?.jenisPaket[index].pax[paxIndex]
                                       .harga ?? ""
@@ -336,6 +336,14 @@ const WisataForm = (props: any) => {
           variant="text"
           onClick={() => {
             dispatch({ type: "produk/setSelectedDataWisata", payload: null });
+            dispatch({
+              type: "main/setAlert",
+              payload: {
+                type: "info",
+                message: "Kolom berhasil dibersihkan!",
+                show: true,
+              },
+            });
             resetForm();
           }}
           // disabled={!values ? true : false}
@@ -345,7 +353,17 @@ const WisataForm = (props: any) => {
         <Button
           color="green"
           onClick={() => {
-            console.log(errors);
+            if (errors) {
+              dispatch({
+                type: "main/setAlert",
+                payload: {
+                  type: "error",
+                  message:
+                    "Terdapat kolom yang belum diisi, silahkan di cek kembali!",
+                  show: true,
+                },
+              });
+            }
           }}
           type="submit"
           disabled={isSubmitting}

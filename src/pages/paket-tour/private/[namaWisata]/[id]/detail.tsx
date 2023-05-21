@@ -92,13 +92,12 @@ const wisataValidator = Yup.object().shape({
 
 //NOTE - Main page Function
 const DetailWisata = (props: any) => {
-  const { query } = useRouter(),
-    dispatch = useDispatch(),
+  const dispatch = useDispatch(),
     [formOpener, setForm] = useState<Boolean>(true),
     [onTop, setOnTop] = useState<Boolean>(false),
     [wisataFormData, setWisataFormData] = useState<WisataFormProps>(),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
-    [isLoading, setIsLoading] = useState<boolean>(false),
+    // [isLoading, setIsLoading] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
     paketWisata: wisata = useSelector((state: any) => state.produk.paketWisata),
     selectedJumlahPeserta = useSelector(
@@ -140,12 +139,14 @@ const DetailWisata = (props: any) => {
   }, [headerRef]);
 
   const handleCreateReservasi = (values: WisataFormProps | undefined): void => {
-    setIsLoading(true);
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
     setHandleOpenDialog(false);
     axios
       .post(`${process.env.API_URL}/api/v1/res-wisata`, values)
       .then((_) => {
-        setIsLoading(false);
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -156,7 +157,6 @@ const DetailWisata = (props: any) => {
         });
       })
       .catch((_) => {
-        setIsLoading(false);
         dispatch({
           type: "main/setAlert",
           payload: {
@@ -166,6 +166,12 @@ const DetailWisata = (props: any) => {
           },
         });
         console.log(_);
+      })
+      .finally(() => {
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
       });
   };
 

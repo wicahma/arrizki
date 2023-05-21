@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
 import ProductTable from "@/components/tables/ProductTable";
 import {
@@ -12,20 +12,26 @@ import {
 import Produk, {
   createMobil,
   createMobilData,
+  createOubondData,
   createWisata,
   createWisataData,
   mobilValidationSchema,
+  outbondValidationSchema,
   wisataValidationSchema,
 } from "../../../interfaces/produkInterface";
 import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setMobilState, setWisataState } from "@/store/produkSlice";
+import {
+  setMobilState,
+  setOutbondState,
+  setWisataState,
+} from "@/store/produkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Formik } from "formik";
 import WisataForm from "@/components/micros/forms/admin/WisataForm";
 import MobilForm from "@/components/micros/forms/admin/MobilForm";
-import Loading from "@/components/micros/loading";
 import { reduxState } from "@/interfaces/reduxInterface";
+import OutbondForm from "@/components/micros/forms/admin/OutbondForm";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -45,6 +51,15 @@ export const getServerSideProps = wrapper.getServerSideProps(
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setMobilState(data));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      await axios
+        .get(`${process.env.API_URL}/api/v1/outbond`)
+        .then((datas) => {
+          const { data } = datas.data;
+          dispatch(setOutbondState(data));
         })
         .catch((err) => {
           console.log(err);
@@ -107,10 +122,18 @@ const index = (props: Produk) => {
             .then((datas) => {
               const { data } = datas.data;
               console.log({ data });
-              if (identifier === "wisata")
-                dispatch({ type: "produk/setWisataState", payload: data });
-              else if (identifier === "mobil")
-                dispatch({ type: "produk/setMobilState", payload: data });
+              switch (identifier) {
+                case "wisata":
+                  dispatch({ type: "produk/setWisataState", payload: data });
+                  break;
+                case "car":
+                  dispatch({ type: "produk/setMobilState", payload: data });
+                  break;
+                case "outbond":
+                  dispatch({ type: "produk/setOutbondState", payload: data });
+                default:
+                  break;
+              }
             })
             .catch((err) => {
               console.log(err);
@@ -137,11 +160,13 @@ const index = (props: Produk) => {
 
   const wisata = useSelector((state: reduxState) => state.produk.tableWisata),
     mobil = useSelector((state: reduxState) => state.produk.tableMobil),
-    [formOpener, setForm] = React.useState<boolean>(true),
+    outbond = useSelector((state: reduxState) => state.produk.tableOutbond);
+
+  const [formOpener, setForm] = React.useState<boolean>(true),
     data = [
       {
-        label: "Wisata",
-        value: "wisata",
+        label: "Private Wisata",
+        value: "private-wisata",
         desc: (
           <Formik
             initialValues={createWisataData}
@@ -246,6 +271,7 @@ const index = (props: Produk) => {
                     "Nama Mobil",
                     "Seat",
                     "Harga",
+                    "Fasilitas",
                     "Gambar",
                     "Status",
                   ]}
@@ -256,12 +282,66 @@ const index = (props: Produk) => {
           </Formik>
         ),
       },
+      {
+        label: "Outbond",
+        value: "outbond",
+        desc: (
+          <Formik
+            initialValues={createOubondData}
+            validationSchema={outbondValidationSchema}
+            validateOnChange
+            validateOnMount
+            onSubmit={async (values, { setSubmitting }) => {
+              setSubmitting(true);
+              dispatch({
+                type: "main/setLoading",
+                payload: true,
+              });
+              setSubmitting(true);
+              fetchProduk("outbond", values, values._id);
+              return false;
+            }}
+          >
+            <Form>
+              <Button
+                onClick={() => setForm(!formOpener)}
+                color="red"
+                fullWidth
+                className="mb-10"
+              >{`${!formOpener ? "Buka form" : "Tutup form"}`}</Button>
+              <div
+                className={`${
+                  formOpener
+                    ? "block border-y-2 border-y-gray-600 py-10 mb-10"
+                    : "hidden"
+                }`}
+              >
+                <OutbondForm />
+              </div>
+              <div className="w-full overflow-x-auto">
+                <ProductTable
+                  identifier="outbond"
+                  tableTitle={[
+                    "ID",
+                    "Nama Tempat",
+                    "Keterangan",
+                    "Harga Minimum",
+                    "Status",
+                    "Gambar",
+                  ]}
+                  tableData={outbond}
+                />
+              </div>
+            </Form>
+          </Formik>
+        ),
+      },
     ];
   return (
     <Layout className="flex" pageTitle="Produk">
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
-        <Tabs value="wisata" className="max-w-full">
-          <TabsHeader className="">
+        <Tabs value="outbond" className="max-w-full">
+          <TabsHeader>
             {data.map(({ label, value }) => (
               <Tab key={value} value={value}>
                 {label}

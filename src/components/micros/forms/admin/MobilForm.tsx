@@ -7,6 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   Input,
+  Textarea,
   Tooltip,
 } from "@material-tailwind/react";
 import { ErrorMessage, useFormikContext } from "formik";
@@ -39,6 +40,7 @@ const MobilForm = (props: any) => {
       setFieldValue("nama", dataMobilPilihan.unitName);
       setFieldValue("seat", dataMobilPilihan.seat);
       setFieldValue("harga", dataMobilPilihan.pricePerDay);
+      setFieldValue("fasilitas", dataMobilPilihan.fasilitas);
       setFieldValue("fetchType", "update");
     }
   }, [dataMobilPilihan]);
@@ -62,7 +64,7 @@ const MobilForm = (props: any) => {
         value={values.nama ?? ""}
       />
       <Input
-        type="number"
+        type="text"
         color="orange"
         label={`${errors.seat && touched.seat ? errors.seat : "Seat"}`}
         onChange={(e) => setFieldValue("seat", e.target.value)}
@@ -70,7 +72,7 @@ const MobilForm = (props: any) => {
         value={values.seat ?? ""}
       />
       <Input
-        type="number"
+        type="text"
         color="orange"
         label={`${errors.harga && touched.harga ? errors.harga : "Harga"}`}
         onChange={(e) => {
@@ -78,6 +80,15 @@ const MobilForm = (props: any) => {
         }}
         error={errors.harga && touched.harga}
         value={values.harga ?? ""}
+      />
+      <Textarea
+        color="orange"
+        label={`${
+          errors.fasilitas && touched.fasilitas ? errors.fasilitas : "Fasilitas"
+        }`}
+        onChange={(e) => setFieldValue("fasilitas", e.target.value)}
+        error={errors.fasilitas && touched.fasilitas}
+        value={values.fasilitas ?? ""}
       />
       {dataMobilPilihan ? (
         <>
@@ -201,6 +212,14 @@ const MobilForm = (props: any) => {
           variant="text"
           onClick={() => {
             dispatch({ type: "produk/setSelectedDataMobil", payload: null });
+            dispatch({
+              type: "main/setAlert",
+              payload: {
+                type: "info",
+                message: "Kolom berhasil dibersihkan!",
+                show: true,
+              },
+            });
             resetForm();
           }}
           // disabled={!values ? true : false}
@@ -210,8 +229,17 @@ const MobilForm = (props: any) => {
         <Button
           color="green"
           onClick={() => {
-            console.log(values);
-            console.log(errors);
+            if (errors) {
+              dispatch({
+                type: "main/setAlert",
+                payload: {
+                  type: "error",
+                  message:
+                    "Terdapat kolom yang belum diisi, silahkan di cek kembali!",
+                  show: true,
+                },
+              });
+            }
           }}
           type="submit"
           disabled={isSubmitting}

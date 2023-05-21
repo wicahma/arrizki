@@ -2,37 +2,21 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
-interface WisataCardProps {
-  id: string;
-  title: string;
-  price: number;
-  rupiah: Intl.NumberFormat;
-  image: string;
-  className?: string;
-  listWisata?: string[];
-}
-
-const WisataCard = (props: WisataCardProps) => {
-  const { id, title, price, image, listWisata, rupiah } = props;
-
+const OutbondCard = (props: any) => {
+  const { id, title, minimumPrice, image, rupiah, keterangan } = props;
   return (
     <Link
       key={id}
-      href={`/paket-tour/private/${title}/${id}/detail`}
+      href={`/paket-tour/outbond/${title}/${id}/detail`}
       className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
     >
-      <div className="bg-black flex flex-col text-left z-10 group-hover:bottom-10 bottom-0 h-full transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">
+      <div className="bg-black flex flex-col text-left z-10 h-full group-hover:bottom-10 bottom-0 transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">
         <h3 className="text-xl z-10 font-semibold mb-1">{title}</h3>
         <p className="bg-red-500 z-10 rounded-md px-3 max-w-max">
-          {rupiah.format(price)}
+          {rupiah.format(minimumPrice)}
         </p>
-        <div className="z-10 my-10">
-          <ul className="list-disc list-inside">
-            {listWisata?.map((item, i) => {
-              if (i < 4) return <li key={i}>{item}</li>;
-            })}
-            <li>Dll</li>
-          </ul>
+        <div className="z-10  mt-20">
+          <p>{keterangan.slice(0,50)}...</p>
         </div>
         <Image
           src={
@@ -53,4 +37,4 @@ const WisataCard = (props: WisataCardProps) => {
   );
 };
 
-export default WisataCard;
+export default OutbondCard;

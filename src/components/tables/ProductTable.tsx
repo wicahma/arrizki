@@ -33,6 +33,7 @@ const ProductTable = (props: Table) => {
     produk = useSelector((state: reduxState) => state.produk),
     [dataUpdateGambar, setDataGambar] = React.useState<any>([]),
     gambarWisata = React.useRef<HTMLInputElement>(null),
+    gambarOutbond = React.useRef<HTMLInputElement>(null),
     gambarCar = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -60,6 +61,17 @@ const ProductTable = (props: Table) => {
                 })
               : dispatch({
                   type: "produk/setSelectedDataWisataImage",
+                  payload: res.data.data.jenisPaket,
+                });
+            break;
+          case "outbond":
+            type === "edit"
+              ? dispatch({
+                  type: "produk/setSelectedDataOutbond",
+                  payload: res.data.data,
+                })
+              : dispatch({
+                  type: "produk/setSelectedDataOutbondImage",
                   payload: res.data.data.jenisPaket,
                 });
             break;
@@ -99,11 +111,30 @@ const ProductTable = (props: Table) => {
           nama: dataSelected.unitName,
           harga: dataSelected.pricePerDay,
           seat: dataSelected.seat,
+          fasilitas: dataSelected.fasilitas,
+          status: status ? "aktif" : "nonaktif",
+        };
+        break;
+      case "outbond":
+        state = "produk/setOutbondState";
+        carried = {
+          ...dataSelected,
           status: status ? "aktif" : "nonaktif",
         };
         break;
       default:
-        break;
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        return dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "info",
+            message: "Fitur Update Status belum diatur!",
+            show: true,
+          },
+        });
     }
     dispatch({
       type: "main/setLoading",
@@ -172,6 +203,31 @@ const ProductTable = (props: Table) => {
       type: "main/setLoading",
       payload: true,
     });
+    let state: string;
+    switch (identifier) {
+      case "wisata":
+        state = "produk/setWisataState";
+        break;
+      case "car":
+        state = "produk/setMobilState";
+        break;
+      case "outbond":
+        state = "produk/setOutbondState";
+        break;
+      default:
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        return dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "info",
+            message: "Fitur hapus data belum diatur!",
+            show: true,
+          },
+        });
+    }
     await axios
       .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
         headers: {
@@ -187,17 +243,6 @@ const ProductTable = (props: Table) => {
           type: "main/setLoading",
           payload: false,
         });
-        let state;
-        switch (identifier) {
-          case "wisata":
-            state = "produk/setWisataState";
-            break;
-          case "car":
-            state = "produk/setMobilState";
-            break;
-          default:
-            break;
-        }
         const newTableData = tableData.filter((data) => data._id !== id);
         dispatch({ type: state, payload: newTableData });
         dispatch({
@@ -289,6 +334,8 @@ const ProductTable = (props: Table) => {
             case "car":
               state = "produk/setMobilState";
               break;
+            case "outbond":
+              state = "produk/setOutbondState";
             default:
               break;
           }
@@ -300,7 +347,8 @@ const ProductTable = (props: Table) => {
           type: "main/setAlert",
           payload: {
             type: "error",
-            message: "Terjadi kesalahan pada server! data gambar diupdate!",
+            message:
+              "Terjadi kesalahan pada server! data gambar gagal diupdate!",
             show: true,
           },
         });
@@ -321,7 +369,18 @@ const ProductTable = (props: Table) => {
       case "car":
         window.open(`/sewa-mobil`, "_blank");
         break;
+      // case "outbond":
+      //   window.open(``);
+      //   break;
       default:
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "info",
+            message: "Fitur belum diatur!",
+            show: true,
+          },
+        });
         break;
     }
   };
@@ -361,7 +420,6 @@ const ProductTable = (props: Table) => {
                         <Switch
                           key={i}
                           id={`switch-${i}-${data._id}`}
-                          // checked={String(value) === "aktif" ? true : false}
                           defaultChecked={
                             String(value) === "aktif" ? true : false
                           }
@@ -445,6 +503,8 @@ const ProductTable = (props: Table) => {
                           case "wisata":
                             getDataProduk(data, identifier, "edit");
                             break;
+                          case "outbond":
+                            getDataProduk(data, identifier, "edit");
                           default:
                             break;
                         }
@@ -487,8 +547,22 @@ const ProductTable = (props: Table) => {
                           case "wisata":
                             getDataProduk(data, identifier);
                             break;
-                          default:
+                          case "outbond":
+                            getDataProduk(data, identifier);
                             break;
+                          default:
+                            dispatch({
+                              type: "main/setLoading",
+                              payload: false,
+                            });
+                            return dispatch({
+                              type: "main/setAlert",
+                              payload: {
+                                type: "info",
+                                message: "Fitur edit gambar belum diatur!",
+                                show: true,
+                              },
+                            });
                         }
                         setHandleOpenEditImage(!handleOpenEditImage);
                       }}
@@ -699,7 +773,6 @@ const ProductTable = (props: Table) => {
                     ))}
                 </div>
               </div>
-              {/*//TODO - Ngebuat input multiple image file & ngedisplay semua image yang dipilih DONE*/}
               <div className="flex flex-nowrap gap-3">
                 <input
                   type="file"
@@ -777,6 +850,110 @@ const ProductTable = (props: Table) => {
                   </p>
                 )}
               </div>
+            </div>
+          )}
+          {/*//NOTE - Update Gambar Outbond*/}
+          {identifier === "outbond" && (
+            <div className="space-y-3">
+              <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-3">
+                <h2>Paket ke berapa yang ingin anda update?</h2>
+                <div className="flex">
+                  {produk.selectedDataOutbondImage &&
+                    produk.selectedDataOutbondImage.map((gambarPaket, i) => (
+                      <Radio
+                        key={i}
+                        id={`type-${i}`}
+                        name="type"
+                        label={`Paket ${i + 1}`}
+                        onClick={() =>
+                          dispatch({
+                            type: "produk/setNewOutbondImage",
+                            payload: gambarPaket,
+                          })
+                        }
+                        ripple={true}
+                        // defaultChecked={i === 0}
+                      />
+                    ))}
+                </div>
+              </div>
+              <div className="flex flex-nowrap gap-3">
+                <input
+                  type="file"
+                  multiple
+                  ref={gambarOutbond}
+                  accept="image/*"
+                  onChange={(_: any) => {
+                    const data: FileList = _.target.files;
+                    setDataGambar([]);
+                    if (data) {
+                      return Array.from(data).forEach((file: File) => {
+                        file.type.includes("image") &&
+                          file.size <= 5_000_000 &&
+                          setDataGambar((prev: any) => [...prev, file]);
+                      });
+                    }
+                  }}
+                  className="relative m-0 block w-full min-w-0 flex-auto rounded-md border border-solid border-gray-300 bg-clip-padding px-3 py-[0.32rem] text-base font-normal text-gray-700 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:overflow-hidden file:rounded-none file:border-0 file:border-solid file:border-inherit  file:bg-gray-400 file:px-3 file:py-[0.45rem] file:text-white file:transition file:duration-150 file:ease-in-out file:[border-inline-end-width:1px] file:[margin-inline-end:0.75rem] hover:file:bg-gray-200 focus:border-primary focus:text-gray-700 focus:shadow-te-primary focus:outline-none dark:border-gray-600 dark:text-gray-200 dark:file:bg-gray-700 dark:file:text-gray-100 dark:focus:border-primary"
+                />
+                <Tooltip
+                  content={"Hapus data ini"}
+                  animate={{
+                    mount: { scale: 1, y: 0 },
+                    unmount: { scale: 0, y: 25 },
+                  }}
+                  className="bg-white text-gray-700 shadow-xl"
+                >
+                  <Button
+                    ripple
+                    disabled={dataUpdateGambar.length > 0 ? false : true}
+                    onClick={() => {
+                      setDataGambar([]);
+                      gambarOutbond.current!.value = "";
+                      gambarOutbond.current!.files = null;
+                    }}
+                    className="p-2 rounded-full"
+                    color="red"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="1.5"
+                      stroke="currentColor"
+                      className="w-6 aspect-square"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                      />
+                    </svg>
+                  </Button>
+                </Tooltip>
+              </div>
+              <p className="text-xs font-light">
+                <span className="text-red-500">*</span> Pastikan ukuran setiap
+                file tidak lebih dari 5 Mb.
+              </p>
+              <div>
+                {dataUpdateGambar.length > 0 ? (
+                  <div>
+                    <h3 className="text-lg text-black/80 text-start">
+                      List Gambar
+                    </h3>
+                    {dataUpdateGambar.map((gambar: File, i: number) => (
+                      <p key={i} className="text-black/70">
+                        - {gambar.name}
+                      </p>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="bg-blue-500 text-white rounded-md px-3 py-0">
+                    File gambar belum ditambahkan
+                  </p>
+                )}
+              </div>
               {/*//TODO - Ngebuat button update image && button delete all image */}
             </div>
           )}
@@ -796,10 +973,14 @@ const ProductTable = (props: Table) => {
                 gambarCar.current!.value = "";
                 gambarCar.current!.files = null;
               }
+              if (gambarOutbond.current) {
+                gambarOutbond.current!.value = "";
+                gambarOutbond.current!.files = null;
+              }
             }}
             className="mr-1"
           >
-            <span>Batal update</span>
+            <span>Batal</span>
           </Button>
           <Button
             variant="gradient"
@@ -807,6 +988,7 @@ const ProductTable = (props: Table) => {
             disabled={dataUpdateGambar.length > 0 ? false : true}
             onClick={() => {
               let id;
+              alert(produk.newOutbondImage?._id);
               switch (identifier) {
                 case "car":
                   id = produk.selectedDataMobil?._id;
@@ -814,14 +996,28 @@ const ProductTable = (props: Table) => {
                 case "wisata":
                   id = produk.newWisataImage?._id;
                   break;
-                default:
+                case "outbond":
+                  id = produk.newOutbondImage?._id;
                   break;
+                default:
+                  dispatch({
+                    type: "main/setLoading",
+                    payload: false,
+                  });
+                  return dispatch({
+                    type: "main/setAlert",
+                    payload: {
+                      type: "info",
+                      message: "Fitur Update Gambar belum diatur!",
+                      show: true,
+                    },
+                  });
               }
               handleEditImage(dataUpdateGambar, identifier, id);
               setHandleOpenEditImage(!handleOpenEditImage);
             }}
           >
-            <span>Simpan perubahan</span>
+            <span>Update gambar</span>
           </Button>
         </DialogFooter>
       </Dialog>

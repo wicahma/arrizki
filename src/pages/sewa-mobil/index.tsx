@@ -49,6 +49,7 @@ const index = (props: any) => {
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     rupiah = new Intl.NumberFormat("id-ID", {
       style: "currency",
+
       currency: "IDR",
     }),
     initialValues: MobilFormProps = {
@@ -118,21 +119,7 @@ const index = (props: any) => {
         />
         <div className="divide-x divide-gray-400 gap-3 grid grid-cols-6 mx-auto">
           <div className="lg:col-span-4 col-span-6 mb-10 w-full space-y-10 sm:mx-auto px-5">
-            <div className="col-span-2 bg-red-400 p-5 rounded-lg text-white">
-              <h2 className="text-xl font-semibold">Fasilitas</h2>
-              <p>
-                Berikut beberapa fasilitas yang akan kamu dapatkan ketika
-                memesan mobil di Arrizki Tour
-              </p>
-              <ul className="list-disc list-inside ml-5">
-                <li>6 Seat</li>
-                <li>BBM</li>
-                <li>Driver</li>
-                <li>Air Mineral</li>
-                <li>AC Charger</li>
-              </ul>
-            </div>
-            <div className="grid grid-cols-2">
+            <div>
               {mobil
                 .filter((data: any) => data.status === "aktif")
                 .map((item: any, i: number): React.ReactNode => {
@@ -143,6 +130,8 @@ const index = (props: any) => {
                       image={`${process.env.API_URL}/images/${item.imageId}`}
                       price={item.pricePerDay}
                       title={item.unitName}
+                      fasilitas={item.fasilitas}
+                      seat={item.seat}
                     />
                   );
                 })}

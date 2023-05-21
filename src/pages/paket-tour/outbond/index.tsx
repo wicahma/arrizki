@@ -2,22 +2,23 @@ import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
 import TextHeader from "@/components/TextHeader/main";
 import TourList from "@/components/TextHeader/TourList";
-import WisataCard from "@/components/micros/cards/WisataCard";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setWisataState } from "@/store/produkSlice";
+import { setOutbondState } from "@/store/produkSlice";
 import { useRouter } from "next/router";
+import { reduxState } from "@/interfaces/reduxInterface";
+import OutbondCard from "@/components/micros/cards/OutbondCard";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
       await axios
-        .get(`${process.env.API_URL}/api/v1/wisata`)
+        .get(`${process.env.API_URL}/api/v1/outbond`)
         .then((datas) => {
           const { data } = datas.data;
-          dispatch(setWisataState(data));
+          dispatch(setOutbondState(data));
         })
         .catch((err) => {
           console.log(err);
@@ -27,7 +28,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
 );
 
 const index = (props: any) => {
-  const wisata = useSelector((state: any) => state.produk.tableWisata),
+  const outbond = useSelector((state: reduxState) => state.produk.tableOutbond),
     rupiah = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
@@ -35,20 +36,23 @@ const index = (props: any) => {
     { pathname } = useRouter();
 
   return (
-    <Layout pageTitle="Paket Wisata">
+    <Layout pageTitle="Paket Outbond">
       <div className="pt-14 container mx-auto">
         <TourList pathname={pathname} />
-        <TextHeader className="mt-10" title="Pilih Paket Wisata terbaik anda" />
+        <TextHeader
+          className="mt-10"
+          title="Pilih Paket Outbond terbaik anda"
+        />
         <div className="grid grid-cols-12 gap-4 w-full p-5">
-          {wisata
+          {outbond
             .filter((data: any) => data.status === "aktif")
             .map((wisataData: any, i: number) => (
-              <WisataCard
+              <OutbondCard
                 key={i}
                 image={wisataData.image}
-                price={wisataData.hargaMinimum}
-                title={wisataData.namaPaket}
-                listWisata={wisataData.tempatWisata}
+                minimumPrice={wisataData.hargaMinimum}
+                title={wisataData.namaTempat}
+                keterangan={wisataData.keterangan}
                 rupiah={rupiah}
                 id={wisataData._id}
               />

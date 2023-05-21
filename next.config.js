@@ -5,7 +5,7 @@ const nextConfig = {
     domains: ["via.placeholder.com", "localhost", "api.arrizkitour.com"],
   },
   env: {
-    API_URL: "https://api.arrizkitour.com",
+    API_URL: "http://localhost:4000",
   },
 };
 

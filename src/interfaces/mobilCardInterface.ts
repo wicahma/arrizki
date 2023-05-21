@@ -3,4 +3,6 @@ export interface MobilCardProps {
   image: string;
   price: number;
   id: string;
+  seat: number;
+  fasilitas: string;
 }
