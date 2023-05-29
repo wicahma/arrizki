@@ -11,6 +11,7 @@ const initialState: Produk = {
   tableOutbond: [],
   selectedCar: "",
   selectedJumlahPeserta: "",
+  jumlahPesertaMinimum: "",
   paketWisata: [],
   paketOutbond: [],
   selectedDataWisata: null,
@@ -121,6 +122,13 @@ export const produkSlice = createSlice({
       return {
         ...state,
         selectedJumlahPeserta: action.payload,
+      };
+    },
+
+    setJumlahPesertaMinimum(state, action) {
+      return {
+        ...state,
+        jumlahPesertaMinimum: action.payload,
       };
     },
   },

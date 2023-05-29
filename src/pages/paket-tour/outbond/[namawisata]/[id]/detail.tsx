@@ -1,4 +1,4 @@
-import { jenisPaketOutbond } from "@/interfaces/produkInterface";
+import { createOutbond, jenisPaketOutbond } from "@/interfaces/produkInterface";
 import Layout from "@/components/Layout";
 import { reduxState } from "@/interfaces/reduxInterface";
 import { setPaketOutbond } from "@/store/produkSlice";
@@ -8,7 +8,20 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MiniCard from "@/components/HomeSection/MiniCard";
-import { Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Switch,
+  Tooltip,
+  Typography,
+} from "@material-tailwind/react";
+import * as Yup from "yup";
+import { Formik } from "formik";
+import OutbondForm from "@/components/micros/forms/OutbondForm";
+import PaketOutbondCard from "@/components/micros/cards/PaketOutbondCard";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -31,26 +44,89 @@ export const getServerSideProps = wrapper.getServerSideProps(
     }
 );
 
+interface outbond extends createOutbond {
+  namaTempat: string;
+}
+
+//NOTE - Outbond Form Interface
+interface OutbondFormProps {
+  nama: string | undefined;
+  email: string | undefined;
+  nomorTelepon: string | undefined;
+  paketID: string | undefined;
+  jumlahPeserta: number | undefined;
+  tanggalReservasi: Date | undefined;
+  waktuJemput: string | undefined;
+  lokasiJemput: string | undefined;
+  pesananTambahan: string | undefined;
+}
+
+//NOTE - Outbond Validation Schema
+const outbondValidator = Yup.object().shape({
+  nama: Yup.string().required("Nama harus diisi !"),
+  email: Yup.string()
+    .email("Email tidak valid")
+    .required("Email harus diisi !"),
+  nomorTelepon: Yup.string()
+    .required("Nomor telepon harus diisi !")
+    .test(
+      "must-start-with-08",
+      "Nomor Telepon harus dimulai dengan 08",
+      (value, context) => (value?.toString().startsWith("08") ? true : false)
+    )
+    .test("only-digits", "Masukan Nomor telepon yang valid !", (value) =>
+      /^\d+$/g.test(value?.toString()) ? true : false
+    )
+    .min(9, "Nomor telepon harus nimimal 9 digit !"),
+  paketID: Yup.string().required("Paket wisata harus diisi !"),
+  jumlahPeserta: Yup.number()
+    .typeError("Jumlah peserta harus diisi !")
+    .required("Jumlah peserta harus diisi !"),
+  tanggalReservasi: Yup.date()
+    .typeError("Tanggal reservasi harus berupa tanggal !")
+    .required("Tanggal reservasi harus diisi !")
+    .min(new Date(), "Tanggal reservasi tidak boleh kurang dari hari ini !"),
+  waktuJemput: Yup.string().required("Waktu jemput harus diisi !"),
+  lokasiJemput: Yup.string().required("Lokasi jemput harus diisi !"),
+});
+
 const DetailOutbond = () => {
   const { query } = useRouter(),
     dispatch = useDispatch(),
     [formOpener, setForm] = useState<Boolean>(true),
     [onTop, setOnTop] = useState<Boolean>(false),
-    [wisataFormData, setWisataFormData] = useState<any>(),
+    [outbondFormData, setOutbondFormData] = useState<OutbondFormProps>(),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     [isLoading, setIsLoading] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
-    paketOutbond: jenisPaketOutbond | any = useSelector(
+    paketOutbond: outbond | any = useSelector(
       (state: reduxState) => state.produk.paketOutbond
     ),
-    // selectedJumlahPeserta = useSelector(
-    //   (state: any) => state.produk.selectedJumlahPeserta
-    // ),
+    selectedJumlahPeserta = useSelector(
+      (state: any) => state.produk.selectedJumlahPeserta
+    ),
     rupiah = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
     }),
+    initialValues: OutbondFormProps = {
+      nama: undefined,
+      email: undefined,
+      nomorTelepon: undefined,
+      paketID: undefined,
+      jumlahPeserta: selectedJumlahPeserta,
+      tanggalReservasi: undefined,
+      waktuJemput: undefined,
+      lokasiJemput: undefined,
+      pesananTambahan: "",
+    },
     router = useRouter();
+
+  const handleCreateReservasi = async (
+    values: OutbondFormProps | undefined
+  ) => {
+    console.log(values);
+  };
   return (
     <Layout>
       <div
@@ -71,6 +147,165 @@ const DetailOutbond = () => {
                 teks={`Paket Wisata ${i + 1}`}
               />
             ))}
+        </div>
+      </div>
+
+      <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
+        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0 space-y-14">
+          <div
+            className={`sticky border-b py-4 border-gray-300 duration-300 transition-all w-full text-center z-50 bg-white ${
+              onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
+            }`}
+          >
+            <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 columns-4 justify-center">
+              {paketOutbond &&
+                paketOutbond.jenisPaket &&
+                paketOutbond.jenisPaket.map(
+                  (item: jenisPaketOutbond, i: number) => (
+                    <MiniCard
+                      key={i}
+                      onClick={(e) => router.push(`#wisata-${i + 1}`)}
+                      className="py-1"
+                      teks={`Paket Wisata ${i + 1}`}
+                    />
+                  )
+                )}
+            </div>
+          </div>
+          {/* //NOTE - Paket Section */}
+          {paketOutbond &&
+            paketOutbond.jenisPaket &&
+            paketOutbond.jenisPaket.map(
+              (item: jenisPaketOutbond, i: number) => {
+                return (
+                  <div key={i} className="pb-7">
+                    <PaketOutbondCard paketData={item} index={i} />
+                  </div>
+                );
+              }
+            )}
+        </div>
+        {/* //NOTE - Form Section */}
+        <div
+          className={`fixed right-0 overflow-y-auto lg:px-5 shadow-2xl lg:rounded-none lg:shadow-none lg:col-span-2 z-50 duration-500 transition-all lg:w-full lg:max-h-max lg:sticky lg:top-20 ${
+            formOpener
+              ? "rounded-tl-xl w-[100vw] h-[88vh] rounded-tr-xl bottom-0 bg-white"
+              : "h-11 -bottom-full w-[10px] bg-red-500"
+          }`}
+        >
+          <div className={`p-5 lg:p-0 pb-16`}>
+            <h3 className="text-2xl mb-3 font-medium">Pesan Sekarang</h3>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={outbondValidator}
+              validateOnChange
+              validateOnMount
+              onSubmit={async (values, { setSubmitting }) => {
+                setHandleOpenDialog(true);
+                setOutbondFormData(values);
+                setSubmitting(true);
+                return false;
+              }}
+            >
+              {paketOutbond && paketOutbond.jenisPaket && (
+                <OutbondForm jenisPaket={paketOutbond.jenisPaket} />
+              )}
+            </Formik>
+            <Dialog
+              size="xl"
+              open={handleOpenDialog}
+              handler={() => setHandleOpenDialog(!handleOpenDialog)}
+            >
+              <DialogHeader>Ayo cek lagi pesanan kamu 😊</DialogHeader>
+              <DialogBody divider>
+                {paketOutbond && paketOutbond.jenisPaket && outbondFormData && (
+                  <div className="font-light text-lg text-black/60">
+                    <p>
+                      Atas nama{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.nama}
+                      </span>
+                      , dengan email{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.email}
+                      </span>{" "}
+                      & nomor Telepon{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.nomorTelepon}
+                      </span>{" "}
+                      akan memesan{" "}
+                      <span className="underline font-medium text-black/70">
+                        Paket Wisata{" "}
+                        {paketOutbond.jenisPaket.findIndex(
+                          (item: jenisPaketOutbond) =>
+                            item._id === outbondFormData.paketID
+                        ) + 1}
+                      </span>{" "}
+                      dengan jumlah peserta{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.jumlahPeserta} orang.
+                      </span>
+                    </p>
+                    <p>
+                      Pesanan akan dilakukan pada tanggal{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.tanggalReservasi?.toString()}
+                      </span>{" "}
+                      dan jam{" "}
+                      <span className="underline font-medium text-black/70">
+                        {outbondFormData.waktuJemput}
+                      </span>{" "}
+                    </p>
+                  </div>
+                )}
+                <p className="mt-5">Apakah data diatas ini sudah benar?</p>
+              </DialogBody>
+              <DialogFooter>
+                <Button
+                  variant="text"
+                  color="red"
+                  onClick={() => setHandleOpenDialog(!handleOpenDialog)}
+                  className="mr-1"
+                >
+                  <span>Batal</span>
+                </Button>
+                <Button
+                  variant="gradient"
+                  color="green"
+                  onClick={() => handleCreateReservasi(outbondFormData)}
+                >
+                  <span>Selesaikan Pesanan</span>
+                </Button>
+              </DialogFooter>
+            </Dialog>
+          </div>
+          <div
+            className={`items-center px-4 py-2 flex justify-end transition-all right-5 duration-500 fixed shadow-2xl ${
+              !formOpener
+                ? "bg-red-500 rounded-tl-2xl rounded-tr-2xl w-[215px]"
+                : "bg-white w-full"
+            } bottom-0 z-[110] lg:hidden`}
+          >
+            <Tooltip
+              className="absolute bg-white text-black shadow-md"
+              animate={{
+                mount: { scale: 1, y: 0 },
+                unmount: { scale: 0, y: 25 },
+              }}
+              content={`${!formOpener ? "Buka Form" : "Tutup Form"}`}
+            >
+              <Switch
+                labelProps={{
+                  className: `${!formOpener ? "text-white" : "text-black"}`,
+                }}
+                defaultChecked={true}
+                className=""
+                color="red"
+                label={`${!formOpener ? "Pesan sekarang?" : "Tutup Form"}`}
+                onClick={(e: any) => setForm(e.target.checked)}
+              />
+            </Tooltip>
+          </div>
         </div>
       </div>
     </Layout>

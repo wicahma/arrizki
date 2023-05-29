@@ -63,12 +63,22 @@ interface paketWisata {
   pax: string[];
 }
 
+interface jenisPaketOutbond {
+  _id?: string;
+  fasilitas: String[];
+  namaPaket: string;
+  minimumPerson: number;
+  harga: number;
+  images: string[];
+}
+
 export default interface Produk {
   tableWisata: wisata[];
   tableMobil: mobil[];
   tableOutbond: outbond[];
   selectedCar: string | null;
   selectedJumlahPeserta: string | null;
+  jumlahPesertaMinimum: string | null;
   paketWisata: paketWisata[];
   paketOutbond: jenisPaketOutbond[];
   selectedDataWisata: wisataPilihan | null;
@@ -90,15 +100,6 @@ interface jenisPaket {
   rundown: string[];
   tempatWisata: string[];
   pax: pax[];
-  images: string[];
-}
-
-interface jenisPaketOutbond {
-  _id?: string;
-  fasilitas: String[];
-  namaPaket: string;
-  minimumPerson: number;
-  harga: number;
   images: string[];
 }
 

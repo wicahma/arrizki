@@ -16,7 +16,6 @@ function App({ Component, ...rest }: AppProps) {
           startPosition={0.1}
           showOnShallow
           options={{
-            showSpinner: false,
             easing: "ease",
             speed: 1000,
           }}

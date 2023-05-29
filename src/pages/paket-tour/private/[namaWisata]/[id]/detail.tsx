@@ -1,4 +1,4 @@
-import React, { MouseEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import {
@@ -20,7 +20,6 @@ import { setPaketWisata } from "@/store/produkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Loading from "@/components/micros/loading";
 import { createWisata } from "@/interfaces/produkInterface";
 
 //NOTE - Get data from server redux
@@ -222,7 +221,11 @@ const DetailWisata = (props: any) => {
           {paketWisata &&
             paketWisata.jenisPaket &&
             paketWisata.jenisPaket.map((item, i: number) => {
-              return <PaketWisataCard paketData={item} index={i + 1} key={i} />;
+              return (
+                <div key={i} className="pb-7">
+                  <PaketWisataCard paketData={item} index={i + 1} />
+                </div>
+              );
             })}
         </div>
         {/* //NOTE - Form Section */}
