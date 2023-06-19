@@ -64,7 +64,6 @@ const index = (props: LayoutProps) => {
           content="Tempat pemesanan dan juga persewaan Mobil, lengkap dengan paket Wisata."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={`${className} scroll-smooth`}>
         <Alert message={alert.message} show={alert.show} type={alert.type} />
