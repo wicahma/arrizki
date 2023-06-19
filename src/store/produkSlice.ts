@@ -11,7 +11,7 @@ const initialState: Produk = {
   tableOutbond: [],
   selectedCar: "",
   selectedJumlahPeserta: "",
-  jumlahPesertaMinimum: "",
+  jumlahPesertaMinimum: 0,
   paketWisata: [],
   paketOutbond: [],
   selectedDataWisata: null,

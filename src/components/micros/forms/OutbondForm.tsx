@@ -1,31 +1,32 @@
 import { jenisPaketOutbond } from "@/interfaces/produkInterface";
-import { Button, Input, Option, Select, Textarea } from "@material-tailwind/react";
+import { reduxState } from "@/interfaces/reduxInterface";
+import {
+  Button,
+  Input,
+  Option,
+  Select,
+  Textarea,
+} from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const OutbondForm = (props: any) => {
+interface OutbondFormProps {
+  jenisPaket: jenisPaketOutbond[];
+}
+
+const OutbondForm = (props: OutbondFormProps) => {
   const { jenisPaket } = props,
     dispatch = useDispatch(),
     { setFieldValue, touched, isSubmitting, errors, values }: any =
       useFormikContext(),
-    jumlahPesertaMinimum: string = useSelector(
-      (state: any) => state.produk.selectedJumlahPeserta
+    jumlahPesertaMinimum: number | undefined | any = useSelector(
+      (state: reduxState) => state.produk.jumlahPesertaMinimum
     );
 
   return (
     <Form className="">
       <div className="mb-4 flex flex-col gap-6">
-        <Input
-          variant="outlined"
-          color="orange"
-          size="lg"
-          label={`${errors.nama && touched.nama ? errors.nama : "Nama"}`}
-          onChange={(e) => {
-            setFieldValue("nama", e.target.value);
-          }}
-          error={errors.nama && touched.nama ? true : false}
-        />
         <Input
           variant="outlined"
           color="orange"
@@ -61,6 +62,48 @@ const OutbondForm = (props: any) => {
           }}
           error={errors.nomorTelepon && touched.nomorTelepon ? true : false}
         />
+        <Select
+          variant="outlined"
+          color="orange"
+          size="lg"
+          label={`${
+            errors.paketID && touched.paketID ? errors.paketID : "Jenis Paket"
+          }`}
+          onChange={(value) => {
+            setFieldValue("paketID", value);
+            setFieldValue("jumlahPeserta", undefined);
+            dispatch({
+              type: "produk/setJumlahPesertaMinimum",
+              payload: jenisPaket.filter(
+                (item: jenisPaketOutbond) => item._id === value
+              )[0].minimumPerson,
+            });
+          }}
+          error={errors.paketID && touched.paketID ? true : false}
+        >
+          {jenisPaket.map((item: jenisPaketOutbond, i: number) => (
+            <Option key={i} value={item._id}>
+              {item.namaPaket}
+            </Option>
+          ))}
+        </Select>
+        <Input
+          variant="outlined"
+          color="orange"
+          size="lg"
+          label={`${
+            errors.jumlahPeserta && touched.jumlahPeserta
+              ? errors.jumlahPeserta
+              : "Jumlah Peserta"
+          }`}
+          type="number"
+          min={jumlahPesertaMinimum}
+          minLength={jumlahPesertaMinimum}
+          onChange={(e) => {
+            setFieldValue("jumlahPeserta", e.target.value);
+          }}
+          error={errors.jumlahPeserta && touched.jumlahPeserta ? true : false}
+        />
         <Input
           variant="outlined"
           color="orange"
@@ -93,25 +136,6 @@ const OutbondForm = (props: any) => {
           }}
           error={errors.waktuJemput && touched.waktuJemput ? true : false}
         />
-        <Select
-          variant="outlined"
-          color="orange"
-          size="lg"
-          label={`${
-            errors.paketID && touched.paketID ? errors.paketID : "Jenis Paket"
-          }`}
-          onChange={(value) => {
-            setFieldValue("paketID", value);
-            setFieldValue("jumlahPeserta", undefined);
-          }}
-          error={errors.paketID && touched.paketID ? true : false}
-        >
-          {jenisPaket.map((item: jenisPaketOutbond, i: number) => (
-            <Option key={i} value={item._id}>
-              {item.namaPaket}
-            </Option>
-          ))}
-        </Select>
         <Textarea
           variant="outlined"
           color="orange"

@@ -96,7 +96,6 @@ const DetailWisata = (props: any) => {
     [onTop, setOnTop] = useState<Boolean>(false),
     [wisataFormData, setWisataFormData] = useState<WisataFormProps>(),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
-    // [isLoading, setIsLoading] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
     paketWisata: wisata = useSelector((state: any) => state.produk.paketWisata),
     selectedJumlahPeserta = useSelector(
@@ -187,12 +186,13 @@ const DetailWisata = (props: any) => {
           {paketWisata &&
             paketWisata.jenisPaket &&
             paketWisata.jenisPaket.map((item, i: number) => (
-              <MiniCard
-                key={i}
-                onClick={(e) => router.push(`#wisata-${i + 1}`)}
-                className="py-1"
-                teks={`Paket Wisata ${i + 1}`}
-              />
+              <div key={i} className="snap-center">
+                <MiniCard
+                  onClick={(e) => router.push(`#wisata-${i + 1}`)}
+                  className="py-1"
+                  teks={`Paket Wisata ${i + 1}`}
+                />
+              </div>
             ))}
         </div>
       </div>
@@ -200,11 +200,11 @@ const DetailWisata = (props: any) => {
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
         <div className="md:col-span-4 relative col-span-6 px-2 md:px-0 space-y-14">
           <div
-            className={`sticky border-b py-4 border-gray-300 duration-300 transition-all w-full text-center z-50 bg-white ${
+            className={`sticky border-b py-4 border-gray-300 duration-300 overflow-x-auto transition-all w-full text-center z-50 bg-white ${
               onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
             }`}
           >
-            <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 columns-4 justify-center">
+            <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 min-w-max columns-4 justify-center">
               {paketWisata &&
                 paketWisata.jenisPaket &&
                 paketWisata.jenisPaket.map((item, i: number) => (

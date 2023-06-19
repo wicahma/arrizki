@@ -5,7 +5,7 @@ import { setPaketOutbond } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MiniCard from "@/components/HomeSection/MiniCard";
 import {
@@ -80,7 +80,7 @@ const outbondValidator = Yup.object().shape({
     .min(9, "Nomor telepon harus nimimal 9 digit !"),
   paketID: Yup.string().required("Paket wisata harus diisi !"),
   jumlahPeserta: Yup.number()
-    .typeError("Jumlah peserta harus diisi !")
+    .typeError("Jumlah pesert a harus diisi !")
     .required("Jumlah peserta harus diisi !"),
   tanggalReservasi: Yup.date()
     .typeError("Tanggal reservasi harus berupa tanggal !")
@@ -97,24 +97,16 @@ const DetailOutbond = () => {
     [onTop, setOnTop] = useState<Boolean>(false),
     [outbondFormData, setOutbondFormData] = useState<OutbondFormProps>(),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
-    [isLoading, setIsLoading] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
     paketOutbond: outbond | any = useSelector(
       (state: reduxState) => state.produk.paketOutbond
     ),
-    selectedJumlahPeserta = useSelector(
-      (state: any) => state.produk.selectedJumlahPeserta
-    ),
-    rupiah = new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-    }),
     initialValues: OutbondFormProps = {
       nama: undefined,
       email: undefined,
       nomorTelepon: undefined,
       paketID: undefined,
-      jumlahPeserta: selectedJumlahPeserta,
+      jumlahPeserta: undefined,
       tanggalReservasi: undefined,
       waktuJemput: undefined,
       lokasiJemput: undefined,
@@ -127,6 +119,17 @@ const DetailOutbond = () => {
   ) => {
     console.log(values);
   };
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (headerRef.current) {
+        const headerRect = headerRef.current.getBoundingClientRect();
+        headerRect.top < -200 ? setOnTop(true) : setOnTop(false);
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [headerRef]);
   return (
     <Layout>
       <div
@@ -151,39 +154,43 @@ const DetailOutbond = () => {
       </div>
 
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
-        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0 space-y-14">
+        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0">
           <div
-            className={`sticky border-b py-4 border-gray-300 duration-300 transition-all w-full text-center z-50 bg-white ${
+            className={`sticky border-b py-4 border-gray-300 duration-300 transition-all overflow-x-auto w-full text-center z-50 bg-white ${
               onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
             }`}
           >
-            <div className="flex flex-row flex-nowrap overflow-y-auto gap-3 columns-4 justify-center">
+            <div className="flex flex-row flex-nowrap snap-x overflow-y-auto gap-3 min-w-max columns-4 justify-center">
               {paketOutbond &&
                 paketOutbond.jenisPaket &&
                 paketOutbond.jenisPaket.map(
                   (item: jenisPaketOutbond, i: number) => (
-                    <MiniCard
-                      key={i}
-                      onClick={(e) => router.push(`#wisata-${i + 1}`)}
-                      className="py-1"
-                      teks={`Paket Wisata ${i + 1}`}
-                    />
+                    <div className="snap-center" key={i}>
+                      <MiniCard
+                        onClick={(e) => router.push(`#wisata-${i + 1}`)}
+                        className="py-1"
+                        teks={`Paket Wisata ${i + 1}`}
+                      />
+                    </div>
                   )
                 )}
             </div>
           </div>
-          {/* //NOTE - Paket Section */}
-          {paketOutbond &&
-            paketOutbond.jenisPaket &&
-            paketOutbond.jenisPaket.map(
-              (item: jenisPaketOutbond, i: number) => {
-                return (
-                  <div key={i} className="pb-7">
-                    <PaketOutbondCard paketData={item} index={i} />
-                  </div>
-                );
-              }
-            )}
+          <div className="mb-10 px-2">{paketOutbond.keterangan}</div>
+          <div className="space-y-14">
+            {/* //NOTE - Paket Section */}
+            {paketOutbond &&
+              paketOutbond.jenisPaket &&
+              paketOutbond.jenisPaket.map(
+                (item: jenisPaketOutbond, i: number) => {
+                  return (
+                    <div key={i} className="pb-7">
+                      <PaketOutbondCard paketData={item} index={i} />
+                    </div>
+                  );
+                }
+              )}
+          </div>
         </div>
         {/* //NOTE - Form Section */}
         <div

@@ -78,7 +78,7 @@ export default interface Produk {
   tableOutbond: outbond[];
   selectedCar: string | null;
   selectedJumlahPeserta: string | null;
-  jumlahPesertaMinimum: string | null;
+  jumlahPesertaMinimum: string | number | undefined;
   paketWisata: paketWisata[];
   paketOutbond: jenisPaketOutbond[];
   selectedDataWisata: wisataPilihan | null;

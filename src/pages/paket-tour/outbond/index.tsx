@@ -43,6 +43,22 @@ const index = (props: any) => {
           className="mt-10"
           title="Pilih Paket Outbond terbaik anda"
         />
+        <div className="text-lg indent-10 mb-5 text-justify leading-7 px-5">
+          <p>
+            Kegiatan Outbond sering menjadi pilihan bagi instansi sebagai bagian
+            dari capacity building sebuah instansi. Dengan mengikuti outbound
+            output yang diharapkan adalah makin kompaknya antar rekan kerja.
+            Selain itu, kegiatan ini juga dapat menjadi sarana refreshing serta
+            memberikan ruang bagi karyawan untuk melakukan introspeksi diri.
+          </p>
+          <p>
+            Jogja memang kota dengan fasilitas lengkap yang membuat wisatawan
+            merasa nyaman datang ke sana. Selain tempat wisata alam dan budaya.
+            Ada banyak tempat yang bisa Anda jadikan sebagai lokasi outbound.
+            Berikut ini rekomendasi tempat outbound di Jogja yang seru untuk
+            Anda kunjungi bersama rombongan:
+          </p>
+        </div>
         <div className="grid grid-cols-12 gap-4 w-full p-5">
           {outbond
             .filter((data: any) => data.status === "aktif")
