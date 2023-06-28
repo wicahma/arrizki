@@ -6,7 +6,7 @@ import {
 import { reduxState } from "@/interfaces/reduxInterface";
 import { Button, Input, Textarea, Tooltip } from "@material-tailwind/react";
 import { ErrorMessage, FieldArray, useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const OutbondForm = (props: any) => {
@@ -25,7 +25,6 @@ const OutbondForm = (props: any) => {
       setFieldValue("jenisPaket", dataOutbondPilihan.jenisPaket);
       setFieldValue("keterangan", dataOutbondPilihan.keterangan);
       setFieldValue("fetchType", "update");
-      console.log("Data outbond diambil");
     }
   }, [dataOutbondPilihan]);
   return (
@@ -229,7 +228,6 @@ const OutbondForm = (props: any) => {
                 type="button"
                 color="green"
                 onClick={() => {
-                  console.log(errors);
                   arrayHelpers.push(jenisPaketOutbondData);
                 }}
               >
@@ -246,14 +244,13 @@ const OutbondForm = (props: any) => {
           onClick={() => {
             dispatch({ type: "produk/setSelectedDataOutbond", payload: null });
             dispatch({
-                type: "main/setAlert",
-                payload: {
-                  type: "info",
-                  message:
-                    "Kolom berhasil dibersihkan!",
-                  show: true,
-                },
-              });
+              type: "main/setAlert",
+              payload: {
+                type: "info",
+                message: "Kolom berhasil dibersihkan!",
+                show: true,
+              },
+            });
             resetForm();
           }}
           //   disabled={!values ? true : false}
@@ -268,7 +265,8 @@ const OutbondForm = (props: any) => {
                 type: "main/setAlert",
                 payload: {
                   type: "error",
-                  message: "Terdapat kolom yang belum diisi, silahkan di cek kembali!",
+                  message:
+                    "Terdapat kolom yang belum diisi, silahkan di cek kembali!",
                   show: true,
                 },
               });

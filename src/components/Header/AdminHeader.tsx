@@ -1,15 +1,14 @@
-import React, { useEffect } from "react";
 import navbar from "@/styles/AdminNavbar.module.css";
-import Link from "next/link";
-import Image from "next/image";
-import { useRouter } from "next/router";
 import {
   Button,
   Dialog,
   DialogBody,
-  DialogFooter,
-  DialogHeader,
+  DialogFooter
 } from "@material-tailwind/react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 
 const AdminHeader = (props: any) => {
   const router = useRouter();
@@ -28,7 +27,6 @@ const AdminHeader = (props: any) => {
   useEffect(() => {
     if (window) {
       window.addEventListener("resize", () => {
-        console.log(window.innerWidth);
         window.innerWidth > 720 && setOpenNavbar(true);
       });
     }

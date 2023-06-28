@@ -1,9 +1,7 @@
 import {
-  setSelectedResCustom,
-  setSelectedResOutbond,
+    setSelectedResCustom
 } from "@/store/pesananSlice";
 import { Tooltip } from "@material-tailwind/react";
-import React from "react";
 import { useDispatch } from "react-redux";
 
 interface CustomWisataRow {

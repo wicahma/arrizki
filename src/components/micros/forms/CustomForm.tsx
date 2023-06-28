@@ -3,7 +3,7 @@ import { setAlert } from "@/store/mainSlice";
 import { setSelectedResCustom } from "@/store/pesananSlice";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const CustomForm = ({ admin = false }: any) => {
@@ -243,7 +243,6 @@ const CustomForm = ({ admin = false }: any) => {
                 })
               );
               resetForm();
-              console.log(values);
             }}
             color="red"
             variant="text"
@@ -253,9 +252,6 @@ const CustomForm = ({ admin = false }: any) => {
         )}
         <Button
           type="submit"
-          onClick={() => {
-            console.log({ errors });
-          }}
           disabled={isSubmitting}
           color="orange"
           fullWidth={!admin}

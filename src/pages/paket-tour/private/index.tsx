@@ -1,13 +1,12 @@
-import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
-import TextHeader from "@/components/TextHeader/main";
 import TourList from "@/components/TextHeader/TourList";
+import TextHeader from "@/components/TextHeader/main";
 import WisataCard from "@/components/micros/cards/WisataCard";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { setWisataState } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setWisataState } from "@/store/produkSlice";
 import { useRouter } from "next/router";
+import { connect, useSelector } from "react-redux";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>

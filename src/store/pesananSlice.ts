@@ -1,7 +1,7 @@
+import { Pesanan } from "@/interfaces/pesananInterface";
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 import { AppState } from "./store";
-import { Pesanan } from "@/interfaces/pesananInterface";
 
 const hydrate = createAction<AppState>(HYDRATE);
 
@@ -94,9 +94,6 @@ export const pesananSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
-      // console.group("HYDRATE");
-      // console.log({ action, state });
-      // console.groupEnd();
       return {
         ...state,
         ...action.payload.pesanan,

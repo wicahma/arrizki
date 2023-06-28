@@ -1,8 +1,8 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+import { Action, ThunkAction, configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
-import { produkSlice } from "./produkSlice";
 import { mainSlice } from "./mainSlice";
 import { pesananSlice } from "./pesananSlice";
+import { produkSlice } from "./produkSlice";
 
 const store = configureStore({
   reducer: {

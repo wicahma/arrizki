@@ -1,9 +1,7 @@
-import Image from "next/image";
-import React from "react";
-import { MobilCardProps } from "../../../interfaces/mobilCardInterface";
-import Link from "next/link";
-import { useDispatch } from "react-redux";
 import { setSelectedCar } from "@/store/produkSlice";
+import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { MobilCardProps } from "../../../interfaces/mobilCardInterface";
 
 const MobilCard = (props: MobilCardProps) => {
   const { title, image, price, id, fasilitas, seat } = props;

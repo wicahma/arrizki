@@ -9,7 +9,7 @@ import {
   Textarea,
 } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const MobilForm = ({ mobilData, admin = false }: any) => {
@@ -208,9 +208,6 @@ const MobilForm = ({ mobilData, admin = false }: any) => {
         )}
         <Button
           type="submit"
-          onClick={() => {
-            console.log({ errors });
-          }}
           disabled={isSubmitting}
           color="orange"
           fullWidth={!admin}

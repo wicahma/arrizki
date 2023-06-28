@@ -1,7 +1,7 @@
 import { createAction, createSlice } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import { AppState } from "./store";
 import { Main } from "../interfaces/reduxInterface";
+import { AppState } from "./store";
 
 const hydrate = createAction<AppState>(HYDRATE);
 

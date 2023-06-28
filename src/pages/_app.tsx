@@ -2,8 +2,8 @@ import { wrapper } from "@/store/store";
 import "@/styles/globals.css";
 import { ThemeProvider } from "@material-tailwind/react";
 import type { AppProps } from "next/app";
-import { Provider } from "react-redux";
 import NextNProgress from "nextjs-progressbar";
+import { Provider } from "react-redux";
 
 function App({ Component, ...rest }: AppProps) {
   const { store, props } = wrapper.useWrappedStore(rest);

@@ -1,7 +1,6 @@
-import React from "react";
-import FooterList from "./FooterList";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import FooterList from "./FooterList";
 
 const index = (props: any) => {
   return (

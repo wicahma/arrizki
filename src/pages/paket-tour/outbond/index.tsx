@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
-import TextHeader from "@/components/TextHeader/main";
 import TourList from "@/components/TextHeader/TourList";
-import { connect, useDispatch, useSelector } from "react-redux";
+import TextHeader from "@/components/TextHeader/main";
+import OutbondCard from "@/components/micros/cards/OutbondCard";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setOutbondState } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setOutbondState } from "@/store/produkSlice";
 import { useRouter } from "next/router";
-import { reduxState } from "@/interfaces/reduxInterface";
-import OutbondCard from "@/components/micros/cards/OutbondCard";
+import { connect, useSelector } from "react-redux";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>

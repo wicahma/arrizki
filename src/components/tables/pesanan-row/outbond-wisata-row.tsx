@@ -1,7 +1,6 @@
 import { getPaketOutbond } from "@/interfaces/pesananInterface";
 import { setSelectedResOutbond } from "@/store/pesananSlice";
 import { Tooltip } from "@material-tailwind/react";
-import React from "react";
 import { useDispatch } from "react-redux";
 
 interface OutbondWisataRow {

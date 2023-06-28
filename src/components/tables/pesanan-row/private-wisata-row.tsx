@@ -1,7 +1,6 @@
 import { getPaketWisata } from "@/interfaces/pesananInterface";
 import { setSelectedResWisata } from "@/store/pesananSlice";
 import { Tooltip } from "@material-tailwind/react";
-import React from "react";
 import { useDispatch } from "react-redux";
 
 interface PrivateWisataRow {

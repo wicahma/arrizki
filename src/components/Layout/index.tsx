@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import Header from "../Header";
-import Footer from "../Footer";
+import { reduxState } from "@/interfaces/reduxInterface";
+import Layout from "@/styles/Layout.module.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import AdminHeader from "../Header/AdminHeader";
-import Layout from "@/styles/Layout.module.css";
-import Alert, { AlertProps } from "../micros/alerts/Alert";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { reduxState } from "@/interfaces/reduxInterface";
+import Footer from "../Footer";
+import Header from "../Header";
+import AdminHeader from "../Header/AdminHeader";
+import Alert from "../micros/alerts/Alert";
 import Loading from "../micros/loading";
 
 interface LayoutProps {

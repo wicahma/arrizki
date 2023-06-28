@@ -4,7 +4,7 @@ import {
   AccordionHeader,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface footerList {
   title: string;

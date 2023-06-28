@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
 import {
-  Navbar,
-  MobileNav,
-  Typography,
   Button,
   IconButton,
+  MobileNav,
+  Navbar,
+  Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import NavList from "./navList";
 
 const Navbars = (props: any) => {

@@ -10,7 +10,7 @@ import {
   Textarea,
 } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 interface OutbondFormProps {
@@ -221,7 +221,6 @@ const OutbondForm = ({ jenisPaket, admin = false }: OutbondFormProps) => {
                 },
               });
               resetForm();
-              console.log(values);
             }}
             color="red"
             variant="text"

@@ -1,7 +1,6 @@
 import { Typography } from "@material-tailwind/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useEffect } from "react";
 
 const NavList = (props: any) => {
   const { pathname } = useRouter();

@@ -1,5 +1,30 @@
-import React from "react";
 import Layout from "@/components/Layout";
+import CustomForm from "@/components/micros/forms/CustomForm";
+import MobilForm from "@/components/micros/forms/MobilForm";
+import OutbondForm from "@/components/micros/forms/OutbondForm";
+import WisataForm from "@/components/micros/forms/WisataForm";
+import PesananTable from "@/components/tables/PesananTable";
+import { MobilFormProps, carValidation } from "@/interfaces/carProps";
+import {
+  customFormProps,
+  customValidation,
+} from "@/interfaces/customWisataProps";
+import {
+  OutbondFormProps,
+  WisataFormProps,
+  outbondValidator,
+  wisataValidator,
+} from "@/interfaces/pesananInterface";
+import { createWisata } from "@/interfaces/produkInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setAlert, setLoading } from "@/store/mainSlice";
+import {
+  setReservasiCustom,
+  setReservasiMobil,
+  setReservasiOutbond,
+  setReservasiWisata,
+} from "@/store/pesananSlice";
+import { wrapper } from "@/store/store";
 import {
   Tab,
   TabPanel,
@@ -8,40 +33,13 @@ import {
   TabsHeader,
 } from "@material-tailwind/react";
 import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import PesananTable from "@/components/tables/PesananTable";
-import { wrapper } from "@/store/store";
-import {
-  setReservasiCustom,
-  setReservasiMobil,
-  setReservasiOutbond,
-  setReservasiWisata,
-} from "@/store/pesananSlice";
 import { Formik } from "formik";
-import {
-  OutbondFormProps,
-  WisataFormProps,
-  outbondValidator,
-  wisataValidator,
-} from "@/interfaces/pesananInterface";
-import WisataForm from "@/components/micros/forms/WisataForm";
-import { createWisata } from "@/interfaces/produkInterface";
-import MobilForm from "@/components/micros/forms/MobilForm";
-import { MobilFormProps, carValidation } from "@/interfaces/carProps";
-import OutbondForm from "@/components/micros/forms/OutbondForm";
-import { reduxState } from "@/interfaces/reduxInterface";
-import CustomForm from "@/components/micros/forms/CustomForm";
-import {
-  customFormProps,
-  customValidation,
-} from "@/interfaces/customWisataProps";
-import { setLoading } from "@/store/mainSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
-      console.log(getState().main.token);
       await axios
         .get(`${process.env.API_URL}/api/v1/res-wisata`, {
           headers: {
@@ -400,12 +398,18 @@ const index = (props: any) => {
                 type: "main/setLoading",
                 payload: false,
               });
-              console.log(err);
+              dispatch(
+                setAlert({
+                  type: "error",
+                  message:
+                    "Terjadi kesalahan pada server! Semua data gagal diambil!",
+                  show: true,
+                })
+              );
             });
           return data;
         })
         .catch((err) => {
-          console.log(err);
           dispatch({
             type: "main/setLoading",
             payload: false,

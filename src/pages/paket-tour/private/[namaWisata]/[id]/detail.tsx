@@ -1,6 +1,14 @@
-import React, { useEffect, useState } from "react";
+import MiniCard from "@/components/HomeSection/MiniCard";
 import Layout from "@/components/Layout";
-import { useRouter } from "next/router";
+import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
+import WisataForm from "@/components/micros/forms/WisataForm";
+import {
+  WisataFormProps,
+  wisataValidator,
+} from "@/interfaces/pesananInterface";
+import { createWisata } from "@/interfaces/produkInterface";
+import { setPaketWisata } from "@/store/produkSlice";
+import { wrapper } from "@/store/store";
 import {
   Accordion,
   AccordionBody,
@@ -14,19 +22,11 @@ import {
   Tooltip,
   Typography,
 } from "@material-tailwind/react";
-import WisataForm from "@/components/micros/forms/WisataForm";
-import MiniCard from "@/components/HomeSection/MiniCard";
-import PaketWisataCard from "@/components/micros/cards/PaketWisataCard";
-import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setPaketWisata } from "@/store/produkSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
-import { createWisata } from "@/interfaces/produkInterface";
-import {
-  WisataFormProps,
-  wisataValidator,
-} from "@/interfaces/pesananInterface";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -35,7 +35,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { dispatch, getState } = store;
       const { params } = etc;
       const id = params?.id;
-      console.log(id);
       await axios
         .get(`${process.env.API_URL}/api/v1/wisata/${id}`)
         .then((datas) => {
@@ -91,7 +90,6 @@ const DetailWisata = (props: any) => {
     window.addEventListener("resize", () => {
       window.innerWidth > 960 && setForm(true);
     });
-    console.log(formOpener);
   }, [formOpener]);
 
   useEffect(() => {
@@ -132,7 +130,6 @@ const DetailWisata = (props: any) => {
             type: "error",
           },
         });
-        console.log(_);
       })
       .finally(() => {
         dispatch({

@@ -1,13 +1,13 @@
-import Layout from "../components/Layout";
-import HomeSection from "../components/HomeSection";
-import Image from "next/image";
-import MiniCard from "../components/HomeSection/MiniCard";
-import ReasonCards from "../components/HomeSection/ReasonCards";
 import { Button } from "@material-tailwind/react";
-import FAQ from "../components/FAQ";
+import Image from "next/image";
 import Link from "next/link";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import FAQ from "../components/FAQ";
+import HomeSection from "../components/HomeSection";
+import MiniCard from "../components/HomeSection/MiniCard";
+import ReasonCards from "../components/HomeSection/ReasonCards";
+import Layout from "../components/Layout";
 
 export default function Home() {
   const penawaran: string[] = [

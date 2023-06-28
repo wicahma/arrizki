@@ -1,13 +1,16 @@
-import { createOutbond, jenisPaketOutbond } from "@/interfaces/produkInterface";
+import MiniCard from "@/components/HomeSection/MiniCard";
 import Layout from "@/components/Layout";
+import PaketOutbondCard from "@/components/micros/cards/PaketOutbondCard";
+import OutbondForm from "@/components/micros/forms/OutbondForm";
+import {
+  OutbondFormProps,
+  outbondValidator,
+} from "@/interfaces/pesananInterface";
+import { createOutbond, jenisPaketOutbond } from "@/interfaces/produkInterface";
 import { reduxState } from "@/interfaces/reduxInterface";
+import { setAlert, setLoading } from "@/store/mainSlice";
 import { setPaketOutbond } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
-import axios from "axios";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import MiniCard from "@/components/HomeSection/MiniCard";
 import {
   Button,
   Dialog,
@@ -15,18 +18,13 @@ import {
   DialogFooter,
   DialogHeader,
   Switch,
-  Tooltip,
-  Typography,
+  Tooltip
 } from "@material-tailwind/react";
-import * as Yup from "yup";
+import axios from "axios";
 import { Formik } from "formik";
-import OutbondForm from "@/components/micros/forms/OutbondForm";
-import PaketOutbondCard from "@/components/micros/cards/PaketOutbondCard";
-import { setAlert, setLoading } from "@/store/mainSlice";
-import {
-  OutbondFormProps,
-  outbondValidator,
-} from "@/interfaces/pesananInterface";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -91,7 +89,6 @@ const DetailOutbond = () => {
             show: true,
           })
         );
-        console.log(res);
       })
       .catch((err) => {
         dispatch(
@@ -101,7 +98,6 @@ const DetailOutbond = () => {
             show: true,
           })
         );
-        console.log(err);
       })
       .finally(() => {
         dispatch(setLoading(false));

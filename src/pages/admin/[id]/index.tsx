@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Form, Formik } from "formik";
-import { Button, Checkbox, Input } from "@material-tailwind/react";
-import * as Yup from "yup";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import axios from "axios";
-import Loading from "@/components/micros/loading";
-import { useDispatch, useSelector } from "react-redux";
-import { reduxState } from "@/interfaces/reduxInterface";
 import Alert from "@/components/micros/alerts/Alert";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { Button, Checkbox, Input } from "@material-tailwind/react";
+import axios from "axios";
+import { Form, Formik } from "formik";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as Yup from "yup";
 
 interface adminProps {
   id?: string;
@@ -255,7 +254,6 @@ export const getServerSideProps = async (context: any) => {
   await axios
     .get(`${process.env.API_URL}/api/v1/user/check/${context.params.id}`)
     .then((res) => {
-      console.log({ validated_datas: res.data.validated });
       if (res.data.validated) validated = true;
     });
   if (validated)

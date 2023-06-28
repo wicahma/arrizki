@@ -82,7 +82,6 @@ const PesananTable = ({
           type: "main/setLoading",
           payload: false,
         });
-        console.log(data);
         const newTableData = tableData.filter((data) => data._id !== id);
         dispatch({ type: state, payload: newTableData });
         dispatch({
@@ -95,7 +94,6 @@ const PesananTable = ({
         });
       })
       .catch((err) => {
-        console.log(err);
         dispatch({
           type: "main/setLoading",
           payload: false,

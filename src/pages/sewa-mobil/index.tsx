@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import TextHeader from "@/components/TextHeader/main";
 import MobilCard from "@/components/micros/cards/MobilCard";
-import "@/styles/Sewa.module.css";
 import MobilForm from "@/components/micros/forms/MobilForm";
+import { MobilFormProps, carValidation } from "@/interfaces/carProps";
+import { setMobilState } from "@/store/produkSlice";
+import { wrapper } from "@/store/store";
+import "@/styles/Sewa.module.css";
 import {
   Accordion,
   AccordionBody,
@@ -16,13 +18,10 @@ import {
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
-import { wrapper } from "@/store/store";
 import axios from "axios";
-import { setMobilState } from "@/store/produkSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
-import { MobilFormProps, carValidation } from "@/interfaces/carProps";
-import Loading from "@/components/micros/loading";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -74,7 +73,6 @@ const index = (props: any) => {
     window.addEventListener("resize", () => {
       window.innerWidth > 960 && setForm(true);
     });
-    console.log(formOpener);
   }, [formOpener]);
 
   const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
@@ -112,7 +110,6 @@ const index = (props: any) => {
             type: "error",
           },
         });
-        console.log(_);
       });
   };
 

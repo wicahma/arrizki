@@ -1,17 +1,16 @@
-import React from "react";
 import {
-  Tabs,
-  TabsHeader,
-  TabsBody,
+  Card,
+  CardBody,
+  CardHeader,
   Tab,
   TabPanel,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Typography,
+  Tabs,
+  TabsBody,
+  TabsHeader,
+  Typography
 } from "@material-tailwind/react";
 import Image from "next/image";
+import React from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 

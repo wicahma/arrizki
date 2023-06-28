@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
 import { Alert as Peringatan } from "@material-tailwind/react";
 import { colors } from "@material-tailwind/react/types/generic";
+import React, { useEffect } from "react";
 
 interface AlertProps {
   show: boolean;

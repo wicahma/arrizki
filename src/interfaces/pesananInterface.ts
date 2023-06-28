@@ -1,4 +1,4 @@
-import { setLoading } from "@/store/mainSlice";
+import { setAlert, setLoading } from "@/store/mainSlice";
 import { setMinimumPerson, setPaxWisata } from "@/store/pesananSlice";
 import axios from "axios";
 import * as Yup from "yup";
@@ -206,7 +206,15 @@ export const getPaketWisata = async ({
       dispatch(setPaxWisata(res.data.data[0].jenisPaket.pax));
       return res.data.data[0];
     })
-    .catch((err) => console.log(err))
+    .catch((err) =>
+      dispatch(
+        setAlert({
+          type: "error",
+          message: "Terjadi kesalahan pada server! data gagal diambil!",
+          show: true,
+        })
+      )
+    )
     .finally(() => {
       dispatch(setLoading(false));
     });
@@ -234,7 +242,15 @@ export const getPaketOutbond = async ({
       dispatch(setMinimumPerson(res.data.data[0].jenisPaket.minimumPerson));
       return res.data.data[0];
     })
-    .catch((err) => console.log(err))
+    .catch((err) =>
+      dispatch(
+        setAlert({
+          type: "error",
+          message: "Terjadi kesalahan pada server! data gagal diambil!",
+          show: true,
+        })
+      )
+    )
     .finally(() => {
       dispatch(setLoading(false));
     });

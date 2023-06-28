@@ -134,9 +134,6 @@ export const produkSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(hydrate, (state, action) => {
-      // console.group("HYDRATE");
-      // console.log({ action, state });
-      // console.groupEnd();
       return {
         ...state,
         ...action.payload.produk,

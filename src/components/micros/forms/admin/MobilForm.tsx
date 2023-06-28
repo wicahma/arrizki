@@ -5,10 +5,9 @@ import {
   Dialog,
   DialogBody,
   DialogFooter,
-  DialogHeader,
   Input,
   Textarea,
-  Tooltip,
+  Tooltip
 } from "@material-tailwind/react";
 import { ErrorMessage, useFormikContext } from "formik";
 import Image from "next/image";

@@ -1,3 +1,6 @@
+import { mobilPilihan, wisataPilihan } from "@/interfaces/produkInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setAlert } from "@/store/mainSlice";
 import {
   Button,
   Dialog,
@@ -8,13 +11,11 @@ import {
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
+import axios from "axios";
+import { useFormikContext } from "formik";
 import Image from "next/image";
 import React, { useEffect } from "react";
-import { mobilPilihan, wisataPilihan } from "@/interfaces/produkInterface";
-import { useFormikContext } from "formik";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { reduxState } from "@/interfaces/reduxInterface";
 
 interface Table {
   identifier: string;
@@ -80,7 +81,13 @@ const ProductTable = (props: Table) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        dispatch(
+          setAlert({
+            message: "Gagal mendapatkan data produk!",
+            type: "error",
+            show: true,
+          })
+        );
       })
       .finally(() => {
         dispatch({
@@ -140,7 +147,6 @@ const ProductTable = (props: Table) => {
       type: "main/setLoading",
       payload: true,
     });
-    console.log(carried);
     axios
       .put(
         `${process.env.API_URL}/api/v1/${identifier}/${dataSelected._id}`,
@@ -169,7 +175,6 @@ const ProductTable = (props: Table) => {
             status: status ? "aktif" : "nonaktif",
           }
         );
-        console.log(newTableData);
         dispatch({ type: state, payload: newTableData });
         dispatch({
           type: "main/setAlert",
@@ -193,7 +198,6 @@ const ProductTable = (props: Table) => {
             show: true,
           },
         });
-        console.log(err);
       });
   };
 
@@ -255,7 +259,6 @@ const ProductTable = (props: Table) => {
         });
       })
       .catch((err) => {
-        console.log(err);
         dispatch({
           type: "main/setLoading",
           payload: false,
@@ -352,7 +355,6 @@ const ProductTable = (props: Table) => {
             show: true,
           },
         });
-        console.log(err);
       })
       .finally(() => dispatch({ type: "main/setLoading", payload: false }));
   };

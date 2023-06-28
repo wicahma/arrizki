@@ -4,11 +4,10 @@ import { setPaxWisata, setSelectedResWisata } from "@/store/pesananSlice";
 import { setSelectedJumlahPeserta } from "@/store/produkSlice";
 import {
   Button,
-  Checkbox,
   Input,
   Option,
   Select,
-  Textarea,
+  Textarea
 } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
 import React, { useEffect } from "react";
@@ -246,7 +245,6 @@ const WisataForm = ({ jenisPaket, admin = false }: any) => {
                 },
               });
               resetForm();
-              console.log(values);
             }}
             color="red"
             variant="text"
@@ -258,7 +256,6 @@ const WisataForm = ({ jenisPaket, admin = false }: any) => {
           type="submit"
           disabled={isSubmitting}
           onClick={(_) => {
-            console.log({ errors });
             return false;
           }}
           color="orange"

@@ -58,7 +58,6 @@ const index = (props: any) => {
         );
       })
       .catch((err) => {
-        console.log(err);
         dispatch(
           setAlert({
             message: "Terjadi kesalahan, silahkan coba lagi nanti!",

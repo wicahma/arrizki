@@ -1,4 +1,4 @@
-import Produk, {
+import {
   jenisPaket,
   jenisPaketData,
   pax,
@@ -7,7 +7,7 @@ import Produk, {
 import { reduxState } from "@/interfaces/reduxInterface";
 import { Button, Input, Textarea, Tooltip } from "@material-tailwind/react";
 import { ErrorMessage, FieldArray, useFormikContext } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const WisataForm = (props: any) => {
@@ -26,7 +26,6 @@ const WisataForm = (props: any) => {
       setFieldValue("jenisPaket", dataWisataPilihan.jenisPaket);
       setFieldValue("nama", dataWisataPilihan.namaPaket);
       setFieldValue("fetchType", "update");
-      console.log("jalan");
     }
   }, [dataWisataPilihan]);
 
@@ -320,7 +319,6 @@ const WisataForm = (props: any) => {
                 type="button"
                 color="green"
                 onClick={() => {
-                  console.log(errors);
                   arrayHelpers.push(jenisPaketData);
                 }}
               >

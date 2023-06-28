@@ -1,6 +1,16 @@
-import React, { useEffect } from "react";
 import Layout from "@/components/Layout";
+import MobilForm from "@/components/micros/forms/admin/MobilForm";
+import OutbondForm from "@/components/micros/forms/admin/OutbondForm";
+import WisataForm from "@/components/micros/forms/admin/WisataForm";
 import ProductTable from "@/components/tables/ProductTable";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setAlert } from "@/store/mainSlice";
+import {
+  setMobilState,
+  setOutbondState,
+  setWisataState,
+} from "@/store/produkSlice";
+import { wrapper } from "@/store/store";
 import {
   Button,
   Tab,
@@ -9,6 +19,10 @@ import {
   TabsBody,
   TabsHeader,
 } from "@material-tailwind/react";
+import axios from "axios";
+import { Form, Formik } from "formik";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Produk, {
   createMobil,
   createMobilData,
@@ -19,19 +33,6 @@ import Produk, {
   outbondValidationSchema,
   wisataValidationSchema,
 } from "../../../interfaces/produkInterface";
-import { wrapper } from "@/store/store";
-import axios from "axios";
-import {
-  setMobilState,
-  setOutbondState,
-  setWisataState,
-} from "@/store/produkSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { Form, Formik } from "formik";
-import WisataForm from "@/components/micros/forms/admin/WisataForm";
-import MobilForm from "@/components/micros/forms/admin/MobilForm";
-import { reduxState } from "@/interfaces/reduxInterface";
-import OutbondForm from "@/components/micros/forms/admin/OutbondForm";
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) =>
@@ -86,7 +87,6 @@ const index = (props: Produk) => {
         default:
           break;
       }
-      console.log({ data });
       return await axios({
         method: methods,
         url: `${process.env.API_URL}/api/v1/${identifier}${
@@ -110,14 +110,11 @@ const index = (props: Produk) => {
               show: true,
             },
           });
-          console.log({ response });
-          console.log({ identifier });
 
           axios
             .get(`${process.env.API_URL}/api/v1/${identifier}`)
             .then((datas) => {
               const { data } = datas.data;
-              console.log({ data });
               switch (identifier) {
                 case "wisata":
                   dispatch({ type: "produk/setWisataState", payload: data });
@@ -136,11 +133,17 @@ const index = (props: Produk) => {
               });
             })
             .catch((err) => {
-              console.log(err);
               dispatch({
                 type: "main/setLoading",
                 payload: false,
               });
+              dispatch(
+                setAlert({
+                  type: "error",
+                  message: "Terjadi kesalahan pada server! data gagal diambil!",
+                  show: true,
+                })
+              );
             });
 
           return data;
@@ -244,7 +247,6 @@ const index = (props: Produk) => {
                 });
                 fetchProduk("car", mobil, values._id);
               } else {
-                console.log(values);
                 fetchProduk("car", values, values._id);
               }
               return false;
