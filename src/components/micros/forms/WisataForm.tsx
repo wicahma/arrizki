@@ -1,4 +1,6 @@
 import { jenisPaket } from "@/interfaces/produkInterface";
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setPaxWisata, setSelectedResWisata } from "@/store/pesananSlice";
 import { setSelectedJumlahPeserta } from "@/store/produkSlice";
 import {
   Button,
@@ -12,22 +14,44 @@ import { Form, useFormikContext } from "formik";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-const WisataForm = (props: any) => {
-  const { jenisPaket } = props,
-    dispatch = useDispatch(),
-    { setFieldValue, touched, isSubmitting, errors, values }: any =
+const WisataForm = ({ jenisPaket, admin = false }: any) => {
+  const dispatch = useDispatch(),
+    { setFieldValue, touched, isSubmitting, errors, values, resetForm }: any =
       useFormikContext(),
-    selectedJumlahPeserta: string = useSelector(
-      (state: any) => state.produk.selectedJumlahPeserta
+    selectedJumlahPeserta: any = useSelector(
+      (state: reduxState) => state.produk.selectedJumlahPeserta
+    ),
+    adminSelectedWisata = useSelector(
+      (state: reduxState) => state.pesanan.selectedResWisata
+    ),
+    paxWisataSelected = useSelector(
+      (state: reduxState) => state.pesanan.paxSelectedWisata
     ),
     [jumlahPesertaData, setJumlahPesertaData] = React.useState([]);
 
   useEffect(() => {
     values.paketID &&
+      !admin &&
       setJumlahPesertaData(
         jenisPaket.filter((item: any) => item._id === values.paketID)[0].pax
       );
   }, [values.paketID]);
+
+  useEffect(() => {
+    if (adminSelectedWisata === null) return;
+    if (paxWisataSelected === null) return;
+    setFieldValue("id", adminSelectedWisata?._id);
+    setFieldValue("nama", adminSelectedWisata?.namaReservant);
+    setFieldValue("email", adminSelectedWisata?.email);
+    setFieldValue("nomorTelepon", adminSelectedWisata?.phoneNumber);
+    setFieldValue("paketID", adminSelectedWisata?.paketWisataId);
+    setFieldValue("jumlahPeserta", adminSelectedWisata?.jumlahPeserta);
+    setFieldValue("tanggalReservasi", adminSelectedWisata?.tanggalMulai);
+    setFieldValue("waktuJemput", adminSelectedWisata?.waktuJemput);
+    setFieldValue("lokasiJemput", adminSelectedWisata?.lokasiJemput);
+    setFieldValue("pesananTambahan", adminSelectedWisata?.pesananTambahan);
+    setJumlahPesertaData(paxWisataSelected);
+  }, [adminSelectedWisata, paxWisataSelected]);
 
   return (
     <Form className="">
@@ -35,7 +59,9 @@ const WisataForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          disabled={admin}
           size="lg"
+          value={values.nama}
           label={`${errors.nama && touched.nama ? errors.nama : "Nama"}`}
           onChange={(e) => {
             setFieldValue("nama", e.target.value);
@@ -45,6 +71,8 @@ const WisataForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.email}
+          disabled={admin}
           size="lg"
           label={`${errors.email && touched.email ? errors.email : "Email"}`}
           onChange={(e) => {
@@ -55,6 +83,8 @@ const WisataForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.nomorTelepon}
+          disabled={admin}
           size="lg"
           label={`${
             errors.nomorTelepon && touched.nomorTelepon
@@ -69,6 +99,7 @@ const WisataForm = (props: any) => {
         />
         <Input
           variant="outlined"
+          value={values.tanggalReservasi}
           color="orange"
           size="lg"
           label={`${
@@ -87,6 +118,7 @@ const WisataForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.waktuJemput}
           size="lg"
           label={`${
             errors.waktuJemput && touched.waktuJemput
@@ -101,23 +133,30 @@ const WisataForm = (props: any) => {
         />
         <Select
           variant="outlined"
+          disabled={admin}
           color="orange"
           size="lg"
           label={`${
             errors.paketID && touched.paketID ? errors.paketID : "Jenis Paket"
           }`}
+          value={values.paketID}
           onChange={(value) => {
             setFieldValue("paketID", value);
             dispatch(setSelectedJumlahPeserta(""));
             setFieldValue("jumlahPeserta", undefined);
           }}
+          selected={(data) => (!admin ? data?.props.children : values.paketID)}
           error={errors.paketID && touched.paketID ? true : false}
         >
-          {jenisPaket.map((item: jenisPaket, i: number) => (
-            <Option key={i} value={item._id}>
-              Paket Wisata {i + 1}
-            </Option>
-          ))}
+          {!admin ? (
+            jenisPaket.map((item: jenisPaket, i: number) => (
+              <Option key={i} value={item._id}>
+                Paket Wisata {i + 1}
+              </Option>
+            ))
+          ) : (
+            <Option>Tidak ada data yang dipilih</Option>
+          )}
         </Select>
         <Select
           variant="outlined"
@@ -128,14 +167,15 @@ const WisataForm = (props: any) => {
               ? errors.jumlahPeserta
               : "Jumlah Peserta"
           }`}
-          value={selectedJumlahPeserta}
+          value={admin ? values.jumlahPeserta : selectedJumlahPeserta}
+          selected={() => values.jumlahPeserta}
           onChange={(value) => {
             dispatch(setSelectedJumlahPeserta(value));
             setFieldValue("jumlahPeserta", value);
           }}
           error={errors.jumlahPeserta && touched.jumlahPeserta ? true : false}
         >
-          {values.paketID !== undefined ? (
+          {values.paketID !== undefined && jumlahPesertaData.length !== 0 ? (
             jumlahPesertaData.map((item: any, i: number) => (
               <Option
                 onClick={() => {
@@ -153,7 +193,9 @@ const WisataForm = (props: any) => {
             ))
           ) : (
             <Option value={undefined}>
-              Pilih Paket Wisata Terlebih Dahulu
+              {admin
+                ? "Pilih data reservasi terlebih dahulu"
+                : "Pilih Paket Wisata Terlebih Dahulu"}
             </Option>
           )}
         </Select>
@@ -161,6 +203,7 @@ const WisataForm = (props: any) => {
           variant="outlined"
           color="orange"
           size="lg"
+          value={values.lokasiJemput}
           label={`${
             errors.lokasiJemput && touched.lokasiJemput
               ? errors.lokasiJemput
@@ -175,6 +218,7 @@ const WisataForm = (props: any) => {
           variant="outlined"
           color="orange"
           size="lg"
+          value={values.pesananTambahan}
           label={`${
             errors.pesananTambahan && touched.pesananTambahan
               ? errors.pesananTambahan
@@ -185,20 +229,44 @@ const WisataForm = (props: any) => {
           }}
         />
       </div>
-
-      <Button
-        className="mt-6"
-        type="submit"
-        disabled={isSubmitting}
-        onClick={(_) => {
-          console.log({ errors });
-          return false;
-        }}
-        color="orange"
-        fullWidth
-      >
-        Buat Pesanan
-      </Button>
+      <div className="flex gap-4 mt-6 justify-end">
+        {admin && (
+          <Button
+            onClick={() => {
+              dispatch(setSelectedResWisata(null));
+              dispatch(setPaxWisata([]));
+              dispatch(setSelectedJumlahPeserta(""));
+              setJumlahPesertaData([]);
+              dispatch({
+                type: "main/setAlert",
+                payload: {
+                  type: "info",
+                  message: "Kolom berhasil dibersihkan!",
+                  show: true,
+                },
+              });
+              resetForm();
+              console.log(values);
+            }}
+            color="red"
+            variant="text"
+          >
+            Bersihkan Form
+          </Button>
+        )}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          onClick={(_) => {
+            console.log({ errors });
+            return false;
+          }}
+          color="orange"
+          fullWidth={!admin}
+        >
+          {admin ? "Update Pesanan" : "Buat Pesanan"}
+        </Button>
+      </div>
     </Form>
   );
 };

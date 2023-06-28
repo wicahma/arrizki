@@ -6,6 +6,7 @@ import {
   customFormProps,
   customValidation,
 } from "@/interfaces/customWisataProps";
+import { setAlert, setLoading } from "@/store/mainSlice";
 import {
   Button,
   Dialog,
@@ -39,40 +40,36 @@ const index = (props: any) => {
       armada: "",
       fasilitas: "",
       pesananTambahan: "",
+      type: "user",
     };
 
   const handleCreateReservasi = async (values: customFormProps | undefined) => {
-    dispatch({ type: "main/setLoading", payload: true });
+    dispatch(setLoading(true));
     setHandleOpenDialog(false);
-    setTimeout(() => {
-      axios
-        .put("the url", values)
-        .then((res) => {
-          console.log(res);
-          dispatch({
-            type: "main/setAlert",
-            payload: {
-              message: "Berhasil membuat reservasi!",
-              type: "success",
-              show: true,
-            },
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          dispatch({
-            type: "main/setAlert",
-            payload: {
-              message: "Terjadi kesalahan, silahkan coba lagi nanti!",
-              type: "error",
-              show: true,
-            },
-          });
-        })
-        .finally(() => {
-          dispatch({ type: "main/setLoading", payload: false });
-        });
-    }, 3000);
+    await axios
+      .post(`${process.env.API_URL}/api/v1/res-custom`, values)
+      .then((res) => {
+        dispatch(
+          setAlert({
+            message: "Berhasil membuat reservasi!",
+            type: "success",
+            show: true,
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(
+          setAlert({
+            message: "Terjadi kesalahan, silahkan coba lagi nanti!",
+            type: "error",
+            show: true,
+          })
+        );
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
   };
 
   useEffect(() => {
@@ -247,7 +244,6 @@ const index = (props: any) => {
                     className: `${!formOpener ? "text-white" : "text-black"}`,
                   }}
                   defaultChecked={true}
-                  className=""
                   color="red"
                   label={!formOpener ? "Pesan Sekarang" : "Tutup form"}
                   onClick={(e: any) => setForm(e.target.checked)}

@@ -146,15 +146,21 @@ export const produkSlice = createSlice({
 });
 
 export const {
+  setJumlahPesertaMinimum,
   setMobilState,
+  setOutbondState,
   setWisataState,
+  setSelectedDataOutbondImage,
+  setSelectedDataWisataImage,
+  setSelectedDataOutbond,
   setSelectedDataWisata,
   setSelectedDataMobil,
+  setSelectedJumlahPeserta,
   setSelectedCar,
   setPaketWisata,
   setPaketOutbond,
-  setOutbondState,
-  setSelectedJumlahPeserta,
+  setNewWisataImage,
+  setNewOutbondImage,
 } = produkSlice.actions;
 
 export const selectMobilState = (state: Produk) => state.tableMobil;

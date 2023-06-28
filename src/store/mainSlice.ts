@@ -51,6 +51,6 @@ export const mainSlice = createSlice({
   },
 });
 
-export const { setToken, setAlert } = mainSlice.actions;
+export const { setToken, setAlert, setLoading } = mainSlice.actions;
 
 export default mainSlice.reducer;

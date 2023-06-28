@@ -22,6 +22,11 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import OutbondForm from "@/components/micros/forms/OutbondForm";
 import PaketOutbondCard from "@/components/micros/cards/PaketOutbondCard";
+import { setAlert, setLoading } from "@/store/mainSlice";
+import {
+  OutbondFormProps,
+  outbondValidator,
+} from "@/interfaces/pesananInterface";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -30,7 +35,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { dispatch, getState } = store;
       const { params } = etc;
       const id = params?.id;
-      console.log(id);
       await axios
         .get(`${process.env.API_URL}/api/v1/outbond/${id}`)
         .then((datas) => {
@@ -47,48 +51,6 @@ export const getServerSideProps = wrapper.getServerSideProps(
 interface outbond extends createOutbond {
   namaTempat: string;
 }
-
-//NOTE - Outbond Form Interface
-interface OutbondFormProps {
-  nama: string | undefined;
-  email: string | undefined;
-  nomorTelepon: string | undefined;
-  paketID: string | undefined;
-  jumlahPeserta: number | undefined;
-  tanggalReservasi: Date | undefined;
-  waktuJemput: string | undefined;
-  lokasiJemput: string | undefined;
-  pesananTambahan: string | undefined;
-}
-
-//NOTE - Outbond Validation Schema
-const outbondValidator = Yup.object().shape({
-  nama: Yup.string().required("Nama harus diisi !"),
-  email: Yup.string()
-    .email("Email tidak valid")
-    .required("Email harus diisi !"),
-  nomorTelepon: Yup.string()
-    .required("Nomor telepon harus diisi !")
-    .test(
-      "must-start-with-08",
-      "Nomor Telepon harus dimulai dengan 08",
-      (value, context) => (value?.toString().startsWith("08") ? true : false)
-    )
-    .test("only-digits", "Masukan Nomor telepon yang valid !", (value) =>
-      /^\d+$/g.test(value?.toString()) ? true : false
-    )
-    .min(9, "Nomor telepon harus nimimal 9 digit !"),
-  paketID: Yup.string().required("Paket wisata harus diisi !"),
-  jumlahPeserta: Yup.number()
-    .typeError("Jumlah pesert a harus diisi !")
-    .required("Jumlah peserta harus diisi !"),
-  tanggalReservasi: Yup.date()
-    .typeError("Tanggal reservasi harus berupa tanggal !")
-    .required("Tanggal reservasi harus diisi !")
-    .min(new Date(), "Tanggal reservasi tidak boleh kurang dari hari ini !"),
-  waktuJemput: Yup.string().required("Waktu jemput harus diisi !"),
-  lokasiJemput: Yup.string().required("Lokasi jemput harus diisi !"),
-});
 
 const DetailOutbond = () => {
   const { query } = useRouter(),
@@ -111,13 +73,40 @@ const DetailOutbond = () => {
       waktuJemput: undefined,
       lokasiJemput: undefined,
       pesananTambahan: "",
+      type: "user",
     },
     router = useRouter();
 
   const handleCreateReservasi = async (
     values: OutbondFormProps | undefined
   ) => {
-    console.log(values);
+    dispatch(setLoading(true));
+    await axios
+      .post(`${process.env.API_URL}/api/v1/res-outbond`, values)
+      .then((res) => {
+        dispatch(
+          setAlert({
+            type: "success",
+            message: "Reservasi berhasil dibuat, silahkan cek email anda!",
+            show: true,
+          })
+        );
+        console.log(res);
+      })
+      .catch((err) => {
+        dispatch(
+          setAlert({
+            type: "error",
+            message: err.response.data.message,
+            show: true,
+          })
+        );
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+        setHandleOpenDialog(false);
+      });
   };
 
   useEffect(() => {
@@ -136,9 +125,7 @@ const DetailOutbond = () => {
         ref={headerRef}
         className="pt-16 container bottom-0 mx-auto text-center bg-white"
       >
-        <Typography variant="h4" className="text-4xl mt-8">
-          {paketOutbond.namaTempat}
-        </Typography>
+        <p className="text-4xl mt-8">{paketOutbond.namaTempat}</p>
         <div className="flex mb-10 mt-3 flex-row flex-wrap gap-3 columns-4 justify-center">
           {paketOutbond &&
             paketOutbond.jenisPaket &&

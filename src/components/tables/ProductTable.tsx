@@ -369,9 +369,12 @@ const ProductTable = (props: Table) => {
       case "car":
         window.open(`/sewa-mobil`, "_blank");
         break;
-      // case "outbond":
-      //   window.open(``);
-      //   break;
+      case "outbond":
+        window.open(
+          `/paket-tour/outbond/${data?.namaTempat}/${data?._id}/detail`,
+          "_blank"
+        );
+        break;
       default:
         dispatch({
           type: "main/setAlert",

@@ -103,10 +103,6 @@ const index = (props: Produk) => {
       })
         .then((response) => {
           dispatch({
-            type: "main/setLoading",
-            payload: false,
-          });
-          dispatch({
             type: "main/setAlert",
             payload: {
               type: "success",
@@ -134,9 +130,17 @@ const index = (props: Produk) => {
                 default:
                   break;
               }
+              dispatch({
+                type: "main/setLoading",
+                payload: false,
+              });
             })
             .catch((err) => {
               console.log(err);
+              dispatch({
+                type: "main/setLoading",
+                payload: false,
+              });
             });
 
           return data;
@@ -174,7 +178,6 @@ const index = (props: Produk) => {
             validateOnChange
             validateOnMount
             onSubmit={async (values, { setSubmitting }) => {
-              setSubmitting(true);
               dispatch({
                 type: "main/setLoading",
                 payload: true,

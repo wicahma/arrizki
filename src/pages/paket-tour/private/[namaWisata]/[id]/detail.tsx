@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/router";
 import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
   Button,
   Dialog,
   DialogBody,
@@ -19,8 +22,11 @@ import axios from "axios";
 import { setPaketWisata } from "@/store/produkSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { createWisata } from "@/interfaces/produkInterface";
+import {
+  WisataFormProps,
+  wisataValidator,
+} from "@/interfaces/pesananInterface";
 
 //NOTE - Get data from server redux
 export const getServerSideProps = wrapper.getServerSideProps(
@@ -47,51 +53,13 @@ interface wisata extends createWisata {
   namaPaket: string;
 }
 
-//NOTE - Wisata Form Interface
-interface WisataFormProps {
-  nama: string | undefined;
-  email: string | undefined;
-  nomorTelepon: string | undefined;
-  paketID: string | undefined;
-  jumlahPeserta: number | undefined;
-  tanggalReservasi: Date | undefined;
-  waktuJemput: string | undefined;
-  lokasiJemput: string | undefined;
-  pesananTambahan: string | undefined;
-}
-
-//NOTE - Wisata Validation Schema
-const wisataValidator = Yup.object().shape({
-  nama: Yup.string().required("Nama harus diisi !"),
-  email: Yup.string()
-    .email("Email tidak valid")
-    .required("Email harus diisi !"),
-  nomorTelepon: Yup.string()
-    .required("Nomor telepon harus diisi !")
-    .test(
-      "must-start-with-08",
-      "Nomor Telepon harus dimulai dengan 08",
-      (value, context) => (value?.toString().startsWith("08") ? true : false)
-    )
-    .test("only-digits", "Masukan Nomor telepon yang valid !", (value) =>
-      /^\d+$/g.test(value?.toString()) ? true : false
-    )
-    .min(9, "Nomor telepon harus nimimal 9 digit !"),
-  paketID: Yup.string().required("Paket wisata harus diisi !"),
-  jumlahPeserta: Yup.number()
-    .typeError("Jumlah peserta harus diisi !")
-    .required("Jumlah peserta harus diisi !"),
-  tanggalReservasi: Yup.date()
-    .typeError("Tanggal reservasi harus berupa tanggal !")
-    .required("Tanggal reservasi harus diisi !")
-    .min(new Date(), "Tanggal reservasi tidak boleh kurang dari hari ini !"),
-  waktuJemput: Yup.string().required("Waktu jemput harus diisi !"),
-  lokasiJemput: Yup.string().required("Lokasi jemput harus diisi !"),
-});
-
 //NOTE - Main page Function
 const DetailWisata = (props: any) => {
-  const dispatch = useDispatch(),
+  const [open, setOpen] = useState(0),
+    handleOpen = (value: number) => {
+      setOpen(open === value ? 0 : value);
+    },
+    dispatch = useDispatch(),
     [formOpener, setForm] = useState<Boolean>(true),
     [onTop, setOnTop] = useState<Boolean>(false),
     [wisataFormData, setWisataFormData] = useState<WisataFormProps>(),
@@ -115,6 +83,7 @@ const DetailWisata = (props: any) => {
       waktuJemput: undefined,
       lokasiJemput: undefined,
       pesananTambahan: "",
+      type: "user",
     },
     router = useRouter();
 
@@ -198,7 +167,7 @@ const DetailWisata = (props: any) => {
       </div>
 
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
-        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0 space-y-14">
+        <div className="md:col-span-4 relative col-span-6 px-2 md:px-0">
           <div
             className={`sticky border-b py-4 border-gray-300 duration-300 overflow-x-auto transition-all w-full text-center z-50 bg-white ${
               onTop ? "opacity-100 top-14 h-fit" : "opacity-0 top-0 h-0"
@@ -217,16 +186,252 @@ const DetailWisata = (props: any) => {
                 ))}
             </div>
           </div>
-          {/* //NOTE - Paket Section */}
-          {paketWisata &&
-            paketWisata.jenisPaket &&
-            paketWisata.jenisPaket.map((item, i: number) => {
-              return (
-                <div key={i} className="pb-7">
-                  <PaketWisataCard paketData={item} index={i + 1} />
+          {/* //NOTE - Header Section */}
+          <div>
+            {/* //SECTION - Ketentuan Private Tour */}
+            <Accordion open={open === 1}>
+              <AccordionHeader onClick={() => handleOpen(1)}>
+                Ketentuan Private Tour
+              </AccordionHeader>
+              <AccordionBody>
+                <div>
+                  <ul className="list-disc ml-8 list-outside text-base text-blue-gray-800">
+                    <li>
+                      Paket Wisata yang kami tawarkan adalah bersifat{" "}
+                      <b className="font-semibold">private tour </b>
+                      (tidak digabungkan dengan peserta lain).
+                    </li>
+                    <li>
+                      Harga paket wisata berlaku untuk orang Indonesia, untuk
+                      wisata manca negara bisa menghubungi kami agar diberikan
+                      harga terbaik.
+                    </li>
+                    <li>
+                      Harga paket wisata sewaktu waktu bisa berubah, berkaitan
+                      perubahan HTM, Kenaikan BBM dan yang berhubungan dengan
+                      pariwisata.
+                    </li>
+                    <li>
+                      Trip start pukul 08.00 WIB, dengan durasi sekitar 10-12
+                      jam. Untuk trip sunrise start pukul 04.00 WIB.
+                    </li>
+                    <li>
+                      Untuk high season akan dikenakan charge sebesar 10% dari
+                      harga normal (libur sekolah, long weekend, libur umum).
+                    </li>
+                    <li>
+                      Untuk peak season akan dikenakan charge sebesar 30% dari
+                      harga normal (libur idul fitri, natal dan tahun baru).
+                    </li>
+                    <li>
+                      Itinerary (jadwal perjalanan) dapat berubah sewaktu waktu
+                      untuk menyesuaikan situasi dan kondisi yang ada.
+                    </li>
+                    <li>
+                      Armada yang kami sediakan mulai dari City Car, Avanza,
+                      Innova Reborn, ELF Short, ELF Long, Hiace Commuter, Hiace
+                      Premio, Medium Bus, dan Big Bus.
+                    </li>
+                    <li>
+                      Request/custom paket wisata dapat disesuai dengan rencana
+                      wisata Anda atau budget yang sesuai.
+                    </li>
+                    <li>
+                      Anak kecil dibawah 2 tahun Free, lebih dari 2 tahun sudah
+                      membayar sesuai harga paket wisata
+                    </li>
+                    <li>
+                      Apabila peserta tour memiliki penyakit, disarankan membawa
+                      obat pribadi.
+                    </li>
+                    <li>
+                      Dalam satu rombongan tour harus ada yang berperan sebagai
+                      koordinator.
+                    </li>
+                  </ul>
                 </div>
-              );
-            })}
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Fasilitas Selama Tour*/}
+            <Accordion open={open === 2}>
+              <AccordionHeader onClick={() => handleOpen(2)}>
+                Fasilitas Selama Tour
+              </AccordionHeader>
+              <AccordionBody>
+                <div className="text-blue-gray-800">
+                  <h3 className="text-lg font-medium">Include</h3>
+                  <ul className="list-disc ml-8 list-outside text-base">
+                    <li>Private tour</li>
+                    <li>Antar Jemput area DIY</li>
+                    <li>Transport AC Dingin dan Nyaman</li>
+                    <li>Driver as Guide Super Seru</li>
+                    <li>Makan/Snack Sesuai Program Paket</li>
+                    <li>Tiket Masuk Wisata / Retribusi</li>
+                    <li>Biaya parkir</li>
+                    <li>Air Mineral 600 ml</li>
+                    <li>P3K Ringan</li>
+                    <li>Souvenir </li>
+                    <li>Banner Wisata {`( >20 Pax)`}</li>
+                    <li>Dokumentasi foto {`( >20 Pax)`}</li>
+                    <li>Guide {`( >20 Pax)`}</li>
+                  </ul>
+                  <h3 className="text-lg font-medium">Exclude</h3>
+                  <ul className="list-disc ml-8 list-outside text-base">
+                    <li> Tiket Transport dari Kota Asal ke Jogja PP</li>
+                    <li> Biaya Pengeluaran Pribadi</li>
+                    <li> Biaya Tambahan Periode High Season</li>
+                    <li> Akomodasi Hotel/Penginapan</li>
+                    <li> Spot foto berbayar</li>
+                  </ul>
+                </div>
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Pemesanan layanan */}
+            <Accordion open={open === 3}>
+              <AccordionHeader onClick={() => handleOpen(3)}>
+                Pemesanan Layanan
+              </AccordionHeader>
+              <AccordionBody>
+                <ul className="list-disc ml-8 list-outside text-base">
+                  <li>
+                    Pemesanan dapat dilakukan melalui form pemesanan yang
+                    terdapat pada halaman website resmi kami atau melalui
+                    Whatsapp.
+                  </li>
+                  <li>
+                    Ketika melakukan pemesanan, pastikan semua data yang Anda
+                    isi form pemesanan benar dan akurat.
+                  </li>
+                  <li>
+                    Kesalahan dalam memberikan data dapat menyebabkan gagalnya
+                    rencana perjalanan tour, dan kami tidak bertanggung jawab
+                    setelah setelah kami mengirimkan Confirmasi latter kepada
+                    anda.
+                  </li>
+                </ul>
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Metode Pembayaran */}
+            <Accordion open={open === 4}>
+              <AccordionHeader onClick={() => handleOpen(4)}>
+                Metode Pembayaran
+              </AccordionHeader>
+              <AccordionBody>
+                <ul className="list-disc ml-8 list-outside text-base">
+                  <li>
+                    Uang muka (Down Payment) sebesar 35% dari total biaya untuk
+                    setiap reservasi atau pemesanan.
+                  </li>
+                  <li>
+                    Pembayaran uang muka dilakukan melalui transfer Bank,
+                    Internet Banking, Mobile Banking ke rekening BRI :
+                    0987-0102-2402-539 atau BSI : 301-1022-50 A.N Wiga Nugraheni{" "}
+                  </li>
+                  <li>
+                    Setelah melakukan pembayaran uang muka, silahkan melakukan
+                    konfirmasi via chat WhatsApp/Telepon/Email dengan
+                    menyertakan data booking serta bukti transfer.
+                  </li>
+                  <li>
+                    Pelunasan biaya tour bisa dilunasi pada saat waktu
+                    pelaksanaan.
+                  </li>
+                  <li>
+                    Pemesanan yang dilakukan pada masa tiga hari sebelum tanggal
+                    pelaksanaan akan dikenakan biaya penuh tanpa proses
+                    pembayaran uang muka.
+                  </li>
+                  <li>
+                    Pihak Arrizki Tour akan memberikan bukti pembayaran berupa
+                    invoice pada setiap tahap pembayaran yang sudah di lakukan.
+                  </li>
+                </ul>
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Ketentuan pembatalan */}
+            <Accordion open={open === 5}>
+              <AccordionHeader onClick={() => handleOpen(5)}>
+                Ketentuan Pembatalan
+              </AccordionHeader>
+              <AccordionBody>
+                <ul className="list-disc ml-8 list-outside text-base">
+                  <li>
+                    Pembatalan pemesanan paket tour yang dilakukan 7 (tujuh)
+                    hari sebelum tanggal pelaksanaan tour akan di kenakan
+                    censelation fee sebesar 25% dari total biaya paket tour.
+                  </li>
+                  <li>
+                    Pembatalan pemesanan paket tour yang dilakukan 3 (tiga) hari
+                    sebelum tanggal pelaksanaan akan di kenakan censelation fee
+                    sebesar 50% dari total biaya paket tour.
+                  </li>
+                  <li>
+                    Semua perubahan atau pembatalan peserta tanpa adanya
+                    informasi tertulis via Email/WhatsApp/Telepon dianggap tidak
+                    berlaku.
+                  </li>
+                </ul>
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Peraturan tour */}
+            <Accordion open={open === 6}>
+              <AccordionHeader onClick={() => handleOpen(6)}>
+                Peraturan Tour
+              </AccordionHeader>
+              <AccordionBody>
+                <ul className="list-disc ml-8 list-outside text-base">
+                  <li>
+                    Peserta tidak di perbolehkan membawa barang yang di anggap
+                    melanggar hokum, seperti senjata tajam, senjata api, miras
+                    atau narkoba.
+                  </li>
+                  <li>
+                    Peserta tidak diperkenankan menggunakan fasilitas tour
+                    seperti mobil untuk kegiatan yang melanggar hukum.
+                  </li>
+                  <li>
+                    Peserta tidak di perkenankan mengambil property kelengkapan
+                    yang tersedia dalam mobil.
+                  </li>
+                  <li>
+                    Peserta tidak diperbolehkan mengambil benda cagar budaya,
+                    tanaman serta hewan yang di lindungi selama tour
+                    berlangsung.
+                  </li>
+                </ul>
+              </AccordionBody>
+            </Accordion>
+            {/* //SECTION - Lain lain */}
+            <Accordion open={open === 7}>
+              <AccordionHeader onClick={() => handleOpen(7)}>
+                Lain lain
+              </AccordionHeader>
+              <AccordionBody>
+                <ul className="list-disc ml-8 list-outside text-base">
+                  <li>
+                    Semua syarat dan ketentuan yang telah kami buat bersifat
+                    mengikat.
+                  </li>
+                  <li>
+                    Peserta yang sudah melakukan reservasi kami anggap sudah
+                    membaca serta menyetujui semua syarat serta ketentuan ini.
+                  </li>
+                </ul>
+              </AccordionBody>
+            </Accordion>
+          </div>
+          {/* //NOTE - Paket Section */}
+          <div className="space-y-14 mt-14">
+            {paketWisata &&
+              paketWisata.jenisPaket &&
+              paketWisata.jenisPaket.map((item, i: number) => {
+                return (
+                  <div key={i} className="pb-7 ">
+                    <PaketWisataCard paketData={item} index={i + 1} />
+                  </div>
+                );
+              })}
+          </div>
         </div>
         {/* //NOTE - Form Section */}
         <div

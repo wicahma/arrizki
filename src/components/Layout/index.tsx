@@ -40,15 +40,12 @@ const index = (props: LayoutProps) => {
       : sessionStorage.getItem("token");
     return () => {
       if (router.pathname.includes("/admin")) {
-        console.log(token);
         if (!token) {
           router.replace("/");
         } else {
           dispatch({
             type: "main/setToken",
-            payload: {
-              token: token,
-            },
+            payload: token,
           });
         }
       }

@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 export interface customFormProps {
+  id?: string;
   nama: string | undefined;
   nomorTelepon: string | undefined;
   email: string | undefined;
@@ -12,6 +13,8 @@ export interface customFormProps {
   armada: string | undefined;
   fasilitas: string | undefined;
   pesananTambahan: string;
+  type: "admin" | "user" | string | undefined;
+  harga?: string;
 }
 
 export const customValidation = Yup.object().shape({
@@ -50,4 +53,5 @@ export const customValidation = Yup.object().shape({
   armada: Yup.string().required("Armada harus diisi !"),
   fasilitas: Yup.string().required("Fasilitas harus diisi !"),
   pesananTambahan: Yup.string().max(1000, "Pesanan tambahan terlalu panjang !"),
+  harga: Yup.number().typeError("Harga harus dalam bentuk angka").notRequired(),
 });

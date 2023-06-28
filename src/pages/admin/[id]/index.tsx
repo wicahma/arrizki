@@ -73,9 +73,7 @@ const index = (props: any) => {
             : sessionStorage.setItem("token", data.data.token);
           dispatch({
             type: "main/setToken",
-            payload: {
-              token: data.data.token.toString(),
-            },
+            payload: data.data.token.toString(),
           });
           router.push("/admin/dashboard");
         }

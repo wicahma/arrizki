@@ -1,5 +1,3 @@
-import { type } from "os";
-import { EnumType } from "typescript";
 import * as Yup from "yup";
 
 interface mobil {

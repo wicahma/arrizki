@@ -22,7 +22,7 @@ const OutbondCard = (props: any) => {
           src={
             image === "https://via.placeholder.com/150"
               ? image
-              : `${process.env.API_URL}/public/images/${image}`
+              : `${process.env.API_URL}/images/${image}`
           }
           alt={`wisata-${image}`}
           className="absolute opacity-50 top-0 w-full h-full object-cover left-0"

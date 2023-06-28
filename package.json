@@ -4,9 +4,9 @@
   "private": true,
   "homepage": "https://arrizkitour.com/",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js"
+    "start": "next start"
   },
   "dependencies": {
     "@material-tailwind/react": "^1.4.2",

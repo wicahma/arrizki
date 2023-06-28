@@ -1,10 +1,41 @@
+import { reduxState } from "@/interfaces/reduxInterface";
+import { setAlert } from "@/store/mainSlice";
+import { setSelectedResCustom } from "@/store/pesananSlice";
 import { Button, Input, Textarea } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const CustomForm = (props: any) => {
-  const { setFieldValue, touched, isSubmitting, errors }: any =
-    useFormikContext();
+const CustomForm = ({ admin = false }: any) => {
+  const {
+      setFieldValue,
+      touched,
+      isSubmitting,
+      errors,
+      values,
+      resetForm,
+    }: any = useFormikContext(),
+    dispatch = useDispatch(),
+    customAdminSelected = useSelector(
+      (state: reduxState) => state.pesanan.selectedResCustom
+    );
+
+  useEffect(() => {
+    if (customAdminSelected === null) return;
+    setFieldValue("id", customAdminSelected?._id);
+    setFieldValue("nama", customAdminSelected?.namaReservant);
+    setFieldValue("email", customAdminSelected?.email);
+    setFieldValue("nomorTelepon", customAdminSelected?.phoneNumber);
+    setFieldValue("tanggalReservasi", customAdminSelected?.tanggalReservasi);
+    setFieldValue("waktuJemput", customAdminSelected?.waktuJemput);
+    setFieldValue("lokasiJemput", customAdminSelected?.lokasiJemput);
+    setFieldValue("pesananTambahan", customAdminSelected?.pesananTambahan);
+    setFieldValue("fasilitas", customAdminSelected?.fasilitasPilihan);
+    setFieldValue("jumlahOrang", customAdminSelected?.jumlahPeserta);
+    setFieldValue("lokasiAntar", customAdminSelected?.lokasiAntar);
+    setFieldValue("armada", customAdminSelected?.armada);
+    setFieldValue("harga", customAdminSelected?.harga);
+  }, [customAdminSelected]);
 
   return (
     <Form>
@@ -13,6 +44,8 @@ const CustomForm = (props: any) => {
           variant="outlined"
           color="orange"
           size="lg"
+          disabled={admin}
+          value={values.nama}
           label={`${errors.nama && touched.nama ? errors.nama : "Nama"}`}
           onChange={(e) => {
             setFieldValue("nama", e.target.value);
@@ -22,6 +55,8 @@ const CustomForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          disabled={admin}
+          value={values.email}
           size="lg"
           label={`${errors.email && touched.email ? errors.email : "Email"}`}
           onChange={(e) => {
@@ -32,6 +67,8 @@ const CustomForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          disabled={admin}
+          value={values.nomorTelepon}
           size="lg"
           label={`${
             errors.nomorTelepon && touched.nomorTelepon
@@ -47,6 +84,7 @@ const CustomForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.jumlahOrang}
           size="lg"
           label={`${
             errors.jumlahOrang && touched.jumlahOrang
@@ -62,6 +100,7 @@ const CustomForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.tanggalReservasi}
           size="lg"
           label={`${
             errors.tanggalReservasi && touched.tanggalReservasi
@@ -79,6 +118,7 @@ const CustomForm = (props: any) => {
         <Input
           variant="outlined"
           color="orange"
+          value={values.waktuJemput}
           size="lg"
           label={`${
             errors.waktuJemput && touched.waktuJemput
@@ -94,6 +134,7 @@ const CustomForm = (props: any) => {
         <Textarea
           variant="outlined"
           color="orange"
+          value={values.lokasiJemput}
           size="lg"
           label={`${
             errors.lokasiJemput && touched.lokasiJemput
@@ -108,6 +149,7 @@ const CustomForm = (props: any) => {
         <Textarea
           variant="outlined"
           color="orange"
+          value={values.lokasiAntar}
           size="lg"
           label={`${
             errors.lokasiAntar && touched.lokasiAntar
@@ -122,6 +164,7 @@ const CustomForm = (props: any) => {
         <Textarea
           variant="outlined"
           color="orange"
+          value={values.armada}
           size="lg"
           label={`${
             errors.armada && touched.armada
@@ -136,6 +179,7 @@ const CustomForm = (props: any) => {
         <Textarea
           variant="outlined"
           color="orange"
+          value={values.fasilitas}
           size="lg"
           label={`${
             errors.fasilitas && touched.fasilitas
@@ -150,6 +194,7 @@ const CustomForm = (props: any) => {
         <Textarea
           variant="outlined"
           color="orange"
+          value={values.pesananTambahan}
           size="lg"
           label={`${
             errors.pesananTambahan && touched.pesananTambahan
@@ -163,20 +208,61 @@ const CustomForm = (props: any) => {
             errors.pesananTambahan && touched.pesananTambahan ? true : false
           }
         />
+        {admin && (
+          <div className="bg-white mt-5 drop-shadow-xl relative rounded-bl-xl rounded-tr-xl rounded-br-xl px-3 py-3">
+            <div className="bg-white w-fit absolute text-blue-gray-600 rounded-t-xl left-0 bottom-full pt-1 px-3">
+              Masukkan harga yang sesuai untuk Pesanan ini
+            </div>
+            <Input
+              variant="outlined"
+              color="orange"
+              value={values.harga}
+              size="lg"
+              label={`${
+                errors.harga && touched.harga ? errors.harga : "Harga"
+              }`}
+              type="text"
+              onChange={(e) => {
+                setFieldValue("harga", e.target.value);
+              }}
+              error={errors.harga && touched.harga ? true : false}
+            />
+          </div>
+        )}
       </div>
-
-      <Button
-        className="mt-6"
-        type="submit"
-        onClick={() => {
-          console.log({ errors });
-        }}
-        disabled={isSubmitting}
-        color="orange"
-        fullWidth
-      >
-        Buat Pesanan
-      </Button>
+      <div className="flex gap-4 mt-6 justify-end">
+        {admin && (
+          <Button
+            onClick={() => {
+              dispatch(setSelectedResCustom(null));
+              dispatch(
+                setAlert({
+                  type: "info",
+                  message: "Kolom berhasil dibersihkan!",
+                  show: true,
+                })
+              );
+              resetForm();
+              console.log(values);
+            }}
+            color="red"
+            variant="text"
+          >
+            Bersihkan Form
+          </Button>
+        )}
+        <Button
+          type="submit"
+          onClick={() => {
+            console.log({ errors });
+          }}
+          disabled={isSubmitting}
+          color="orange"
+          fullWidth={!admin}
+        >
+          Buat Pesanan
+        </Button>
+      </div>
     </Form>
   );
 };

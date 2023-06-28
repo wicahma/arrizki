@@ -8,6 +8,7 @@ import {
 import Image from "next/image";
 import React from "react";
 import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 interface PaketOutbondCardProps {
   paketData: jenisPaketOutbond;
@@ -19,7 +20,7 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
       desktop: {
         breakpoint: { max: 3000, min: 0 },
         items: 1,
-        slidesToSlide: 1, // optional, default to 1.
+        slidesToSlide: 1,
       },
     },
     rupiah = new Intl.NumberFormat("id-ID", {
@@ -33,11 +34,11 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
       id={`wisata-${index}`}
       className="w-full shadow-none border-l border-gray-300"
     >
-      <CardHeader color="white" className="relative h-56">
+      <CardHeader color="transparent" className=" h-[500px]">
         <Carousel
           swipeable
           draggable
-          ssr
+          ssr={false}
           infinite
           autoPlay
           showDots
@@ -50,17 +51,16 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          {images.map((item: string, index: number) => {
-            return (
-              <Image
-                src={`${process.env.API_URL}/public/images/${item}`}
-                alt={`Gambar ${index}`}
-                height={220}
-                width={850}
-                className="h-full w-full object-cover"
-              />
-            );
-          })}
+          {images.map((item: string, key: number) => (
+            <Image
+              src={`${process.env.API_URL}/images/${item}`}
+              alt={`Gambar ${item}`}
+              key={key}
+              height={220}
+              width={850}
+              className="h-full w-full object-cover"
+            />
+          ))}
         </Carousel>
       </CardHeader>
       <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">

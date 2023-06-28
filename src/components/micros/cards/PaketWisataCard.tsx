@@ -67,7 +67,7 @@ const PaketWisataCard = ({ paketData, index }: any) => {
       id={`wisata-${index}`}
       className="w-full shadow-none border-l border-gray-300"
     >
-      <CardHeader color="white" className="relative h-56">
+      <CardHeader color="white" className="relative h-[500px]">
         <Carousel
           swipeable
           draggable
@@ -84,17 +84,16 @@ const PaketWisataCard = ({ paketData, index }: any) => {
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
         >
-          {images.map((item: string, index: number) => {
-            return (
-              <Image
-                src={`${process.env.API_URL}/public/images/${item}`}
-                alt={`Gambar ${index}`}
-                height={220}
-                width={850}
-                className="h-full w-full object-cover"
-              />
-            );
-          })}
+          {images.map((item: string, key: number) => (
+            <Image
+              src={`${process.env.API_URL}/images/${item}`}
+              alt={`Gambar ${item}`}
+              key={key}
+              height={220}
+              width={850}
+              className="h-full w-full object-cover"
+            />
+          ))}
         </Carousel>
       </CardHeader>
       <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">

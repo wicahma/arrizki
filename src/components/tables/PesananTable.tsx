@@ -7,7 +7,13 @@ import {
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
-import React from "react";
+import React, { useMemo } from "react";
+import PrivateWisataRow from "./pesanan-row/private-wisata-row";
+import MobilRow from "./pesanan-row/mobil-row";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import OutbondWisataRow from "./pesanan-row/outbond-wisata-row";
+import CustomWisataRow from "./pesanan-row/custom-wisata-row";
 
 interface PesananTableProps {
   tableTitle: string[];
@@ -15,9 +21,186 @@ interface PesananTableProps {
   identifier: string;
 }
 
-const PesananTable = (props: PesananTableProps) => {
-  const { tableTitle, tableData, identifier } = props;
-  
+const PesananTable = ({
+  tableTitle,
+  tableData,
+  identifier,
+}: PesananTableProps) => {
+  const dispatch = useDispatch(),
+    rupiah = (angka: number) => {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+      }).format(angka);
+    };
+  //NOTE - Delete Handler
+  const handleDeleteData = async (id: string) => {
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
+    let state: string;
+    switch (identifier) {
+      case "res-wisata":
+        state = "pesanan/setReservasiWisata";
+        break;
+      case "res-car":
+        state = "pesanan/setReservasiMobil";
+        break;
+      case "res-outbond":
+        state = "pesanan/setReservasiOutbond";
+        break;
+      case "res-custom":
+        state = "pesanan/setReservasiCustom";
+        break;
+      default:
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        return dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "info",
+            message: "Fitur hapus data belum diatur!",
+            show: true,
+          },
+        });
+    }
+    await axios
+      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${
+            (localStorage.getItem("token") ||
+              sessionStorage.getItem("token")) ??
+            ""
+          }`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        console.log(data);
+        const newTableData = tableData.filter((data) => data._id !== id);
+        dispatch({ type: state, payload: newTableData });
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "success",
+            message: data.message,
+            show: true,
+          },
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "error",
+            message:
+              err.response.data.message ||
+              "Terjadi kesalahan, data gagal dihapus!",
+            show: true,
+          },
+        });
+      });
+  };
+  const [handleDelete, setHandleDelete] = React.useState(false),
+    [handleSeeCar, setHandleSeeCar] = React.useState(false),
+    [carData, setCarData] = React.useState<any>({}),
+    [selectedID, setSelectedID] = React.useState(""),
+    mappedData = useMemo(() => {
+      switch (identifier) {
+        case "res-wisata":
+          return tableData.map((data, index) => (
+            <PrivateWisataRow
+              key={index}
+              data={data}
+              i={index}
+              deleteContext={({
+                row_data,
+                id,
+                handler,
+              }: {
+                row_data: any;
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleDelete(handler);
+              }}
+            />
+          ));
+        case "res-outbond":
+          return tableData.map((data, index) => (
+            <OutbondWisataRow
+              key={index}
+              data={data}
+              i={index}
+              deleteContext={({
+                row_data,
+                id,
+                handler,
+              }: {
+                row_data: any;
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleDelete(handler);
+              }}
+            />
+          ));
+        case "res-custom":
+          return tableData.map((data, index) => (
+            <CustomWisataRow
+              key={index}
+              data={data}
+              i={index}
+              deleteContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleDelete(handler);
+              }}
+            />
+          ));
+        case "res-car":
+          return tableData.map((data, index) => (
+            <MobilRow
+              i={index}
+              key={index}
+              data={data}
+              seeCarContext={({ car_data, handler }) => {
+                setHandleSeeCar(handler);
+                setCarData(car_data);
+              }}
+              deleteContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleDelete(handler);
+              }}
+            />
+          ));
+      }
+    }, [tableData, identifier]);
+
   return (
     <>
       <table className="min-w-max bg-white font-sans shadow-md rounded-lg my-6 w-full table-auto">
@@ -31,195 +214,82 @@ const PesananTable = (props: PesananTableProps) => {
             <th className="py-3 px-6 text-center">Actions</th>
           </tr>
         </thead>
-        <tbody className="text-gray-600 text-sm font-light">
-          {tableData.map((data: any, i: number) => (
-            <tr
-              key={i}
-              className="border-b border-gray-200 bg-gray-50 hover:bg-gray-100"
-            >
-              {Object.values(data).map(
-                (value, ind): React.ReactNode => (
-                  <td key={ind} className="py-3 px-6 text-left">
-                    {String(value) === "aktif" ||
-                    String(value) === "nonaktif" ? (
-                      <Tooltip
-                        content={"Ubah Status"}
-                        animate={{
-                          mount: { scale: 1, y: 0 },
-                          unmount: { scale: 0, y: 25 },
-                        }}
-                        className="bg-white text-gray-700 shadow-xl"
-                      >
-                        <Switch
-                          key={i}
-                          id={`switch-${i}-${ind}-${data._id}`}
-                          defaultChecked={
-                            String(value) === "aktif" ? true : false
-                          }
-                          label={
-                            <span
-                              className={`${
-                                String(value) === "aktif"
-                                  ? "bg-green-600"
-                                  : "bg-red-600"
-                              } text-white py-1 px-3 rounded-full text-xs`}
-                            >
-                              {String(value)}
-                            </span>
-                          }
-                          color="green"
-                        />
-                      </Tooltip>
-                    ) : (
-                      <div className="flex items-center">
-                        <span className="font-medium">{String(value)}</span>
-                      </div>
-                    )}
-                  </td>
-                )
-              )}
-              <td className="py-3 px-6 text-center">
-                <div className="flex item-center bg-gray-300 space-x-2 px-3 py-1 rounded-full w-fit mx-auto justify-center">
-                  {/* //NOTE - Lihat Preview */}
-                  <Tooltip
-                    content={"Lihat preview"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div className="w-4 transform hover:text-red-500 hover:scale-110">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
-                  {/* //NOTE - Edit Kolom */}
-                  <Tooltip
-                    content={"Edit Kolom ini"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div className="w-4 transform hover:text-red-500 hover:scale-110">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
-                  {/* //NOTE - Update Gambar */}
-                  <Tooltip
-                    content={"Update Gambar"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div className="w-4 transform hover:text-red-500 hover:scale-110">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        className="w-4 aspect-square"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
-                  {/* //NOTE - Hapus Data */}
-                  <Tooltip
-                    content={"Hapus data kolom ini"}
-                    animate={{
-                      mount: { scale: 1, y: 0 },
-                      unmount: { scale: 0, y: 25 },
-                    }}
-                    className="bg-white text-gray-700 shadow-xl"
-                  >
-                    <div className="w-4 transform hover:text-red-500 hover:scale-110">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </div>
-                  </Tooltip>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
+        <tbody className="text-gray-600 text-sm font-light">{mappedData}</tbody>
       </table>
       {/* NOTE - Dialog Delete Data */}
-      <Dialog open={false} size={"xs"} handler={() => console.log("test")}>
+      <Dialog
+        open={handleDelete}
+        size={"xs"}
+        handler={() => setHandleDelete(false)}
+      >
         <DialogHeader>Hapus data?.</DialogHeader>
         <DialogBody divider>
-          Anda yakin ingin menghapus data dengan ID {}?. Kegiatan ini tidak
-          dapat diundur kembali
+          Anda yakin ingin menghapus data dengan ID {selectedID}?. Kegiatan ini
+          tidak dapat diundur kembali
         </DialogBody>
         <DialogFooter>
-          <Button variant="text" color="red" className="mr-1">
+          <Button
+            onClick={() => setHandleDelete(false)}
+            variant="text"
+            color="red"
+            className="mr-1"
+          >
             <span>Batal hapus</span>
           </Button>
-          <Button variant="gradient" color="green">
+          <Button
+            variant="gradient"
+            onClick={() => {
+              handleDeleteData(selectedID);
+              setHandleDelete(false);
+            }}
+            color="green"
+          >
             <span>Ya, hapus data</span>
           </Button>
         </DialogFooter>
       </Dialog>
-
-      {/* NOTE - Dialog Update Image */}
-      <Dialog open={false} size={"xs"} handler={() => console.log()}>
-        <DialogHeader>Update Gambar.</DialogHeader>
-        <DialogBody divider>anjas</DialogBody>
+      {/* NOTE - Dialog Lihat Data Mobil */}
+      <Dialog
+        open={handleSeeCar}
+        size={"xs"}
+        handler={() => {
+          setCarData({});
+          return setHandleSeeCar(false);
+        }}
+      >
+        <DialogHeader className="uppercase">
+          {carData.unitName ?? ""}
+        </DialogHeader>
+        <DialogBody divider className="text-blue-gray-800">
+          <h2 className="text-xl font-medium uppercase mb-2">
+            ID-{carData._id}
+          </h2>
+          <ul>
+            <li>
+              <p> Harga - {rupiah(carData.pricePerDay)}/Hari</p>
+            </li>
+            <li>
+              <p>Seat - {carData.seat}</p>
+            </li>
+            <li>
+              <p>Fasilitas - {carData.fasilitas}</p>
+            </li>
+            <li>
+              <p>Status - {carData.status}</p>
+            </li>
+          </ul>
+        </DialogBody>
         <DialogFooter>
-          <Button variant="text" color="red" className="mr-1">
-            <span>Batal update</span>
-          </Button>
-          <Button variant="gradient" color="green">
-            <span>Simpan perubahan</span>
+          <Button
+            onClick={() => {
+              setCarData({});
+              setHandleSeeCar(false);
+            }}
+            variant="text"
+            color="red"
+            className="mr-1"
+          >
+            <span>Tutup</span>
           </Button>
         </DialogFooter>
       </Dialog>

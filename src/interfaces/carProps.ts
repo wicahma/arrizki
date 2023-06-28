@@ -1,6 +1,7 @@
 import * as Yup from "yup";
 
 export interface MobilFormProps {
+  id?: string;
   nama: string | undefined;
   email: string | undefined;
   nomorTelepon: string | undefined;
