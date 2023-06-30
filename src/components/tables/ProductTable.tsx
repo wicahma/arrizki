@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { useFormikContext } from "formik";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -51,7 +52,9 @@ const ProductTable = (props: Table) => {
       payload: true,
     });
     axios
-      .get(`${process.env.API_URL}/api/v1/${identifier}/${data._id}`)
+      .get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${data._id}`
+      )
       .then((res) => {
         switch (identifier) {
           case "wisata":
@@ -149,7 +152,7 @@ const ProductTable = (props: Table) => {
     });
     axios
       .put(
-        `${process.env.API_URL}/api/v1/${identifier}/${dataSelected._id}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${dataSelected._id}`,
         carried,
         {
           headers: {
@@ -233,7 +236,7 @@ const ProductTable = (props: Table) => {
         });
     }
     await axios
-      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
+      .delete(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${id}`, {
         headers: {
           Authorization: `Bearer ${
             (localStorage.getItem("token") ||
@@ -307,7 +310,7 @@ const ProductTable = (props: Table) => {
     });
     axios
       .put(
-        `${process.env.API_URL}/api/v1/${identifier}/${id}/images`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${id}/images`,
         formData,
         {
           headers: {
@@ -328,22 +331,24 @@ const ProductTable = (props: Table) => {
             show: true,
           },
         });
-        axios.get(`${process.env.API_URL}/api/v1/${identifier}`).then((res) => {
-          let state;
-          switch (identifier) {
-            case "wisata":
-              state = "produk/setWisataState";
-              break;
-            case "car":
-              state = "produk/setMobilState";
-              break;
-            case "outbond":
-              state = "produk/setOutbondState";
-            default:
-              break;
-          }
-          dispatch({ type: state, payload: res.data.data });
-        });
+        axios
+          .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}`)
+          .then((res) => {
+            let state;
+            switch (identifier) {
+              case "wisata":
+                state = "produk/setWisataState";
+                break;
+              case "car":
+                state = "produk/setMobilState";
+                break;
+              case "outbond":
+                state = "produk/setOutbondState";
+              default:
+                break;
+            }
+            dispatch({ type: state, payload: res.data.data });
+          });
       })
       .catch((err) => {
         dispatch({
@@ -407,11 +412,16 @@ const ProductTable = (props: Table) => {
           {tableData.map((data: any, i: number) => (
             <tr
               key={i}
+              id={`col-${i}-${data._id}`}
               className="border-b border-gray-200 bg-gray-50 hover:bg-gray-100"
             >
               {Object.values(data).map(
                 (value, ind): React.ReactNode => (
-                  <td key={ind} className="py-3 px-6 text-left">
+                  <td
+                    key={ind + i}
+                    id={`col-${i}-${data._id}`}
+                    className="py-3 px-6 text-left"
+                  >
                     {String(value) === "aktif" ||
                     String(value) === "nonaktif" ? (
                       <Tooltip
@@ -445,7 +455,9 @@ const ProductTable = (props: Table) => {
                       </Tooltip>
                     ) : (
                       <div className="flex items-center">
-                        <span className="font-medium">{String(value)}</span>
+                        <span className="font-normal">
+                          {String(value).slice(0, 100)}
+                        </span>
                       </div>
                     )}
                   </td>
@@ -666,6 +678,10 @@ const ProductTable = (props: Table) => {
         handler={() => {
           setHandleOpenEditImage(!handleOpenEditImage);
           setDataGambar([]);
+          dispatch({
+            type: "produk/setNewWisataImage",
+            payload: null,
+          });
           if (gambarWisata.current) {
             gambarWisata.current!.value = "";
             gambarWisata.current!.files = null;
@@ -674,10 +690,14 @@ const ProductTable = (props: Table) => {
             gambarCar.current!.value = "";
             gambarCar.current!.files = null;
           }
+          if (gambarOutbond.current) {
+            gambarOutbond.current!.value = "";
+            gambarOutbond.current!.files = null;
+          }
         }}
       >
         <DialogHeader>Update Gambar.</DialogHeader>
-        <DialogBody divider>
+        <DialogBody divider className="max-h-[80vh] overflow-y-auto">
           {/*//NOTE - Update Gambar Mobil*/}
           {identifier === "car" && (
             <div className="space-y-3">
@@ -685,7 +705,7 @@ const ProductTable = (props: Table) => {
                 src={
                   dataUpdateGambar.length > 0
                     ? URL.createObjectURL(dataUpdateGambar[0])
-                    : `${process.env.API_URL}/images/${produk.selectedDataMobil?.imageId}`
+                    : `${process.env.NEXT_PUBLIC_API_URL}/images/${produk.selectedDataMobil?.imageId}`
                 }
                 alt={`Gambar Mobil - ${produk.selectedDataMobil?.imageId}`}
                 height={400}
@@ -758,7 +778,7 @@ const ProductTable = (props: Table) => {
             <div className="space-y-3">
               <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-3">
                 <h2>Paket ke berapa yang ingin anda update?</h2>
-                <div className="flex">
+                <div className="flex flex-wrap">
                   {produk.selectedDataWisataImage &&
                     produk.selectedDataWisataImage.map((gambarPaket, i) => (
                       <Radio
@@ -766,16 +786,36 @@ const ProductTable = (props: Table) => {
                         id={`type-${i}`}
                         name="type"
                         label={`Paket ${i + 1}`}
-                        onClick={() =>
+                        onClick={() => {
+                          console.log(gambarPaket);
                           dispatch({
                             type: "produk/setNewWisataImage",
                             payload: gambarPaket,
-                          })
-                        }
+                          });
+                        }}
                         ripple={true}
-                        // defaultChecked={i === 0}
                       />
                     ))}
+                </div>
+                <div className="text-start w-full">
+                  <h3 className="text-xl my-2 font-medium">Data Gambar </h3>
+                  {produk.newWisataImage &&
+                  produk.newWisataImage.images.length > 0 ? (
+                    produk.newWisataImage.images.map((text: string) => (
+                      <Link
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/public/images/${text}`}
+                        target="_blank"
+                        className="inline-block text-sm text-blue-gray-300 hover:text-blue-gray-700 hover:underline"
+                      >
+                        - {text}
+                      </Link>
+                    ))
+                  ) : (
+                    <p>
+                      Gambar belum ada, silahkan tambahkan gambar, atau coba
+                      pilih paket yang lain.
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex flex-nowrap gap-3">
@@ -834,8 +874,8 @@ const ProductTable = (props: Table) => {
                 </Tooltip>
               </div>
               <p className="text-xs font-light">
-                <span className="text-red-500">*</span> Pastikan ukuran setiap
-                file tidak lebih dari 5 Mb.
+                <span className="text-red-500">*</span> Pastikan masing masing
+                ukuran file tidak lebih dari 5 Mb & maksimal 10 File gambar.
               </p>
               <div>
                 {dataUpdateGambar.length > 0 ? (
@@ -862,7 +902,7 @@ const ProductTable = (props: Table) => {
             <div className="space-y-3">
               <div className="flex flex-col items-center bg-white shadow-lg rounded-xl p-3">
                 <h2>Paket ke berapa yang ingin anda update?</h2>
-                <div className="flex">
+                <div className="flex flex-wrap">
                   {produk.selectedDataOutbondImage &&
                     produk.selectedDataOutbondImage.map((gambarPaket, i) => (
                       <Radio
@@ -870,16 +910,36 @@ const ProductTable = (props: Table) => {
                         id={`type-${i}`}
                         name="type"
                         label={`Paket ${i + 1}`}
-                        onClick={() =>
+                        onClick={() => {
+                          console.log(gambarPaket);
                           dispatch({
                             type: "produk/setNewOutbondImage",
                             payload: gambarPaket,
-                          })
-                        }
+                          });
+                        }}
                         ripple={true}
-                        // defaultChecked={i === 0}
                       />
                     ))}
+                </div>
+                <div className="text-start w-full">
+                  <h3 className="text-xl my-2 font-medium">Data Gambar </h3>
+                  {produk.newOutbondImage &&
+                  produk.newOutbondImage.images.length > 0 ? (
+                    produk.newOutbondImage.images.map((text: string) => (
+                      <Link
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/public/images/${text}`}
+                        target="_blank"
+                        className="inline-block text-sm text-blue-gray-300 hover:text-blue-gray-700 hover:underline"
+                      >
+                        - {text}
+                      </Link>
+                    ))
+                  ) : (
+                    <p>
+                      Gambar belum ada, silahkan tambahkan gambar, atau coba
+                      pilih paket yang lain.
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="flex flex-nowrap gap-3">
@@ -938,8 +998,8 @@ const ProductTable = (props: Table) => {
                 </Tooltip>
               </div>
               <p className="text-xs font-light">
-                <span className="text-red-500">*</span> Pastikan ukuran setiap
-                file tidak lebih dari 5 Mb.
+                <span className="text-red-500">*</span> Pastikan masing masing
+                ukuran file tidak lebih dari 5 Mb & maksimal 10 File gambar.
               </p>
               <div>
                 {dataUpdateGambar.length > 0 ? (
@@ -970,6 +1030,10 @@ const ProductTable = (props: Table) => {
             onClick={() => {
               setHandleOpenEditImage(!handleOpenEditImage);
               setDataGambar([]);
+              dispatch({
+                type: "produk/setNewWisataImage",
+                payload: null,
+              });
               if (gambarWisata.current) {
                 gambarWisata.current!.value = "";
                 gambarWisata.current!.files = null;

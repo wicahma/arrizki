@@ -7,7 +7,7 @@ import {
   DialogFooter,
   Input,
   Textarea,
-  Tooltip
+  Tooltip,
 } from "@material-tailwind/react";
 import { ErrorMessage, useFormikContext } from "formik";
 import Image from "next/image";
@@ -103,7 +103,7 @@ const MobilForm = (props: any) => {
           <Dialog open={openPreview} handler={handleOpenPreview}>
             <DialogBody className="border-b">
               <Image
-                src={`${process.env.API_URL}/images/${dataMobilPilihan.imageId}`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}/images/${dataMobilPilihan.imageId}`}
                 alt={`Gambar Mobil - ${dataMobilPilihan.imageId}`}
                 width={400}
                 height={400}
@@ -228,7 +228,7 @@ const MobilForm = (props: any) => {
         <Button
           color="green"
           onClick={() => {
-            if (errors) {
+            if (Object.keys(errors).length > 0) {
               dispatch({
                 type: "main/setAlert",
                 payload: {

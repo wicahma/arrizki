@@ -18,7 +18,7 @@ import {
   DialogFooter,
   DialogHeader,
   Switch,
-  Tooltip
+  Tooltip,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { Formik } from "formik";
@@ -34,7 +34,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { params } = etc;
       const id = params?.id;
       await axios
-        .get(`${process.env.API_URL}/api/v1/outbond/${id}`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/outbond/${id}`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setPaketOutbond(data));
@@ -80,7 +80,7 @@ const DetailOutbond = () => {
   ) => {
     dispatch(setLoading(true));
     await axios
-      .post(`${process.env.API_URL}/api/v1/res-outbond`, values)
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-outbond`, values)
       .then((res) => {
         dispatch(
           setAlert({

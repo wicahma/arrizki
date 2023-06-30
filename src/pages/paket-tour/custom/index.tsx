@@ -47,7 +47,7 @@ const index = (props: any) => {
     dispatch(setLoading(true));
     setHandleOpenDialog(false);
     await axios
-      .post(`${process.env.API_URL}/api/v1/res-custom`, values)
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-custom`, values)
       .then((res) => {
         dispatch(
           setAlert({

@@ -52,7 +52,7 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
         >
           {images.map((item: string, key: number) => (
             <Image
-              src={`${process.env.API_URL}/images/${item}`}
+              src={`${process.env.NEXT_PUBLIC_API_URL}/images/${item}`}
               alt={`Gambar ${item}`}
               key={key}
               height={220}

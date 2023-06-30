@@ -68,7 +68,7 @@ const PesananTable = ({
         });
     }
     await axios
-      .delete(`${process.env.API_URL}/api/v1/${identifier}/${id}`, {
+      .delete(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${id}`, {
         headers: {
           Authorization: `Bearer ${
             (localStorage.getItem("token") ||

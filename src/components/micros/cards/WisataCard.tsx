@@ -37,7 +37,7 @@ const WisataCard = (props: WisataCardProps) => {
           src={
             image === "https://via.placeholder.com/150"
               ? image
-              : `${process.env.API_URL}/images/${image}`
+              : `${process.env.NEXT_PUBLIC_API_URL}/images/${image}`
           }
           alt={`wisata-${image}`}
           className="absolute opacity-50 top-0 w-full h-full object-cover left-0"

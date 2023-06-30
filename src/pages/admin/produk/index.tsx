@@ -39,7 +39,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
       await axios
-        .get(`${process.env.API_URL}/api/v1/wisata`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/wisata`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setWisataState(data));
@@ -48,7 +48,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           console.log(err);
         });
       await axios
-        .get(`${process.env.API_URL}/api/v1/car`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/car`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setMobilState(data));
@@ -57,7 +57,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           console.log(err);
         });
       await axios
-        .get(`${process.env.API_URL}/api/v1/outbond`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/outbond`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setOutbondState(data));
@@ -89,7 +89,7 @@ const index = (props: Produk) => {
       }
       return await axios({
         method: methods,
-        url: `${process.env.API_URL}/api/v1/${identifier}${
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}${
           methods === "POST" ? "" : `/${id}`
         }`,
         data: data,
@@ -112,7 +112,7 @@ const index = (props: Produk) => {
           });
 
           axios
-            .get(`${process.env.API_URL}/api/v1/${identifier}`)
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}`)
             .then((datas) => {
               const { data } = datas.data;
               switch (identifier) {
@@ -186,6 +186,7 @@ const index = (props: Produk) => {
                 payload: true,
               });
               setSubmitting(true);
+              console.log(values);
               fetchProduk("wisata", values, values._id);
               return false;
             }}
@@ -345,7 +346,7 @@ const index = (props: Produk) => {
   return (
     <Layout className="flex" pageTitle="Produk">
       <div className="max-w-full w-full block md:p-10 py-10 px-2">
-        <Tabs value="outbond" className="max-w-full">
+        <Tabs value="private-wisata" className="max-w-full">
           <TabsHeader>
             {data.map(({ label, value }) => (
               <Tab key={value} value={value}>

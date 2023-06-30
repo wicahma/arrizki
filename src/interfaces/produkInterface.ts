@@ -119,7 +119,7 @@ export const jenisPaketData: jenisPaket = {
   rundown: [""],
   tempatWisata: [""],
   pax: [paxData],
-  images: [""],
+  images: [],
 };
 
 export const createWisataData: createWisata = {
@@ -165,7 +165,7 @@ export interface createOutbond {
 export const jenisPaketOutbondData: jenisPaketOutbond = {
   fasilitas: [""],
   harga: 0,
-  images: [""],
+  images: [],
   minimumPerson: 0,
   namaPaket: "",
 };
@@ -242,7 +242,7 @@ export const mobilValidationSchema = Yup.object().shape({
 export const outbondValidationSchema = Yup.object().shape({
   keterangan: Yup.string()
     .required("Keterangan harus diisi !")
-    .max(100, "Keterangan maksimal 100 karakter"),
+    .max(2000, "Keterangan maksimal 2000 karakter"),
   nama: Yup.string()
     .required("Nama tempat harus diisi !")
     .max(100, "Nama tempat maksimal 100 karakter"),

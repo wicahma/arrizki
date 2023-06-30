@@ -2,10 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    unoptimized: true,
     domains: ["via.placeholder.com", "localhost", "api.arrizkitour.com"],
-  },
-  env: {
-    API_URL: "http://localhost:4000",
   },
 };
 

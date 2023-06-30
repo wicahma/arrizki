@@ -29,7 +29,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { dispatch, getState } = store;
       if (getState().produk.tableMobil.length === 0) {
         await axios
-          .get(`${process.env.API_URL}/api/v1/car`)
+          .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/car`)
           .then((datas) => {
             const { data } = datas.data;
             dispatch(setMobilState(data));
@@ -82,7 +82,7 @@ const index = (props: any) => {
     });
     setHandleOpenDialog(false);
     axios
-      .post(`${process.env.API_URL}/api/v1/res-car`, values)
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-car`, values)
       .then((_) => {
         dispatch({
           type: "main/setLoading",
@@ -203,7 +203,7 @@ const index = (props: any) => {
                     <MobilCard
                       key={i}
                       id={item._id}
-                      image={`${process.env.API_URL}/images/${item.imageId}`}
+                      image={`${process.env.NEXT_PUBLIC_API_URL}/images/${item.imageId}`}
                       price={item.pricePerDay}
                       title={item.unitName}
                       fasilitas={item.fasilitas}

@@ -7,7 +7,7 @@ import {
   Tabs,
   TabsBody,
   TabsHeader,
-  Typography
+  Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
 import React from "react";
@@ -85,7 +85,7 @@ const PaketWisataCard = ({ paketData, index }: any) => {
         >
           {images.map((item: string, key: number) => (
             <Image
-              src={`${process.env.API_URL}/images/${item}`}
+              src={`${process.env.NEXT_PUBLIC_API_URL}/images/${item}`}
               alt={`Gambar ${item}`}
               key={key}
               height={220}

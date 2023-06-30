@@ -14,7 +14,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
       await axios
-        .get(`${process.env.API_URL}/api/v1/outbond`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/outbond`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setOutbondState(data));

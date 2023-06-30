@@ -36,7 +36,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
       const { params } = etc;
       const id = params?.id;
       await axios
-        .get(`${process.env.API_URL}/api/v1/wisata/${id}`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/wisata/${id}`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setPaketWisata(data));
@@ -110,7 +110,7 @@ const DetailWisata = (props: any) => {
     });
     setHandleOpenDialog(false);
     axios
-      .post(`${process.env.API_URL}/api/v1/res-wisata`, values)
+      .post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-wisata`, values)
       .then((_) => {
         dispatch({
           type: "main/setAlert",

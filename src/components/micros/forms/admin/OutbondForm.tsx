@@ -260,7 +260,7 @@ const OutbondForm = (props: any) => {
         <Button
           color="green"
           onClick={() => {
-            if (errors) {
+            if (Object.keys(errors).length > 0) {
               dispatch({
                 type: "main/setAlert",
                 payload: {

@@ -13,7 +13,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
       await axios
-        .get(`${process.env.API_URL}/api/v1/wisata`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/wisata`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setWisataState(data));

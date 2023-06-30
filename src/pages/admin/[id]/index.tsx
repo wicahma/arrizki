@@ -49,7 +49,7 @@ const index = (props: any) => {
 
   const handleLogin = async (dataLogin: adminProps) => {
     axios
-      .put(`${process.env.API_URL}/api/v1/user`, {
+      .put(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user`, {
         email: dataLogin.email,
         pass: dataLogin.password,
       })
@@ -252,7 +252,9 @@ const index = (props: any) => {
 export const getServerSideProps = async (context: any) => {
   let validated: boolean = false;
   await axios
-    .get(`${process.env.API_URL}/api/v1/user/check/${context.params.id}`)
+    .get(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/check/${context.params.id}`
+    )
     .then((res) => {
       if (res.data.validated) validated = true;
     });

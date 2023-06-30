@@ -194,7 +194,7 @@ export const getPaketWisata = async ({
 }) => {
   dispatch(setLoading(true));
   const paket = await axios
-    .get(`${process.env.API_URL}/api/v1/wisata/paket/${paketID}`, {
+    .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/wisata/paket/${paketID}`, {
       headers: {
         Authorization: `Bearer ${
           (localStorage.getItem("token") || sessionStorage.getItem("token")) ??
@@ -230,7 +230,7 @@ export const getPaketOutbond = async ({
 }) => {
   dispatch(setLoading(true));
   const paket = await axios
-    .get(`${process.env.API_URL}/api/v1/outbond/paket/${paketID}`, {
+    .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/outbond/paket/${paketID}`, {
       headers: {
         Authorization: `Bearer ${
           (localStorage.getItem("token") || sessionStorage.getItem("token")) ??

@@ -41,7 +41,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
       await axios
-        .get(`${process.env.API_URL}/api/v1/res-wisata`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-wisata`, {
           headers: {
             Authorization: `Bearer ${getState().main.token ?? ""}`,
           },
@@ -54,7 +54,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           console.log(err);
         });
       await axios
-        .get(`${process.env.API_URL}/api/v1/res-car`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-car`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setReservasiMobil(data));
@@ -63,7 +63,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           console.log(err);
         });
       await axios
-        .get(`${process.env.API_URL}/api/v1/res-outbond`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-outbond`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setReservasiOutbond(data));
@@ -72,7 +72,7 @@ export const getServerSideProps = wrapper.getServerSideProps(
           console.log(err);
         });
       await axios
-        .get(`${process.env.API_URL}/api/v1/res-custom`)
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/res-custom`)
         .then((datas) => {
           const { data } = datas.data;
           dispatch(setReservasiCustom(data));
@@ -364,7 +364,7 @@ const index = (props: any) => {
       }
       return await axios({
         method: "PUT",
-        url: `${process.env.API_URL}/api/v1/${identifier}/${id}`,
+        url: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/${id}`,
         data: data,
         headers: {
           Authorization: `Bearer ${
@@ -384,7 +384,7 @@ const index = (props: any) => {
             },
           });
           axios
-            .get(`${process.env.API_URL}/api/v1/${identifier}`)
+            .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}`)
             .then((datas) => {
               const { data } = datas.data;
               dispatch({
