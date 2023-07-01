@@ -110,10 +110,58 @@ const PesananTable = ({
         });
       });
   };
+  const handleSendInvoice = async (id: string) => {
+    dispatch({
+      type: "main/setLoading",
+      payload: true,
+    });
+   
+    await axios
+      .get(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/${identifier}/invoice/${id}`, {
+        headers: {
+          Authorization: `Bearer ${
+            (localStorage.getItem("token") ||
+              sessionStorage.getItem("token")) ??
+            ""
+          }`,
+        },
+      })
+      .then(({ data }) => {
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "success",
+            message: data.message,
+            show: true,
+          },
+        });
+      })
+      .catch((err) => {
+        dispatch({
+          type: "main/setLoading",
+          payload: false,
+        });
+        dispatch({
+          type: "main/setAlert",
+          payload: {
+            type: "error",
+            message:
+              err.response.data.message ||
+              "Terjadi kesalahan, Email invoice gagal dikirim!",
+            show: true,
+          },
+        });
+      });
+  };
   const [handleDelete, setHandleDelete] = React.useState(false),
     [handleSeeCar, setHandleSeeCar] = React.useState(false),
     [carData, setCarData] = React.useState<any>({}),
     [selectedID, setSelectedID] = React.useState(""),
+    [handleInvoice, setHandleInvoice] = React.useState(false),
     mappedData = useMemo(() => {
       switch (identifier) {
         case "res-wisata":
@@ -133,6 +181,16 @@ const PesananTable = ({
               }) => {
                 setSelectedID(id);
                 setHandleDelete(handler);
+              }}
+              invoiceContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleInvoice(handler);
               }}
             />
           ));
@@ -154,6 +212,16 @@ const PesananTable = ({
                 setSelectedID(id);
                 setHandleDelete(handler);
               }}
+              invoiceContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleInvoice(handler);
+              }}
             />
           ));
         case "res-custom":
@@ -171,6 +239,16 @@ const PesananTable = ({
               }) => {
                 setSelectedID(id);
                 setHandleDelete(handler);
+              }}
+              invoiceContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleInvoice(handler);
               }}
             />
           ));
@@ -194,6 +272,16 @@ const PesananTable = ({
                 setSelectedID(id);
                 setHandleDelete(handler);
               }}
+              invoiceContext={({
+                id,
+                handler,
+              }: {
+                id: string;
+                handler: boolean;
+              }) => {
+                setSelectedID(id);
+                setHandleInvoice(handler);
+              }}
             />
           ));
       }
@@ -210,6 +298,7 @@ const PesananTable = ({
               </th>
             ))}
             <th className="py-3 px-6 text-center">Actions</th>
+            <th className="py-3 px-6 text-center">Mailer</th>
           </tr>
         </thead>
         <tbody className="text-gray-600 text-sm font-light">{mappedData}</tbody>
@@ -239,6 +328,39 @@ const PesananTable = ({
             onClick={() => {
               handleDeleteData(selectedID);
               setHandleDelete(false);
+            }}
+            color="green"
+          >
+            <span>Ya, hapus data</span>
+          </Button>
+        </DialogFooter>
+      </Dialog>
+      {/* NOTE - Dialog Send Invoice Email */}
+      <Dialog
+        open={handleInvoice}
+        size={"xs"}
+        handler={() => setHandleInvoice(false)}
+      >
+        <DialogHeader>Kirim invoice</DialogHeader>
+        <DialogBody divider>
+          Anda yakin ingin mengirim invoice ke email {selectedID}?. Dimohon
+          untuk melakukan pengecekan pembayaran agar tidak terjadi kesalahan
+          pengiriman invoice.
+        </DialogBody>
+        <DialogFooter>
+          <Button
+            onClick={() => setHandleInvoice(false)}
+            variant="text"
+            color="red"
+            className="mr-1"
+          >
+            <span>Batal hapus</span>
+          </Button>
+          <Button
+            variant="gradient"
+            onClick={() => {
+              handleSendInvoice(selectedID);
+              setHandleInvoice(false);
             }}
             color="green"
           >

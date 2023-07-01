@@ -25,8 +25,9 @@ import { useDispatch } from "react-redux";
 const index = (props: any) => {
   const { pathname } = useRouter(),
     dispatch = useDispatch(),
-    [formOpener, setForm] = useState<Boolean>(true),
+    [formOpener, setForm] = useState<boolean>(false),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
+    [dialogSize, setDialogSize] = useState<"xl" | "xxl">("xxl"),
     [customFormData, setCustomFormData] = useState<customFormProps>(),
     initialValues: customFormProps = {
       nama: "",
@@ -72,9 +73,18 @@ const index = (props: any) => {
   };
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      window.innerWidth > 960 && setForm(true);
-    });
+    if (window) {
+      if (window.innerWidth > 960) {
+        setForm(true);
+        setDialogSize("xl");
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 960) {
+          setForm(true);
+          setDialogSize("xl");
+        }
+      });
+    }
   }, [formOpener]);
 
   return (
@@ -144,7 +154,7 @@ const index = (props: any) => {
                 <CustomForm />
               </Formik>
               <Dialog
-                size="xl"
+                size={dialogSize}
                 open={handleOpenDialog}
                 handler={() => setHandleOpenDialog(!handleOpenDialog)}
               >
@@ -242,7 +252,7 @@ const index = (props: any) => {
                   labelProps={{
                     className: `${!formOpener ? "text-white" : "text-black"}`,
                   }}
-                  defaultChecked={true}
+                  checked={formOpener}
                   color="red"
                   label={!formOpener ? "Pesan Sekarang" : "Tutup form"}
                   onClick={(e: any) => setForm(e.target.checked)}

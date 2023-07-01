@@ -13,9 +13,16 @@ interface MobilRow {
     car_data: any;
     handler: boolean;
   }) => void;
+  invoiceContext: ({ id, handler }: { id: string; handler: boolean }) => void;
 }
 
-const MobilRow = ({ i, data, deleteContext, seeCarContext }: MobilRow) => {
+const MobilRow = ({
+  i,
+  data,
+  deleteContext,
+  seeCarContext,
+  invoiceContext,
+}: MobilRow) => {
   const dateFormatter = (date: string) => {
       const dateObj = new Date(date);
       return dateObj.toLocaleDateString("id-ID", {
@@ -157,6 +164,44 @@ const MobilRow = ({ i, data, deleteContext, seeCarContext }: MobilRow) => {
                 />
               </svg>
             </div>
+          </Tooltip>
+        </div>
+      </td>
+      <td className="py-3 px-6 text-center">
+        <div className="flex item-center space-x-2 px-3 py-1 rounded-full w-fit mx-auto justify-center">
+          <Tooltip
+            content={"Kirim Email Invoice"}
+            animate={{
+              mount: { scale: 1, y: 0 },
+              unmount: { scale: 0, y: 25 },
+            }}
+            className="bg-white text-gray-700 shadow-xl"
+          >
+            <Button
+              onClick={() =>
+                invoiceContext({
+                  handler: true,
+                  id: data._id,
+                })
+              }
+              className="p-1"
+              color="light-blue"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-5 aspect-square"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
+                />
+              </svg>
+            </Button>
           </Tooltip>
         </div>
       </td>

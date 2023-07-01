@@ -53,9 +53,10 @@ interface outbond extends createOutbond {
 const DetailOutbond = () => {
   const { query } = useRouter(),
     dispatch = useDispatch(),
-    [formOpener, setForm] = useState<Boolean>(true),
+    [formOpener, setForm] = useState<boolean>(false),
     [onTop, setOnTop] = useState<Boolean>(false),
     [outbondFormData, setOutbondFormData] = useState<OutbondFormProps>(),
+    [dialogSize, setDialogSize] = useState<"xl" | "xxl">("xxl"),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
     paketOutbond: outbond | any = useSelector(
@@ -115,6 +116,22 @@ const DetailOutbond = () => {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, [headerRef]);
+
+  useEffect(() => {
+    if (window) {
+      if (window.innerWidth > 960) {
+        setForm(true);
+        setDialogSize("xl");
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 960) {
+          setForm(true);
+          setDialogSize("xl");
+        }
+      });
+    }
+  }, []);
+
   return (
     <Layout>
       <div
@@ -202,7 +219,7 @@ const DetailOutbond = () => {
               )}
             </Formik>
             <Dialog
-              size="xl"
+              size={dialogSize}
               open={handleOpenDialog}
               handler={() => setHandleOpenDialog(!handleOpenDialog)}
             >
@@ -288,7 +305,7 @@ const DetailOutbond = () => {
                 labelProps={{
                   className: `${!formOpener ? "text-white" : "text-black"}`,
                 }}
-                defaultChecked={true}
+                checked={formOpener}
                 className=""
                 color="red"
                 label={`${!formOpener ? "Pesan sekarang?" : "Tutup Form"}`}

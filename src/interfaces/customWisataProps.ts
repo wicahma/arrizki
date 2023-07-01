@@ -53,5 +53,8 @@ export const customValidation = Yup.object().shape({
   armada: Yup.string().required("Armada harus diisi !"),
   fasilitas: Yup.string().required("Fasilitas harus diisi !"),
   pesananTambahan: Yup.string().max(1000, "Pesanan tambahan terlalu panjang !"),
-  harga: Yup.number().typeError("Harga harus dalam bentuk angka").notRequired(),
+  harga: Yup.number()
+    .typeError("Harga harus dalam bentuk angka")
+    .min(1000, "Minimal harga adalah Rp.1.000")
+    .notRequired(),
 });

@@ -51,7 +51,8 @@ const index = (props: any) => {
     selectedCar = useSelector((state: any) => state.produk.selectedCar),
     dispatch = useDispatch(),
     [mobilFormData, setMobilFormData] = useState<MobilFormProps>(),
-    [formOpener, setForm] = useState<Boolean>(true),
+    [dialogSize, setDialogSize] = useState<"xl" | "xxl">("xxl"),
+    [formOpener, setForm] = useState<boolean>(false),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     rupiah = new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -70,10 +71,19 @@ const index = (props: any) => {
     };
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      window.innerWidth > 960 && setForm(true);
-    });
-  }, [formOpener]);
+    if (window) {
+      if (window.innerWidth > 960) {
+        setForm(true);
+        setDialogSize("xl");
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 960) {
+          setForm(true);
+          setDialogSize("xl");
+        }
+      });
+    }
+  }, []);
 
   const handleCreateReservasi = async (values: MobilFormProps | undefined) => {
     dispatch({
@@ -238,12 +248,12 @@ const index = (props: any) => {
                 <MobilForm mobilData={mobil} />
               </Formik>
               <Dialog
-                size="xl"
+                size={dialogSize}
                 open={handleOpenDialog}
                 handler={() => setHandleOpenDialog(!handleOpenDialog)}
               >
                 <DialogHeader>Ayo cek lagi pesanan kamu 😊</DialogHeader>
-                <DialogBody divider>
+                <DialogBody divider className="max-h-[80vh] overflow-y-auto">
                   {mobilFormData && (
                     <ul>
                       <li className="bg-red-400 font-semibold text-white p-3 rounded-lg">
@@ -326,7 +336,7 @@ const index = (props: any) => {
                     color="green"
                     onClick={() => handleCreateReservasi(mobilFormData)}
                   >
-                    <span>Selesaikan Pesanan</span>
+                    <span>Buat Pesanan</span>
                   </Button>
                 </DialogFooter>
               </Dialog>
@@ -350,7 +360,7 @@ const index = (props: any) => {
                   labelProps={{
                     className: `${!formOpener ? "text-white" : "text-black"}`,
                   }}
-                  defaultChecked={true}
+                  checked={formOpener}
                   className=""
                   color="red"
                   label={!formOpener ? "Pesan Sekarang" : "Tutup form"}

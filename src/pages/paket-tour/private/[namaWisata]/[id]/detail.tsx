@@ -59,8 +59,9 @@ const DetailWisata = (props: any) => {
       setOpen(open === value ? 0 : value);
     },
     dispatch = useDispatch(),
-    [formOpener, setForm] = useState<Boolean>(true),
-    [onTop, setOnTop] = useState<Boolean>(false),
+    [formOpener, setForm] = useState<boolean>(false),
+    [dialogSize, setDialogSize] = useState<"xxl" | "xl">("xxl"),
+    [onTop, setOnTop] = useState<boolean>(false),
     [wisataFormData, setWisataFormData] = useState<WisataFormProps>(),
     [handleOpenDialog, setHandleOpenDialog] = useState<boolean>(false),
     headerRef = React.useRef<HTMLDivElement>(null),
@@ -87,10 +88,19 @@ const DetailWisata = (props: any) => {
     router = useRouter();
 
   useEffect(() => {
-    window.addEventListener("resize", () => {
-      window.innerWidth > 960 && setForm(true);
-    });
-  }, [formOpener]);
+    if (window) {
+      if (window.innerWidth > 960) {
+        setForm(true);
+        setDialogSize("xl");
+      }
+      window.addEventListener("resize", () => {
+        if (window.innerWidth > 960) {
+          setForm(true);
+          setDialogSize("xl");
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -457,7 +467,7 @@ const DetailWisata = (props: any) => {
               )}
             </Formik>
             <Dialog
-              size="xl"
+              size={dialogSize}
               open={handleOpenDialog}
               handler={() => setHandleOpenDialog(!handleOpenDialog)}
             >
@@ -556,7 +566,7 @@ const DetailWisata = (props: any) => {
                 labelProps={{
                   className: `${!formOpener ? "text-white" : "text-black"}`,
                 }}
-                defaultChecked={true}
+                checked={formOpener}
                 className=""
                 color="red"
                 label={`${!formOpener ? "Pesan sekarang?" : "Tutup Form"}`}
