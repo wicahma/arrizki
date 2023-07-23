@@ -10,6 +10,7 @@ export interface ReservasiWisata {
   namaReservant: string;
   phoneNumber: string;
   email: string;
+  instagram: string;
   jumlahPeserta: number;
   tanggalMulai: string;
   waktuJemput: string;
@@ -26,6 +27,7 @@ export interface ReservasiMobil {
   namaReservant: string;
   phoneNumber: string;
   email: string;
+  instagram: string;
   tanggalReservasi: string;
   waktuAntar: string;
   unitId: {
@@ -54,6 +56,7 @@ export interface ReservasiOutbond {
   namaReservant: string;
   phoneNumber: string;
   email: string;
+  instagram: string;
   jumlahPeserta: string;
   tanggalMulai: string;
   waktuJemput: string;
@@ -70,11 +73,12 @@ export interface ReservasiCustom {
   namaReservant: string;
   phoneNumber: string;
   email: string;
+  instagram: string;
   jumlahPeserta: number;
   tanggalReservasi: string;
   waktuJemput: string;
   lokasiJemput: string;
-  lokasiAntar: string;
+  listWisata: string;
   armada: string;
   fasilitasPilihan: string;
   harga: string;
@@ -102,6 +106,7 @@ export interface WisataFormProps {
   id?: string | undefined;
   nama: string | undefined;
   email: string | undefined;
+  instagram: string | undefined;
   nomorTelepon: string | undefined;
   paketID: string | undefined;
   jumlahPeserta: string | undefined;
@@ -118,6 +123,9 @@ export const wisataValidator = Yup.object().shape({
   email: Yup.string()
     .email("Email tidak valid")
     .required("Email harus diisi !"),
+  instagram: Yup.string()
+    .max(50, "Username maksimal instagram adalah 50!")
+    .notRequired(),
   nomorTelepon: Yup.string()
     .required("Nomor telepon harus diisi !")
     .test(
@@ -146,6 +154,7 @@ export interface OutbondFormProps {
   id?: string | undefined;
   nama: string | undefined;
   email: string | undefined;
+  instagram: string | undefined;
   nomorTelepon: string | undefined;
   paketID: string | undefined;
   jumlahPeserta: string | undefined;
@@ -162,6 +171,9 @@ export const outbondValidator = Yup.object().shape({
   email: Yup.string()
     .email("Email tidak valid")
     .required("Email harus diisi !"),
+  instagram: Yup.string()
+    .max(50, "Username maksimal instagram adalah 50!")
+    .notRequired(),
   nomorTelepon: Yup.string()
     .required("Nomor telepon harus diisi !")
     .test(

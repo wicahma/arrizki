@@ -4,6 +4,7 @@ export interface MobilFormProps {
   id?: string;
   nama: string | undefined;
   email: string | undefined;
+  instagram: string | undefined;
   nomorTelepon: string | undefined;
   jenisMobil: string | undefined;
   tanggalReservasi: string | undefined;
@@ -17,6 +18,7 @@ export const carValidation = Yup.object().shape({
   email: Yup.string()
     .email("Email tidak valid")
     .required("Email harus diisi !"),
+  instagram: Yup.string().notRequired(),
   nomorTelepon: Yup.string()
     .required("Nomor telepon harus diisi !")
     .test(

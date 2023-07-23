@@ -5,11 +5,12 @@ export interface customFormProps {
   nama: string | undefined;
   nomorTelepon: string | undefined;
   email: string | undefined;
+  instagram: string | undefined;
   jumlahOrang: string | undefined;
   tanggalReservasi: string | undefined;
   waktuJemput: string | undefined;
   lokasiJemput: string | undefined;
-  lokasiAntar: string | undefined;
+  listWisata: string | undefined;
   armada: string | undefined;
   fasilitas: string | undefined;
   pesananTambahan: string;
@@ -24,6 +25,9 @@ export const customValidation = Yup.object().shape({
   email: Yup.string()
     .email("Email tidak valid")
     .required("Email harus diisi !"),
+  instagram: Yup.string()
+    .max(50, "Username instagram terlalu panjang !")
+    .notRequired(),
   nomorTelepon: Yup.string()
     .required("Nomor telepon harus diisi !")
     .test(
@@ -47,7 +51,7 @@ export const customValidation = Yup.object().shape({
   lokasiJemput: Yup.string()
     .required("Lokasi jemput harus diisi !")
     .max(500, "Lokasi jemput terlalu panjang !"),
-  lokasiAntar: Yup.string()
+  listWisata: Yup.string()
     .required("Lokasi antar harus diisi !")
     .max(500, "Lokasi antar terlalu panjang !"),
   armada: Yup.string().required("Armada harus diisi !"),
