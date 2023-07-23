@@ -23,7 +23,7 @@
     "nextjs-progressbar": "^0.0.16",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-multi-carousel": "^2.8.3",
+    "react-multi-carousel": "^2.8.4",
     "react-redux": "^8.0.5",
     "typescript": "4.9.5",
     "yup": "^1.0.2"
