@@ -17,16 +17,6 @@ const index = (props: any) => {
         </Link>
         <Link
           className={`hover:text-red-50 text-red-100 transition-colors inline-block px-3 py-1 rounded-lg ${
-            pathname.includes("/paket-tour/outbond")
-              ? "bg-red-50 !text-red-900"
-              : ""
-          }`}
-          href={"/paket-tour/outbond"}
-        >
-          Outbond Tour
-        </Link>
-        <Link
-          className={`hover:text-red-50 text-red-100 transition-colors inline-block px-3 py-1 rounded-lg ${
             pathname.includes("/paket-tour/group")
               ? "bg-red-50 !text-red-900"
               : ""

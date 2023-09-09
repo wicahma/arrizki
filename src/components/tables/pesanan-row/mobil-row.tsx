@@ -61,6 +61,11 @@ const MobilRow = ({
       </td>
       <td>
         <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
+          {data.instagram}
+        </p>
+      </td>
+      <td>
+        <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
           {dateFormatter(data.tanggalReservasi)}
         </p>
       </td>

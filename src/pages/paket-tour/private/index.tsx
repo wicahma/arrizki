@@ -5,6 +5,7 @@ import WisataCard from "@/components/micros/cards/WisataCard";
 import { setWisataState } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
 import axios from "axios";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { connect, useSelector } from "react-redux";
 
@@ -35,9 +36,21 @@ const index = (props: any) => {
 
   return (
     <Layout pageTitle="Paket Wisata">
-      <div className="pt-14 container mx-auto">
+      <div className="pt-14 h-[40vh] relative z-10 bg-white">
         <TourList pathname={pathname} />
-        <TextHeader className="mt-10" title="Pilih Paket Wisata terbaik anda" />
+        <TextHeader
+          className="mt-10 text-white"
+          title="Pilih Paket Wisata terbaik anda"
+        />
+        <Image
+          src={"/assets/images/candi.jpg"}
+          alt="wisata"
+          width={1000}
+          height={1000}
+          className="absolute top-0 w-full h-full -z-10 object-cover left-0"
+        />
+      </div>
+      <div className="container mx-auto">
         <div className="grid grid-cols-12 gap-4 w-full p-5">
           {wisata
             .filter((data: any) => data.status === "aktif")

@@ -4,7 +4,7 @@ import FooterList from "./FooterList";
 
 const index = (props: any) => {
   return (
-    <div className="bg-white pt-10 z-0">
+    <footer  className="bg-white pt-10 z-0">
       <div className="flex flex-col mx-auto container gap-10 divide-y-4 divide-red-400">
         <div className="grid grid-cols-5 gap-4 px-10">
           <div className="md:col-span-2 col-span-5 flex flex-col justify-center">
@@ -16,22 +16,34 @@ const index = (props: any) => {
           <div className="sm:flex justify-around md:col-span-3 col-span-5">
             <FooterList
               title="Menu"
-              list={["Home", "Paket Wisata", "Sewa Mobil"]}
+              list={[
+                { title: "Home", url: "/" },
+                { title: "Paket Wisata", url: "/paket-tour/private" },
+                { title: "Paket Outbond", url: "/paket-outbond" },
+                { title: "Sewa Mobil", url: "/sewa-mobil" },
+              ]}
             />
             <FooterList
               title="Pelanggan"
               list={[
-                "Cara Pesan",
-                "Metode Pembayaran",
-                "Ketentuan Pembatalan",
-                "Peraturan Tour",
-                "Ketentuan Tour",
-                "Ketentuan Sewa Mobil",
+                { url: "/pelanggan/cara-pesan", title: "Cara Pesan" },
+                { url: "/pelanggan/payment", title: "Metode Pembayaran" },
+                { url: "/pelanggan/pembatalan", title: "Ketentuan Pembatalan" },
+                { url: "/pelanggan/peraturan-tour", title: "Peraturan Tour" },
+                { url: "/pelanggan/ketentuan-tour", title: "Ketentuan Tour" },
+                {
+                  url: "/pelanggan/ketentuan-sewa-mobil",
+                  title: "Ketentuan Sewa Mobil",
+                },
               ]}
             />
             <FooterList
               title="Perusahaan"
-              list={["Tentang Kami", "Visi Misi", "Kontak Kami"]}
+              list={[
+                { title: "Tentang Kami", url: "/tentang" },
+                { title: "Visi Misi", url: "/visi-misi" },
+                { title: "Kontak Kami", url: "/kontak" },
+              ]}
             />
           </div>
         </div>
@@ -41,7 +53,8 @@ const index = (props: any) => {
           </div>
           <div className="flex gap-3 justify-end">
             <Link
-              href=""
+              href="https://wa.me/6287822366660"
+              target="_blank"
               className="bg-red-400 w-10 h-10 relative p-6 rounded-full group"
             >
               <Image
@@ -53,7 +66,8 @@ const index = (props: any) => {
               />
             </Link>
             <Link
-              href="#"
+              href="https://www.facebook.com/profile.php?id=100054517086879"
+              target="_blank"
               className="bg-red-400 group w-10 h-10 relative p-6 rounded-full"
             >
               <Image
@@ -65,7 +79,8 @@ const index = (props: any) => {
               />
             </Link>
             <Link
-              href="#"
+              href="mailto:arrizkitour@gmail.com"
+              target="_blank"
               className="bg-red-400 w-10 h-10 relative p-6 rounded-full group"
             >
               <Image
@@ -77,7 +92,8 @@ const index = (props: any) => {
               />
             </Link>
             <Link
-              href="#"
+              href="https://www.instagram.com/arrizki_tour/"
+              target="_blank"
               className="bg-red-400 w-10 h-10 relative p-6 rounded-full group"
             >
               <Image
@@ -91,7 +107,7 @@ const index = (props: any) => {
           </div>
         </div>
       </div>
-    </div>
+    </footer>
   );
 };
 

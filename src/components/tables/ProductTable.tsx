@@ -378,7 +378,7 @@ const ProductTable = (props: Table) => {
         break;
       case "outbond":
         window.open(
-          `/paket-tour/outbond/${data?.namaTempat}/${data?._id}/detail`,
+          `/paket-outbond/${data?.namaTempat}/${data?._id}/detail`,
           "_blank"
         );
         break;
@@ -798,12 +798,12 @@ const ProductTable = (props: Table) => {
                     ))}
                 </div>
                 <div className="text-start w-full">
-                  <h3 className="text-xl my-2 font-medium">Data Gambar </h3>
+                  <h3 className="text-xl my-2 font-medium">Data Gambar Lama</h3>
                   {produk.newWisataImage &&
                   produk.newWisataImage.images.length > 0 ? (
                     produk.newWisataImage.images.map((text: string) => (
                       <Link
-                        href={`${process.env.NEXT_PUBLIC_API_URL}/public/images/${text}`}
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/images/${text}`}
                         target="_blank"
                         className="inline-block text-sm text-blue-gray-300 hover:text-blue-gray-700 hover:underline"
                       >
@@ -922,12 +922,12 @@ const ProductTable = (props: Table) => {
                     ))}
                 </div>
                 <div className="text-start w-full">
-                  <h3 className="text-xl my-2 font-medium">Data Gambar </h3>
+                  <h3 className="text-xl my-2 font-medium">Data Gambar Lama</h3>
                   {produk.newOutbondImage &&
                   produk.newOutbondImage.images.length > 0 ? (
                     produk.newOutbondImage.images.map((text: string) => (
                       <Link
-                        href={`${process.env.NEXT_PUBLIC_API_URL}/public/images/${text}`}
+                        href={`${process.env.NEXT_PUBLIC_API_URL}/images/${text}`}
                         target="_blank"
                         className="inline-block text-sm text-blue-gray-300 hover:text-blue-gray-700 hover:underline"
                       >
@@ -1057,7 +1057,6 @@ const ProductTable = (props: Table) => {
             disabled={dataUpdateGambar.length > 0 ? false : true}
             onClick={() => {
               let id;
-              alert(produk.newOutbondImage?._id);
               switch (identifier) {
                 case "car":
                   id = produk.selectedDataMobil?._id;

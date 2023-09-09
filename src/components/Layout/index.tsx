@@ -62,7 +62,7 @@ const index = (props: LayoutProps) => {
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className={`${className} scroll-smooth`}>
+      <main className={`${className} scroll-smooth text-gray-900`}>
         <Alert message={alert.message} show={alert.show} type={alert.type} />
         <Loading isActive={isLoading} />
         {!router.pathname.includes("/admin") ? <Header /> : <AdminHeader />}

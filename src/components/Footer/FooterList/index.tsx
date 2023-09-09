@@ -6,9 +6,14 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 
+interface link {
+  title: string;
+  url: string;
+}
+
 interface footerList {
   title: string;
-  list: Array<string>;
+  list: link[];
   className?: string;
 }
 
@@ -31,14 +36,14 @@ const index = (props: footerList) => {
         </AccordionHeader>
         <AccordionBody>
           <ul className="text-lg font-normal text-black">
-            {list.map((item, i) => {
+            {list.map(({ title, url }, i) => {
               return (
                 <li key={i}>
                   <Link
                     className="relative after:absolute after:hover:w-full after:left-0 after:bottom-0 after:w-0 after:duration-300 after:h-[2px] after:rounded-full after:bg-red-400"
-                    href="#"
+                    href={url}
                   >
-                    {item}
+                    {title}
                   </Link>
                 </li>
               );
@@ -48,14 +53,14 @@ const index = (props: footerList) => {
       </Accordion>
       <h4 className="font-semibold mb-4 text-xl sm:block hidden">{title}</h4>
       <ul className="sm:block hidden">
-        {list.map((item, i) => {
+        {list.map(({ title, url }, i) => {
           return (
             <li key={i}>
               <Link
                 className="relative after:absolute after:hover:w-full after:left-0 after:bottom-0 after:w-0 after:duration-300 after:h-[2px] after:rounded-full after:bg-red-400"
-                href="#"
+                href={url}
               >
-                {item}
+                {title}
               </Link>
             </li>
           );

@@ -354,7 +354,7 @@ const PesananTable = ({
             color="red"
             className="mr-1"
           >
-            <span>Batal hapus</span>
+            <span>Batal kirim</span>
           </Button>
           <Button
             variant="gradient"
@@ -364,7 +364,7 @@ const PesananTable = ({
             }}
             color="green"
           >
-            <span>Ya, hapus data</span>
+            <span>Ya, kirim invoice</span>
           </Button>
         </DialogFooter>
       </Dialog>

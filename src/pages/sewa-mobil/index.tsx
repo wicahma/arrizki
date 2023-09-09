@@ -20,6 +20,7 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { Formik } from "formik";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -62,6 +63,7 @@ const index = (props: any) => {
     initialValues: MobilFormProps = {
       nama: undefined,
       email: undefined,
+      instagram: undefined,
       nomorTelepon: undefined,
       jenisMobil: selectedCar,
       tanggalReservasi: undefined,
@@ -125,15 +127,24 @@ const index = (props: any) => {
 
   return (
     <Layout pageTitle="Sewa Mobil">
-      <div className="pt-14 container mx-auto">
+      <div className="pt-14 h-[40vh] relative z-10 bg-black">
         <TextHeader
-          className="mt-10"
+          className="mt-10 text-white"
           title="Pilih Mobil untuk anda sewa."
           subtitle="Arrizki Tour menyediakan layanan sewa mobil untuk para wisatawan atau kalian yang sedang membuutuhkan mobil untuk akomodasi dll."
         />
+        <Image
+          src={"/assets/images/jeep.jpg"}
+          alt="wisata"
+          width={1000}
+          height={1000}
+          className="absolute top-0 w-full h-full -z-10 opacity-80 object-cover left-0"
+        />
+      </div>
+      <div className="pt-10 container mx-auto">
         <div className="divide-x divide-gray-400 gap-3 grid grid-cols-6 mx-auto">
           <div className="lg:col-span-4 col-span-6 mb-10 w-full space-y-10 sm:mx-auto px-5">
-            <div>
+            <div className="space-y-10">
               <p className="text-lg indent-4">
                 Arizki Tour selain menyediakan paket wisata juga memberikan
                 pelayanan sewa mobil dengan armada Terbaik, Terawat, Nyaman dan
@@ -141,86 +152,91 @@ const index = (props: any) => {
                 Anda. Arrizki tour menyediakan rental mobil untuk keperluan
                 perjalanan dinas, wisuda, pernikahan, dan perjalanan wisata.
               </p>
-              <Accordion open={open === 1}>
-                <AccordionHeader onClick={() => handleOpen(1)}>
-                  Ketentuan Sewa Mobil
-                </AccordionHeader>
-                <AccordionBody>
-                  <div>
-                    <ul className="list-decimal ml-8 list-outside text-base text-blue-gray-800">
-                      <li>
-                        Harga sewa mobil diatas sudah include : sewa mobil,
-                        driver, bbm dan air mineral.
-                      </li>
-                      <li>
-                        Harga sewa mobil diatas belum termasuk : HTM tempat
-                        wisata, biaya parkir, biaya makan driver dan biaya
-                        penginapan driver apabila menginap di luar kota Jogja.
-                      </li>
-                      <li>
-                        Harga sewa mobil diatas untuk tujuan dalam wilayah DIY
-                        termasuk Borobudur. Untuk tujuan luar wilayah DIY akan
-                        dikenakan tarif berbeda, silahkan hubungi kami untuk
-                        informasi harga terbaik.
-                      </li>
-                      <li>
-                        Pemakaian sewa mobil full day maximal pukul 22.00 WIB.
-                      </li>
-                      <li>
-                        Biaya overtime adalah 10% / Jam dari harga sewa mobil.
-                      </li>
-                      <li>
-                        Harga sewa mobil diatas tidak termasuk dalam Periode
-                        High Season.
-                      </li>
-                      <li>
-                        Melayani penjemputan di Hotel, Penginapan, Stasiun,
-                        Terminal dan Bandara.
-                      </li>
-                    </ul>
-                  </div>
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 2}>
-                <AccordionHeader onClick={() => handleOpen(2)}>
-                  Mengapa memilih Arrizki Tour untuk sewa mobil?
-                </AccordionHeader>
-                <AccordionBody>
-                  <div className="text-base text-blue-gray-800">
-                    <p className="indent-4">
-                      Arrizki tour mempermudah pemesanan sewa mobil di
-                      yogyakarta dengan booking secara online dan dapat
-                      melakukan pembayaran dengan mudah dan aman. Kami
-                      menyediakan sewa mobil untuk keperluan perjalanan bisnis,
-                      liburan, wisuda, atau acara pernikahan. Selain itu kami
-                      memberikan pelayanan dan kemudahan terhadap Anda, yaitu:
-                    </p>
-                    <ul className="list-disc ml-8 list-outside">
-                      <li>Banyak pilihan armada sesuai kebutuhan Anda</li>
-                      <li>Armada Terbaik, Terawat, Nyaman dan Aman</li>
-                      <li>Driver Berpengalaman, Ramah dan Profesional</li>
-                      <li>Respon cepat</li>
-                      <li>Booking 24 Jam</li>
-                      <li>Mobil pengganti</li>
-                    </ul>
-                  </div>
-                </AccordionBody>
-              </Accordion>
-              {mobil
-                .filter((data: any) => data.status === "aktif")
-                .map((item: any, i: number): React.ReactNode => {
-                  return (
-                    <MobilCard
-                      key={i}
-                      id={item._id}
-                      image={`${process.env.NEXT_PUBLIC_API_URL}/images/${item.imageId}`}
-                      price={item.pricePerDay}
-                      title={item.unitName}
-                      fasilitas={item.fasilitas}
-                      seat={item.seat}
-                    />
-                  );
-                })}
+              <div className="">
+                {mobil
+                  .filter((data: any) => data.status === "aktif")
+                  .map((item: any, i: number): React.ReactNode => {
+                    return (
+                      <MobilCard
+                        key={i}
+                        id={item._id}
+                        image={`${process.env.NEXT_PUBLIC_API_URL}/images/${item.imageId}`}
+                        price={item.pricePerDay}
+                        title={item.unitName}
+                        fasilitas={item.fasilitas}
+                        seat={item.seat}
+                      />
+                    );
+                  })}
+              </div>
+              <div>
+                <Accordion open={open === 1}>
+                  <AccordionHeader onClick={() => handleOpen(1)}>
+                    Ketentuan Sewa Mobil
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <div>
+                      <ul className="list-decimal ml-8 list-outside text-base text-blue-gray-800">
+                        <li>
+                          Harga sewa mobil diatas sudah include : sewa mobil,
+                          driver, bbm dan air mineral.
+                        </li>
+                        <li>
+                          Harga sewa mobil diatas belum termasuk : HTM tempat
+                          wisata, biaya parkir, biaya makan driver dan biaya
+                          penginapan driver apabila menginap di luar kota Jogja.
+                        </li>
+                        <li>
+                          Harga sewa mobil diatas untuk tujuan dalam wilayah DIY
+                          termasuk Borobudur. Untuk tujuan luar wilayah DIY akan
+                          dikenakan tarif berbeda, silahkan hubungi kami untuk
+                          informasi harga terbaik.
+                        </li>
+                        <li>
+                          Pemakaian sewa mobil full day maximal pukul 22.00 WIB.
+                        </li>
+                        <li>
+                          Biaya overtime adalah 10% / Jam dari harga sewa mobil.
+                        </li>
+                        <li>
+                          Harga sewa mobil diatas tidak termasuk dalam Periode
+                          High Season.
+                        </li>
+                        <li>
+                          Melayani penjemputan di Hotel, Penginapan, Stasiun,
+                          Terminal dan Bandara.
+                        </li>
+                      </ul>
+                    </div>
+                  </AccordionBody>
+                </Accordion>
+                <Accordion open={open === 2}>
+                  <AccordionHeader onClick={() => handleOpen(2)}>
+                    Mengapa memilih Arrizki Tour untuk sewa mobil?
+                  </AccordionHeader>
+                  <AccordionBody>
+                    <div className="text-base text-blue-gray-800">
+                      <p className="indent-4">
+                        Arrizki tour mempermudah pemesanan sewa mobil di
+                        yogyakarta dengan booking secara online dan dapat
+                        melakukan pembayaran dengan mudah dan aman. Kami
+                        menyediakan sewa mobil untuk keperluan perjalanan
+                        bisnis, liburan, wisuda, atau acara pernikahan. Selain
+                        itu kami memberikan pelayanan dan kemudahan terhadap
+                        Anda, yaitu:
+                      </p>
+                      <ul className="list-disc ml-8 list-outside">
+                        <li>Banyak pilihan armada sesuai kebutuhan Anda</li>
+                        <li>Armada Terbaik, Terawat, Nyaman dan Aman</li>
+                        <li>Driver Berpengalaman, Ramah dan Profesional</li>
+                        <li>Respon cepat</li>
+                        <li>Booking 24 Jam</li>
+                        <li>Mobil pengganti</li>
+                      </ul>
+                    </div>
+                  </AccordionBody>
+                </Accordion>
+              </div>
             </div>
           </div>
 

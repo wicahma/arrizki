@@ -7,7 +7,7 @@ import {
   Input,
   Option,
   Select,
-  Textarea
+  Textarea,
 } from "@material-tailwind/react";
 import { Form, useFormikContext } from "formik";
 import React, { useEffect } from "react";
@@ -42,6 +42,7 @@ const WisataForm = ({ jenisPaket, admin = false }: any) => {
     setFieldValue("id", adminSelectedWisata?._id);
     setFieldValue("nama", adminSelectedWisata?.namaReservant);
     setFieldValue("email", adminSelectedWisata?.email);
+    setFieldValue("instagram", adminSelectedWisata?.instagram);
     setFieldValue("nomorTelepon", adminSelectedWisata?.phoneNumber);
     setFieldValue("paketID", adminSelectedWisata?.paketWisataId);
     setFieldValue("jumlahPeserta", adminSelectedWisata?.jumlahPeserta);
@@ -98,7 +99,26 @@ const WisataForm = ({ jenisPaket, admin = false }: any) => {
         />
         <Input
           variant="outlined"
-          value={values.tanggalReservasi}
+          color="orange"
+          value={values.instagram}
+          disabled={admin}
+          size="lg"
+          label={`${
+            errors.instagram && touched.instagram
+              ? errors.instagram
+              : "Instagram"
+          }`}
+          type="text"
+          onChange={(e) => {
+            setFieldValue("instagram", e.target.value);
+          }}
+          error={errors.instagram && touched.instagram ? true : false}
+        />
+        <Input
+          variant="outlined"
+          value={
+            values.tanggalReservasi && values.tanggalReservasi.split("T")[0]
+          }
           color="orange"
           size="lg"
           label={`${

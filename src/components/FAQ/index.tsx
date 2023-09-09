@@ -12,23 +12,13 @@ interface FAQ {
 
 const index = (props: FAQ) => {
   const { question, children } = props;
-  const [open, setOpen] = useState(0);
-
-  const handleOpen = (value: number) => {
-    setOpen(open === value ? 0 : value);
-  };
   return (
-    <Accordion className="" open={open === 1}>
-      <AccordionHeader
-        className="font-normal border-b-black text-left text-black"
-        onClick={() => handleOpen(1)}
-      >
+    <div className="text-black py-5">
+      <div className="text-xl bg-red-400 w-fit px-3 rounded-lg text-white font-medium">
         {question}
-      </AccordionHeader>
-      <AccordionBody>
-        <div className="px-8 text-black/90">{children}</div>
-      </AccordionBody>
-    </Accordion>
+      </div>
+      <div className="">{children}</div>
+    </div>
   );
 };
 

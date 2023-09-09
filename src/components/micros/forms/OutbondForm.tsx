@@ -37,6 +37,7 @@ const OutbondForm = ({ jenisPaket, admin = false }: OutbondFormProps) => {
     setFieldValue("id", dataOutbond?._id);
     setFieldValue("nama", dataOutbond?.namaReservant);
     setFieldValue("email", dataOutbond.email);
+    setFieldValue("instagram", dataOutbond.instagram);
     setFieldValue("nomorTelepon", dataOutbond.phoneNumber);
     setFieldValue("paketID", dataOutbond.paketWisataId);
     setFieldValue("jumlahPeserta", dataOutbond.jumlahPeserta);
@@ -87,6 +88,23 @@ const OutbondForm = ({ jenisPaket, admin = false }: OutbondFormProps) => {
             setFieldValue("nomorTelepon", e.target.value);
           }}
           error={errors.nomorTelepon && touched.nomorTelepon ? true : false}
+        />
+        <Input
+          variant="outlined"
+          color="orange"
+          disabled={admin}
+          size="lg"
+          value={values.instagram}
+          label={`${
+            errors.instagram && touched.instagram
+              ? errors.instagram
+              : "Instagram"
+          }`}
+          type="text"
+          onChange={(e) => {
+            setFieldValue("instagram", e.target.value);
+          }}
+          error={errors.instagram && touched.instagram ? true : false}
         />
         <Select
           variant="outlined"

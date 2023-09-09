@@ -52,7 +52,7 @@ const Alert = (props: AlertProps) => {
           />
         </svg>
       }
-      show={show}
+      open={show}
       animate={{
         mount: { y: 0, x: "-50%" },
         unmount: { y: -100, x: "-50%" },

@@ -10,12 +10,21 @@ const index = (props: any) => {
   const { pathname } = useRouter();
   return (
     <Layout pageTitle="Group Tour">
-      <div className="pt-14 container mx-auto">
+      <div className="pt-14 h-[40vh] relative z-10 bg-white">
         <TourList pathname={pathname} />
         <TextHeader
-          className="mt-10"
+          className="mt-10 text-white"
           title="Paket Group Tour dengan harga terbaik."
         />
+        <Image
+          src={"/assets/images/candi.jpg"}
+          alt="wisata"
+          width={1000}
+          height={1000}
+          className="absolute top-0 w-full h-full -z-10 object-cover left-0"
+        />
+      </div>
+      <div className="pt-10 container mx-auto">
         <div className="text-center text-lg px-4">
           <p>
             Paket Tour Group ditujukan untuk memfasilitasi keluarga besar,

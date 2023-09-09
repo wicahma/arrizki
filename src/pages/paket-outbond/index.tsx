@@ -6,6 +6,7 @@ import { reduxState } from "@/interfaces/reduxInterface";
 import { setOutbondState } from "@/store/produkSlice";
 import { wrapper } from "@/store/store";
 import axios from "axios";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { connect, useSelector } from "react-redux";
 
@@ -31,17 +32,24 @@ const index = (props: any) => {
     rupiah = new Intl.NumberFormat("id-ID", {
       style: "currency",
       currency: "IDR",
-    }),
-    { pathname } = useRouter();
+    });
 
   return (
     <Layout pageTitle="Paket Outbond">
-      <div className="pt-14 container mx-auto">
-        <TourList pathname={pathname} />
+      <div className="pt-14 h-[40vh] relative z-10 bg-white">
         <TextHeader
-          className="mt-10"
+          className="mt-10 text-white"
           title="Pilih Paket Outbond terbaik anda"
         />
+        <Image
+          src={"/assets/images/pohon.jpg"}
+          alt="wisata"
+          width={1000}
+          height={1000}
+          className="absolute top-0 w-full h-full -z-10 object-cover left-0"
+        />
+      </div>
+      <div className="pt-10 container mx-auto">
         <div className="text-lg indent-10 mb-5 text-justify leading-7 px-5">
           <p>
             Kegiatan Outbond sering menjadi pilihan bagi instansi sebagai bagian

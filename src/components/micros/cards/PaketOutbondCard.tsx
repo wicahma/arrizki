@@ -6,15 +6,21 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import Image from "next/image";
+import { useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
 interface PaketOutbondCardProps {
   paketData: jenisPaketOutbond;
   index: number;
+  image: (data: string) => void;
 }
 
-const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
+const PaketOutbondCard = ({
+  paketData,
+  index,
+  image,
+}: PaketOutbondCardProps) => {
   const responsive = {
       desktop: {
         breakpoint: { max: 3000, min: 0 },
@@ -33,7 +39,7 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
       id={`wisata-${index}`}
       className="w-full shadow-none border-l border-gray-300"
     >
-      <CardHeader color="transparent" className=" h-[500px]">
+      {/* <CardHeader color="transparent" className=" h-[500px]">
         <Carousel
           swipeable
           draggable
@@ -61,6 +67,28 @@ const PaketOutbondCard = ({ paketData, index }: PaketOutbondCardProps) => {
             />
           ))}
         </Carousel>
+      </CardHeader> */}
+      <CardHeader color="transparent" className="p-2 h-[500px] overflow-y-auto">
+        <div className="lg:columns-3 md:columns-2 space-y-4">
+          {images.map((item: string, key: number) => (
+            <div
+              onClick={() => image(item)}
+              className="rounded-xl relative overflow-hidden hover:cursor-pointer hover:scale-105 hover:z-40 hover:shadow-2xl transition-transform"
+            >
+              <div className="absolute text-center w-full text-white bottom-0 pt-6 pb-1 bg-gradient-to-t from-black/80">
+                <p>{item.split("_")[1].split(".")[0]}</p>
+              </div>
+              <Image
+                src={`${process.env.NEXT_PUBLIC_API_URL}/images/${item}`}
+                alt={`Gambar ${item}`}
+                key={key}
+                height={220}
+                width={850}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
       </CardHeader>
       <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">
         <div className="md:pr-7 min-w-[300px]">

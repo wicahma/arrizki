@@ -12,15 +12,17 @@ interface WisataCardProps {
 }
 
 const WisataCard = (props: WisataCardProps) => {
-  const { id, title, price, image, listWisata, rupiah } = props;
+  const { id, title, price, image, listWisata, rupiah, className } = props;
 
   return (
     <Link
       key={id}
       href={`/paket-tour/private/${title}/${id}/detail`}
-      className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
+      className={`bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl`}
     >
-      <div className="bg-black flex flex-col text-left z-10 group-hover:bottom-10 bottom-0 h-full transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">
+      <div
+        className={`bg-black flex flex-col ${className} text-left z-10 group-hover:bottom-10 bottom-0 h-full transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]`}
+      >
         <h3 className="text-xl z-10 font-semibold mb-1">{title}</h3>
         <p className="bg-red-500 z-10 rounded-md px-3 max-w-max">
           {rupiah.format(price)}

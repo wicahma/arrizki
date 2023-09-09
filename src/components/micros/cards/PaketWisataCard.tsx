@@ -95,35 +95,20 @@ const PaketWisataCard = ({ paketData, index }: any) => {
           ))}
         </Carousel>
       </CardHeader>
-      <CardBody className="text-center flex flex-col sm:flex-row sm:divide-x divide-gray-300">
+      <CardBody className="text-left flex flex-col sm:flex-row sm:divide-x divide-gray-300">
         <div className="px-3">
           <Typography variant="h5" className="mb-2">
             Paket Wisata {index}
           </Typography>
-          <div className="bg-red-400 rounded-xl py-2 px-2 shadow-xl shadow-red-900/30">
-            <Typography>
+          <div className="bg-red-400 rounded-xl py-2 px-2 shadow-xl max-w-full min-w-[250px] shadow-red-900/30">
+            <h3 className="text-white text-xl">List Wisata</h3>
+            <ul className="list-item list-outside ml-8 list-decimal">
               {tempatWisata.map((item: any, index: number) => (
-                <span key={index} className="text-white font-medium">
-                  {item}{" "}
-                  {index < tempatWisata.length - 1 && (
-                    <i className="inline-block relative top-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                        className="w-5 aspect-square"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </i>
-                  )}{" "}
-                </span>
+                <li key={index} className="text-white capitalize font-medium">
+                  {item}
+                </li>
               ))}
-            </Typography>
+            </ul>
           </div>
         </div>
         <div className="w-[100%] px-3">

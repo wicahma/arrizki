@@ -62,6 +62,11 @@ const CustomWisataRow = ({
       </td>
       <td>
         <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
+          {data.instagram}
+        </p>
+      </td>
+      <td>
+        <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
           {data.jumlahPeserta}
         </p>
       </td>
@@ -82,7 +87,7 @@ const CustomWisataRow = ({
       </td>
       <td>
         <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
-          {data.lokasiAntar}
+          {data.listWisata}
         </p>
       </td>
       <td>

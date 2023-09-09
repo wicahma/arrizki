@@ -68,6 +68,11 @@ const OutbondWisataRow = ({
       </td>
       <td>
         <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
+          {data.instagram}
+        </p>
+      </td>
+      <td>
+        <p className="text-gray-900 whitespace-no-wrap px-6 text-center">
           {dateFormatter(data.tanggalMulai)}
         </p>
       </td>

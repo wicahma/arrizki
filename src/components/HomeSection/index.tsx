@@ -5,12 +5,13 @@ interface LayoutProps {
   title: string;
   subtitle?: string;
   className?: string;
+  container?: boolean;
 }
 const index = (props: LayoutProps) => {
-  const { title, subtitle, children, className } = props;
+  const { title, subtitle, children, className, container = false } = props;
   return (
-    <div className="container mx-auto">
-      <TextHeader title={title} subtitle={subtitle} />
+    <div className={`${container ? "container" : ""} mx-auto ${className}`}>
+      <TextHeader className="z-10 relative" title={title} subtitle={subtitle} />
       {children}
     </div>
   );

@@ -24,12 +24,13 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { Formik } from "formik";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //NOTE - Get data from server redux
-export const getServerSideProps = wrapper.getServerSideProps(
+export const getServerSideProps: any = wrapper.getServerSideProps(
   (store) =>
     async ({ req, res, ...etc }) => {
       const { dispatch, getState } = store;
@@ -76,6 +77,7 @@ const DetailWisata = (props: any) => {
     initialValues: WisataFormProps = {
       nama: undefined,
       email: undefined,
+      instagram: undefined,
       nomorTelepon: undefined,
       paketID: undefined,
       jumlahPeserta: selectedJumlahPeserta,
@@ -150,10 +152,10 @@ const DetailWisata = (props: any) => {
   };
 
   return (
-    <Layout>
+    <Layout pageTitle="Detail Wisata">
       <div
         ref={headerRef}
-        className="pt-16 container bottom-0 mx-auto text-center bg-white"
+        className="py-16 mb-10 mx-auto text-center overflow-hidden relative"
       >
         <Typography variant="h4" className="text-4xl mt-8">
           {paketWisata.namaPaket}
@@ -171,6 +173,18 @@ const DetailWisata = (props: any) => {
               </div>
             ))}
         </div>
+        {paketWisata && paketWisata.jenisPaket && (
+          <>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_URL}/images/${paketWisata.jenisPaket[0].images[0]}`}
+              alt="wisata"
+              width={1000}
+              height={1000}
+              className="absolute top-0 w-full h-full -z-10 object-cover left-0 blur-md"
+            />
+            <div className="w-full h-full absolute top-0 left-0 -z-[5] bg-white/30" />
+          </>
+        )}
       </div>
 
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
@@ -192,6 +206,19 @@ const DetailWisata = (props: any) => {
                   />
                 ))}
             </div>
+          </div>
+
+          {/* //NOTE - Paket Section */}
+          <div className="space-y-14 mt-14">
+            {paketWisata &&
+              paketWisata.jenisPaket &&
+              paketWisata.jenisPaket.map((item, i: number) => {
+                return (
+                  <div key={i} className="pb-7 ">
+                    <PaketWisataCard paketData={item} index={i + 1} />
+                  </div>
+                );
+              })}
           </div>
           {/* //NOTE - Header Section */}
           <div>
@@ -426,18 +453,6 @@ const DetailWisata = (props: any) => {
                 </ul>
               </AccordionBody>
             </Accordion>
-          </div>
-          {/* //NOTE - Paket Section */}
-          <div className="space-y-14 mt-14">
-            {paketWisata &&
-              paketWisata.jenisPaket &&
-              paketWisata.jenisPaket.map((item, i: number) => {
-                return (
-                  <div key={i} className="pb-7 ">
-                    <PaketWisataCard paketData={item} index={i + 1} />
-                  </div>
-                );
-              })}
           </div>
         </div>
         {/* //NOTE - Form Section */}

@@ -17,11 +17,13 @@ import {
   DialogBody,
   DialogFooter,
   DialogHeader,
+  IconButton,
   Switch,
   Tooltip,
 } from "@material-tailwind/react";
 import axios from "axios";
 import { Formik } from "formik";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,9 +64,11 @@ const DetailOutbond = () => {
     paketOutbond: outbond | any = useSelector(
       (state: reduxState) => state.produk.paketOutbond
     ),
+    [selectedImage, setSelectedImage] = useState(""),
     initialValues: OutbondFormProps = {
       nama: undefined,
       email: undefined,
+      instagram: undefined,
       nomorTelepon: undefined,
       paketID: undefined,
       jumlahPeserta: undefined,
@@ -133,10 +137,10 @@ const DetailOutbond = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout pageTitle="Detail Outbond">
       <div
         ref={headerRef}
-        className="pt-16 container bottom-0 mx-auto text-center bg-white"
+        className="py-16 mb-10 bottom-0 mx-auto text-center overflow-hidden relative"
       >
         <p className="text-4xl mt-8">{paketOutbond.namaTempat}</p>
         <div className="flex mb-10 mt-3 flex-row flex-wrap gap-3 columns-4 justify-center">
@@ -151,6 +155,18 @@ const DetailOutbond = () => {
               />
             ))}
         </div>
+        {paketOutbond && paketOutbond.jenisPaket && (
+          <>
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_URL}/images/${paketOutbond.jenisPaket[0].images[0]}`}
+              alt="wisata"
+              width={1000}
+              height={1000}
+              className="w-full h-full blur-md absolute top-0 left-0 -z-10 object-cover"
+            />
+            <div className="w-full h-full absolute top-0 left-0 -z-[5] bg-white/30" />
+          </>
+        )}
       </div>
 
       <div className="divide-x divide-gray-400 container gap-3 grid grid-cols-6 mx-auto">
@@ -185,11 +201,62 @@ const DetailOutbond = () => {
                 (item: jenisPaketOutbond, i: number) => {
                   return (
                     <div key={i} className="pb-7">
-                      <PaketOutbondCard paketData={item} index={i} />
+                      <PaketOutbondCard
+                        image={(data: string) => setSelectedImage(data)}
+                        paketData={item}
+                        index={i}
+                      />
                     </div>
                   );
                 }
               )}
+            <Dialog
+              size={dialogSize}
+              open={selectedImage !== "" ? true : false}
+              handler={() => setSelectedImage("")}
+            >
+              <DialogBody className="relative xl:max-h-[90vh] max-h-screen xl:overflow-y-auto">
+                <IconButton
+                  variant="filled"
+                  onClick={() => {
+                    setSelectedImage("");
+                  }}
+                  color="red"
+                  className="sticky right-0 top-0 z-30"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </IconButton>
+                {selectedImage !== "" ? (
+                  <>
+                    <div className="absolute text-center text-2xl font-medium text-gray-800 top-5 left-16">
+                      <p>{selectedImage.split("_")[1].split(".")[0]}</p>
+                    </div>
+                    <Image
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/images/${selectedImage}`}
+                      alt={`Gambar ${selectedImage}`}
+                      height={220}
+                      width={850}
+                      className="h-full object-cover rounded-xl mt-2"
+                    />
+                  </>
+                ) : (
+                  <div>Tidak ada data yang dipilih</div>
+                )}
+              </DialogBody>
+            </Dialog>
           </div>
         </div>
         {/* //NOTE - Form Section */}

@@ -2,14 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 const OutbondCard = (props: any) => {
-  const { id, title, minimumPrice, image, rupiah, keterangan } = props;
+  const { id, title, minimumPrice, image, rupiah, keterangan, className } =
+    props;
   return (
     <Link
       key={id}
-      href={`/paket-tour/outbond/${title}/${id}/detail`}
+      href={`/paket-outbond/${title}/${id}/detail`}
       className="bg-white group hover:shadow-xl transition-all col-span-12 md:col-span-4 lg:col-span-3 sm:col-span-6 w-full text-center relative rounded-3xl"
     >
-      <div className="bg-black flex flex-col text-left z-10 h-full group-hover:bottom-10 bottom-0 transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px]">
+      <div
+        className={`bg-black flex flex-col text-left z-10 h-full group-hover:bottom-10 bottom-0 transition-all text-white p-5 relative overflow-hidden w-full rounded-[20px] ${className}`}
+      >
         <h3 className="text-xl z-10 font-semibold mb-1">{title}</h3>
         <p className="bg-red-500 z-10 rounded-md px-3 max-w-max">
           {rupiah.format(minimumPrice)}

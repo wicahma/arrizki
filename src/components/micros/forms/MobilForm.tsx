@@ -32,6 +32,7 @@ const MobilForm = ({ mobilData, admin = false }: any) => {
     setFieldValue("id", adminSelectedCar?._id);
     setFieldValue("nama", adminSelectedCar?.namaReservant);
     setFieldValue("email", adminSelectedCar?.email);
+    setFieldValue("instagram", adminSelectedCar?.instagram);
     setFieldValue("nomorTelepon", adminSelectedCar?.phoneNumber);
     setFieldValue("jenisMobil", adminSelectedCar?.unitId._id);
     setFieldValue("tanggalReservasi", adminSelectedCar?.tanggalReservasi);
@@ -84,6 +85,23 @@ const MobilForm = ({ mobilData, admin = false }: any) => {
             setFieldValue("nomorTelepon", e.target.value);
           }}
           error={errors.nomorTelepon && touched.nomorTelepon ? true : false}
+        />
+        <Input
+          variant="outlined"
+          color="orange"
+          disabled={admin}
+          size="lg"
+          label={`${
+            errors.instagram && touched.instagram
+              ? errors.instagram
+              : "Instagram"
+          }`}
+          value={values.instagram}
+          type="text"
+          onChange={(e) => {
+            setFieldValue("instagram", e.target.value);
+          }}
+          error={errors.instagram && touched.instagram ? true : false}
         />
         <div>
           <Select
